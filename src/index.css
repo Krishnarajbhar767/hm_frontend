@@ -1,55 +1,20 @@
 @import "tailwindcss";
 
-@font-face {
-    font-family: "Poppins";
-    src: url("./fonts/Poppins-Thin.ttf") format("truetype");
-    font-weight: 100;
+.headerLinks {
+    position: relative;
+}
+.headerLinks::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0%;
+    height: 1px;
+    border-radius: 10px;
+    background-color: black;
+    transition: all ease 0.5s;
 }
 
-@font-face {
-    font-family: "Poppins";
-    src: url("./fonts/Poppins-ExtraLight.ttf") format("truetype");
-    font-weight: 200;
-}
-
-@font-face {
-    font-family: "Poppins";
-    src: url("./fonts/Poppins-Light.ttf") format("truetype");
-    font-weight: 300;
-}
-
-@font-face {
-    font-family: "Poppins";
-    src: url("./fonts/Poppins-Regular.ttf") format("truetype");
-    font-weight: 400;
-}
-
-@font-face {
-    font-family: "Poppins";
-    src: url("./fonts/Poppins-Medium.ttf") format("truetype");
-    font-weight: 500;
-}
-
-@font-face {
-    font-family: "Poppins";
-    src: url("./fonts/Poppins-SemiBold.ttf") format("truetype");
-    font-weight: 600;
-}
-
-@font-face {
-    font-family: "Poppins";
-    src: url("./fonts/Poppins-Bold.ttf") format("truetype");
-    font-weight: 700;
-}
-
-@font-face {
-    font-family: "Poppins";
-    src: url("./fonts/Poppins-ExtraBold.ttf") format("truetype");
-    font-weight: 800;
-}
-
-@font-face {
-    font-family: "Poppins";
-    src: url("./fonts/Poppins-Black.ttf") format("truetype");
-    font-weight: 900;
+.headerLinks:hover::after {
+    width: 100%;
 }
