@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+@theme {
+    --color-primary: #ef233c;
+}
 .headerLinks {
     position: relative;
 }
@@ -17,4 +20,28 @@
 
 .headerLinks:hover::after {
     width: 100%;
+}
+
+.boxedContainer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Home Page Slider */
+#slider-button::before {
+    content: " ";
+    border-radius: 100%;
+    background-color: black;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    scale: 0;
+}
+
+#slider-button:hover {
+    scale: 1;
 }
