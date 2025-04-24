@@ -4,13 +4,13 @@ import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 function MainLayout() {
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50 text-gray-900 ">
+        <div className="flex flex-col min-h-screen overflow-hidden">
             <Header />
-            <main className="flex-grow bg-orange-300 ">
-                <div className=" ">
-                    <Outlet />
-                </div>
+
+            <main className="flex-1 overflow-x-hidden overflow-y-auto">
+                <Outlet />
             </main>
+
             <Footer />
         </div>
     );

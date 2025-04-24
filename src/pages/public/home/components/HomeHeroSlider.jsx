@@ -133,7 +133,7 @@ function HomeHeroSlider() {
                 onClick={nextHandler}
                 className="group absolute p-2 border border-gray-600 rounded-full top-1/2 right-3 cursor-pointer z-10 overflow-hidden hover:border-transparent transition-all duration-500"
             >
-                <svg
+                <motion.svg
                     className="w-6 h-6 text-gray-800 dark:text-white z-30 group-hover:translate-x-0.5 transition-all duration-300"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -146,7 +146,7 @@ function HomeHeroSlider() {
                         strokeWidth="2"
                         d="M19 12H5m14 0-4 4m4-4-4-4"
                     />
-                </svg>
+                </motion.svg>
                 <span className="absolute inset-0 rounded-full bg-primary scale-0 group-hover:scale-150 transition-transform duration-500 ease-out -z-10" />
             </div>
         </div>
