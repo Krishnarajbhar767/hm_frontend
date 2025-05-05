@@ -69,7 +69,7 @@ function HomeHeroSlider() {
     };
     console.log("Active Slide -->", activeSlide);
     return (
-        <div className="h-[600px] bg-slate-500 relative overflow-hidden">
+        <div className="h-[400px] md:h-[600px] bg-slate-500 relative overflow-hidden ">
             {/* Left Button */}
             <div
                 onClick={prevHandler}
@@ -109,19 +109,19 @@ function HomeHeroSlider() {
                 >
                     <motion.h1
                         variants={textVariants}
-                        className="text-center text-6xl font-semibold uppercase w-fit mx-auto max-w-[60%]"
+                        className="text-center text-xl  md:text-4xl lg:text-6xl   font-semibold uppercase w-fit mx-auto lg:max-w-[60%] max-w-[90%]"
                     >
                         {sliderData[activeSlide].heading}
                     </motion.h1>
                     <motion.h2
                         variants={textVariants}
-                        className="text-center text-5xl w-fit mx-auto max-w-[50%] font-medium"
+                        className="text-center text-lg  md:text-3xl lg:text-5xl w-fit mx-auto md:max-w-[50%] max-w-[90%] font-medium leading-none"
                     >
                         {sliderData[activeSlide].subheading}
                     </motion.h2>
                     <motion.p
                         variants={textVariants}
-                        className="text-center text-xl w-fit mx-auto max-w-[40%]"
+                        className="text-center text-sm  md:text-xl w-fit mx-auto lg:max-w-[40%] max-w-[80%]"
                     >
                         {sliderData[activeSlide].paragraph}
                     </motion.p>

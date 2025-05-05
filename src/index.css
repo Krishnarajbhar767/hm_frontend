@@ -10,6 +10,10 @@ body {
     color: #101828;
 }
 
+button {
+    cursor: pointer;
+}
+
 .headerLinks {
     position: relative;
 }
@@ -51,4 +55,32 @@ body {
 
 #slider-button:hover {
     scale: 1;
+}
+
+#ShopByCategorySlider {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+#ShopByCategorySlider::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and newer Edge */
+}
+#searchItemsContainer {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+#searchItemsContainer::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and newer Edge */
+}
+
+/* Search Container */
+#searchContainer::before {
+    content: "";
+
+    height: 100vh;
+    background-color: #101828;
+    z-index: 20;
+    position: absolute;
+    right: 0;
 }
