@@ -2,7 +2,7 @@ import React from "react";
 
 function HomeSection5() {
     return (
-        <div className="boxedContainer w-full py-4  h-auto  overflow-x-hidden bg-emerald-500 ">
+        <div className="boxedContainer w-full py-4  h-auto  overflow-x-hidden  ">
             <div className="  md:h-[500px] border rounded-sm h-[300px]">
                 <iframe
                     src="https://www.youtube.com/embed/PyqLdTt95Kw?si=ytQEdEKE6UtdUh8J"

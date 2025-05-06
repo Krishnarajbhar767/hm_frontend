@@ -8,6 +8,7 @@ import HomeSection4 from "./components/HomeSection4";
 import HomeSection5 from "./components/HomeSection5";
 import HomeSection6 from "./components/HomeSection6";
 import ShopByCategory from "./components/ShopByCategory";
+import WhyChooseUs from "./components/WhyChooseUs";
 
 function Home() {
     return (
@@ -43,6 +44,9 @@ function Home() {
             </div>
             <div>
                 <HomeSection6 />
+            </div>
+            <div>
+                <WhyChooseUs />
             </div>
         </div>
         // Moving Text

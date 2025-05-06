@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { NavLink } from "react-router";
 import Search from "./Search";
 import { AnimatePresence } from "motion/react";
+import LoginSidebar from "./LoginSidebar";
 function Header() {
     const Links = useMemo(
         () => [
@@ -30,10 +31,8 @@ function Header() {
         []
     );
     const [isSearching, setIsSearching] = useState(false);
+    const [isLogin, setIsLogin] = useState(false);
 
-    function searchOpenCloseHandler() {
-        setIsSearching(true);
-    }
     return (
         // Due To Overflow Of Website getting bad
         <div className="relative">
@@ -105,7 +104,7 @@ function Header() {
                         {/* Search */}
                         <div>
                             <svg
-                                onClick={searchOpenCloseHandler}
+                                onClick={() => setIsSearching(true)}
                                 class="w-6 h-6 text-gray-800 hover:text-primary transition-all duration-300 cursor-pointer"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -122,8 +121,10 @@ function Header() {
                                 />
                             </svg>
                         </div>
+                        {/* User Account */}
                         <div>
                             <svg
+                                onClick={() => setIsLogin(true)}
                                 class="w-6 h-6 text-gray-800 hover:text-red-500 transition-all duration-300 cursor-pointer"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -141,6 +142,7 @@ function Header() {
                                 />
                             </svg>
                         </div>
+                        {/* Cart Icons */}
                         <div>
                             <svg
                                 class="w-6 h-6 text-gray-800 hover:text-red-500 transition-all duration-300 cursor-pointer"
@@ -167,6 +169,13 @@ function Header() {
                 {isSearching && (
                     <div className="">
                         <Search closeHandler={() => setIsSearching(false)} />
+                    </div>
+                )}
+            </AnimatePresence>
+            <AnimatePresence>
+                {isLogin && (
+                    <div className="">
+                        <LoginSidebar closeHandler={() => setIsLogin(false)} />
                     </div>
                 )}
             </AnimatePresence>

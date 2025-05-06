@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Heading from "../../pages/public/home/components/Heading";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 const Search = ({ closeHandler }) => {
     useEffect(() => {
         // Calculate scrollbar width
@@ -88,7 +88,11 @@ const Search = ({ closeHandler }) => {
                         Need some inspiration?
                     </h1>
                     {/* Product Cards */}
-                    <div className="px-8 border mt-3"></div>
+                    <div className="  mt-3  space-y-4">
+                        <Card />
+                        <Card />
+                        <Card />
+                    </div>
                 </div>
             </motion.div>
         </div>
@@ -98,5 +102,22 @@ const Search = ({ closeHandler }) => {
 export default Search;
 
 function Card(data) {
-    return <div></div>;
+    return (
+        <div className="flex  h-28 gap-4 border-b last:border-b-0 border-neutral-300">
+            {/* Image Container */}
+            <div className="w-[30%]">
+                <img
+                    src="https://themesflat.co/html/ecomus/images/products/white-3.jpg"
+                    className="h-full w-full object-cover cursor-pointer"
+                />
+            </div>
+            {/* Price And Title Container */}
+            <div className="w-full space-y-1 mt-2">
+                <h1 className="capitalize text-sm cursor-pointer">
+                    Product Name
+                </h1>
+                <h2 className="text-sm cursor-pointer">$299</h2>
+            </div>
+        </div>
+    );
 }
