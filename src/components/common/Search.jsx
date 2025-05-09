@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import Heading from "../../pages/public/home/components/Heading";
-import { motion } from "motion/react";
-const Search = ({ closeHandler }) => {
+import { AnimatePresence, motion } from "framer-motion";
+
+const Search = ({ isOpen, closeHandler }) => {
     useEffect(() => {
         // Calculate scrollbar width
         const scrollbarWidth =
@@ -21,74 +22,87 @@ const Search = ({ closeHandler }) => {
             document.body.style.paddingRight = "";
         };
     }, []);
+
     return (
-        <div className="fixed z-[100] inset-0 w-screen h-screen flex overflow-hidden bg-gray-900/25 ">
+        <div
+            className="fixed z-[100] inset-0 w-screen h-screen flex bg-gray-900/25"
+            onClick={closeHandler}
+        >
             <motion.div
-                className="absolute flex flex-col gap-7  py-4   bg-white w-1/3 h-full right-0 z-[101] "
+                className="absolute flex flex-col bg-white w-full sm:w-4/5 md:w-1/2 lg:w-1/3 h-full right-0 z-[101]"
                 initial={{ opacity: 0, x: 300 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
                 exit={{ opacity: 0, x: 300 }}
+                onClick={(e) => e.stopPropagation()}
             >
-                <div className="flex justify-between w-full px-8">
-                    <Heading text={"Search"} />
-                    <svg
+                {/* Header (Pinned to Top) */}
+                <div className="flex justify-between items-center w-full px-4 sm:px-6 py-4">
+                    <Heading text="Search" />
+                    <button
                         onClick={closeHandler}
-                        className="w-6 h-6 text-gray-800 cursor-pointer"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
+                        className="p-2"
+                        aria-label="Close search"
                     >
-                        <path d="M13.795 10.533 20.68 2h-3.073l-5.255 6.517L7.69 2H1l7.806 10.91L1.47 22h3.074l5.705-7.07L15.31 22H22l-8.205-11.467Zm-2.38 2.95L9.97 11.464 4.36 3.627h2.31l4.528 6.317 1.443 2.02 6.018 8.409h-2.31l-4.934-6.89Z" />
-                    </svg>
+                        <svg
+                            className="w-5 h-5 text-gray-800 hover:text-gray-600"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59 7.11 5.7a.996.996 0 1 0-1.41 1.41L10.59 12l-4.89 4.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z" />
+                        </svg>
+                    </button>
                 </div>
+                <hr className="border-gray-300 mx-4 sm:mx-6" />
 
-                {/* Search Input */}
-                <div className="px-8">
-                    <div className=" relative  pl-10 rounded-md border border-gray-300 ">
+                {/* Search Input (Pinned Below Header) */}
+                <div className="px-4 sm:px-6 py-4">
+                    <div className="relative pl-8 sm:pl-10 rounded-md border border-gray-300">
                         <input
                             placeholder="Search..."
                             type="text"
-                            className=" outline-none w-full border-none py-2 text-gray-800 "
+                            className="outline-none w-full border-none py-2 text-sm sm:text-base text-gray-800"
                         />
                         <svg
-                            class="w-5 h-5 text-gray-800 absolute left-2 top-1/2  -translate-y-[50%]"
+                            className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800 absolute left-2 top-1/2 -translate-y-1/2"
                             aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
                             fill="none"
                             viewBox="0 0 24 24"
                         >
                             <path
                                 stroke="currentColor"
-                                stroke-linecap="round"
-                                stroke-width="2"
+                                strokeLinecap="round"
+                                strokeWidth="2"
                                 d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
                             />
                         </svg>
                     </div>
                 </div>
-                {/* HR */}
-                <hr className="text-gray-300" />
-                <div
-                    className="px-8 overflow-y-scroll"
-                    id="searchItemsContainer"
-                >
-                    <h1 className="font-medium text-xl tracking-wide text-gray-800">
+                <hr className="border-gray-300 mx-4 sm:mx-6" />
+
+                {/* Content (Scrollable) */}
+                <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-4">
+                    <h1 className="font-medium text-base sm:text-lg text-gray-800 tracking-wide">
                         Quick Links
                     </h1>
-                    <ul className="text-gray-800 mt-2 space-y-1 text-[15px] tracking-wide capitalize">
-                        <li className="cursor-pointer">Category1</li>
-                        <li className="cursor-pointer">Category1</li>
-                        <li className="cursor-pointer">Category1</li>
+                    <ul className="text-gray-800 mt-2 space-y-1 text-xs sm:text-sm tracking-wide capitalize">
+                        <li className="cursor-pointer hover:text-gray-600">
+                            Category1
+                        </li>
+                        <li className="cursor-pointer hover:text-gray-600">
+                            Category2
+                        </li>
+                        <li className="cursor-pointer hover:text-gray-600">
+                            Category3
+                        </li>
                     </ul>
 
-                    <h1 className="font-medium text-lg  text-gray-800 mt-4">
+                    <h1 className="font-medium text-base sm:text-lg text-gray-800 mt-4">
                         Need some inspiration?
                     </h1>
-                    {/* Product Cards */}
-                    <div className="  mt-3  space-y-4">
+                    <div className="mt-3 space-y-3">
                         <Card />
                         <Card />
                         <Card />
@@ -101,22 +115,23 @@ const Search = ({ closeHandler }) => {
 
 export default Search;
 
-function Card(data) {
+function Card() {
     return (
-        <div className="flex  h-28 gap-4 border-b last:border-b-0 border-neutral-300">
+        <div className="flex h-20 sm:h-24 gap-3 border-b last:border-b-0 border-neutral-300 pb-3">
             {/* Image Container */}
-            <div className="w-[30%]">
+            <div className="w-16 sm:w-20">
                 <img
                     src="https://themesflat.co/html/ecomus/images/products/white-3.jpg"
-                    className="h-full w-full object-cover cursor-pointer"
+                    className="h-full w-full object-cover cursor-pointer rounded"
+                    alt="Product"
                 />
             </div>
             {/* Price And Title Container */}
-            <div className="w-full space-y-1 mt-2">
-                <h1 className="capitalize text-sm cursor-pointer">
+            <div className="flex-1 space-y-1 mt-1">
+                <h1 className="capitalize text-xs sm:text-sm cursor-pointer line-clamp-1">
                     Product Name
                 </h1>
-                <h2 className="text-sm cursor-pointer">$299</h2>
+                <h2 className="text-xs sm:text-sm cursor-pointer">$299</h2>
             </div>
         </div>
     );

@@ -42,7 +42,10 @@ export default function JoinNewsLetter() {
                     />
                 </div>
                 <div className="flex flex-col p-8 w-full relative justify-center">
-                    <span className="absolute top-4 right-4 cursor-pointer text-2xl">
+                    <span
+                        className="absolute top-4 right-4 cursor-pointer text-2xl"
+                        onClick={() => setShowPopup(false)}
+                    >
                         <RxCross2 />
                     </span>
 

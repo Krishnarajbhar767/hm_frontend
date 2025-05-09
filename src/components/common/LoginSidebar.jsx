@@ -1,18 +1,19 @@
 import { useEffect } from "react";
 import Heading from "../../pages/public/home/components/Heading";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "framer-motion";
 import InputField from "./InputField";
 import { useForm } from "react-hook-form";
 import Button from "./Button";
 import { Link } from "react-router-dom";
 
-const LoginSidebar = ({ closeHandler }) => {
+const LoginSidebar = ({ isOpen, closeHandler }) => {
     const {
         register,
         handleSubmit,
         formState: { errors },
         watch,
     } = useForm();
+
     useEffect(() => {
         // Calculate scrollbar width
         const scrollbarWidth =
@@ -32,44 +33,57 @@ const LoginSidebar = ({ closeHandler }) => {
             document.body.style.paddingRight = "";
         };
     }, []);
+
     const emailValue = watch("email");
     const passwordValue = watch("password");
+
     return (
-        <div className="fixed z-[100] inset-0 w-screen h-screen flex overflow-hidden bg-gray-900/25 ">
+        <div
+            className="fixed z-[100] inset-0 w-screen h-screen flex bg-gray-900/25"
+            onClick={closeHandler}
+        >
             <motion.div
-                className="absolute flex flex-col gap-7  py-4   bg-white w-1/3 h-full right-0 z-[101] "
+                className="absolute flex flex-col bg-white w-full sm:w-4/5 md:w-1/2 lg:w-1/3 h-full right-0 z-[101]"
                 initial={{ opacity: 0, x: 300 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
                 exit={{ opacity: 0, x: 300 }}
+                onClick={(e) => e.stopPropagation()}
             >
-                <div className="flex justify-between w-full px-8">
-                    <Heading text={"Login"} />
-                    <svg
+                {/* Header */}
+                <div className="flex justify-between items-center w-full px-4 sm:px-6 py-4">
+                    <Heading text="Login" />
+                    <button
                         onClick={closeHandler}
-                        className="w-6 h-6 text-gray-800 cursor-pointer"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
+                        className="p-2"
+                        aria-label="Close login"
                     >
-                        <path d="M13.795 10.533 20.68 2h-3.073l-5.255 6.517L7.69 2H1l7.806 10.91L1.47 22h3.074l5.705-7.07L15.31 22H22l-8.205-11.467Zm-2.38 2.95L9.97 11.464 4.36 3.627h2.31l4.528 6.317 1.443 2.02 6.018 8.409h-2.31l-4.934-6.89Z" />
-                    </svg>
+                        <svg
+                            className="w-5 h-5 text-gray-800 hover:text-gray-600"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59 7.11 5.7a.996.996 0 1 0-1.41 1.41L10.59 12l-4.89 4.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z" />
+                        </svg>
+                    </button>
                 </div>
-                <hr className="text-gray-300" />
-                {/* Login Credentials Input Fields */}
-                <div className=" px-8">
+                <hr className="border-gray-300 mx-4 sm:mx-6" />
+
+                {/* Form Content (Scrollable) */}
+                <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-4">
                     <form
-                        className="flex flex-col gap-3"
+                        className="flex flex-col gap-2 mt-3"
                         onSubmit={handleSubmit(
-                            (data) => alert(data),
+                            (data) => alert(JSON.stringify(data)),
                             (err) => console.log(err)
                         )}
                     >
                         <InputField
                             register={register}
-                            name={"email"}
+                            name="email"
                             type="email"
-                            label={"Email Or Username*"}
+                            label="Email Or Username*"
                             errors={errors}
                             value={emailValue}
                             rules={{
@@ -80,12 +94,13 @@ const LoginSidebar = ({ closeHandler }) => {
                                         "Please enter a valid email address",
                                 },
                             }}
+                            className="text-sm sm:text-base"
                         />
                         <InputField
                             register={register}
-                            name={"password"}
+                            name="password"
                             type="password"
-                            label={"Password*"}
+                            label="Password*"
                             errors={errors}
                             value={passwordValue}
                             rules={{
@@ -101,8 +116,9 @@ const LoginSidebar = ({ closeHandler }) => {
                                         "Password must not exceed 20 characters",
                                 },
                             }}
+                            className="text-sm sm:text-base"
                         />
-                        <div className=" items-center flex justify-between text-gray-800">
+                        <div className="flex justify-between items-center text-gray-800 text-xs sm:text-sm">
                             <div className="flex items-center gap-2">
                                 <input
                                     type="checkbox"
@@ -111,35 +127,45 @@ const LoginSidebar = ({ closeHandler }) => {
                                 />
                                 <label
                                     htmlFor="remember_me"
-                                    className="text-sm "
+                                    className="text-xs sm:text-sm"
                                 >
                                     Remember me
                                 </label>
                             </div>
-                            <div>
-                                <Link
-                                    to={"/reset-password"}
-                                    onClick={closeHandler}
-                                    className="text-xs  underline cursor-pointer"
-                                >
-                                    Lost Password ?
-                                </Link>
-                            </div>
-                        </div>
-                        <Button text="Login" type={"submit"} />
-                        <div>
-                            <h1 className="mx-auto text-center text-gray-600 text-[16px]">
-                                No account yet?{" "}
-                                <Link
-                                    onClick={closeHandler}
-                                    to={"/sign-up"}
-                                    className="text-sm capitalize underline cursor-pointer"
-                                >
-                                    Create Account
-                                </Link>
-                            </h1>
+                            <Link
+                                to="/reset-password"
+                                onClick={closeHandler}
+                                className="text-xs sm:text-sm underline hover:text-gray-600"
+                            >
+                                Lost Password?
+                            </Link>
                         </div>
                     </form>
+                </div>
+
+                {/* Footer (Fixed to Bottom) */}
+                <div className="sticky bottom-0 bg-white border-t border-gray-300 px-4 sm:px-6 py-4">
+                    <Button
+                        text="Login"
+                        type="submit"
+                        className="w-full py-2 text-sm sm:text-base rounded"
+                        onClick={handleSubmit(
+                            (data) => alert(JSON.stringify(data)),
+                            (err) => console.log(err)
+                        )}
+                    />
+                    <div className="mt-3 text-center">
+                        <p className="text-gray-600 text-xs sm:text-sm">
+                            No account yet?{" "}
+                            <Link
+                                to="/sign-up"
+                                onClick={closeHandler}
+                                className="text-xs sm:text-sm underline hover:text-gray-600"
+                            >
+                                Create Account
+                            </Link>
+                        </p>
+                    </div>
                 </div>
             </motion.div>
         </div>

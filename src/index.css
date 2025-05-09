@@ -5,9 +5,9 @@
 }
 html,
 body {
-    font-family: "Poppins";
+    font-family: "Jost", sans-serif;
     overflow-x: hidden;
-    color: #101828;
+    color: #1e2939;
 }
 
 button {

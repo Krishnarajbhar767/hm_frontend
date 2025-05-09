@@ -5,6 +5,7 @@ import Home from "../pages/public/home/Home";
 import SignUp from "../pages/public/signup/SignUp";
 import Login from "../pages/public/login/Login";
 import ResetPassword from "../pages/public/reset password/ResetPassword";
+import Cart from "../pages/public/cart/Cart";
 
 const PublicRoutes = (
     <Route element={<MainLayout />}>
@@ -14,6 +15,7 @@ const PublicRoutes = (
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/About" element={<h1>About</h1>} />
         <Route path="/contact" element={<h1>Contact</h1>} />
+        <Route path="/cart" element={<Cart />} />
     </Route>
 );
 
