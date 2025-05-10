@@ -15,7 +15,7 @@ function ResetPassword() {
     const emailValue = watch("email");
     return (
         <div>
-            <div className="boxedContainer px-8 md:w-[40%]  h-auto">
+            <div className="boxedContainer px-8 md:w-[40%]  h-auto py-6">
                 <Heading text={"Reset Password"} />
                 <form
                     className="flex flex-col gap-2 mt-6"
@@ -24,7 +24,7 @@ function ResetPassword() {
                         (err) => console.log(err)
                     )}
                 >
-                    <h1 className="text-sm text-gray-400 mb-3">
+                    <h1 className="text-sm text-gray-400 mb-3 text-center">
                         We will send you an email to reset your password
                     </h1>
                     <InputField

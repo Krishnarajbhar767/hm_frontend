@@ -1,5 +1,5 @@
 import { StrictMode } from "react";
-
+import { Toaster } from "react-hot-toast";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import "./app.css";
@@ -12,6 +12,7 @@ createRoot(document.getElementById("root")).render(
         <BrowserRouter>
             <ReduxProvider store={store}>
                 <App />
+                <Toaster />
             </ReduxProvider>
         </BrowserRouter>
     </StrictMode>

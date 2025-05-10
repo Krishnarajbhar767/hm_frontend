@@ -1,76 +1,52 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    setStepCount,
+} from "../../../../redux/slices/cartSlice"; // Adjust path
 import Button from "../../../../components/common/Button";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "framer-motion";
 
 function ShoppingBag() {
-    const [cartItems, setCartItems] = useState([
-        {
-            id: 1,
-            image: "https://uomo-html.flexkitux.com/images/cart-item-1.jpg",
-            name: "Elegant Saree",
-            price: 99,
-            quantity: 1,
-            subtotal: 99,
-        },
-        {
-            id: 2,
-            image: "https://uomo-html.flexkitux.com/images/cart-item-1.jpg",
-            name: "Silk Saree",
-            price: 150,
-            quantity: 2,
-            subtotal: 300,
-        },
-    ]);
+    const dispatch = useDispatch();
+    const cartItems = useSelector((state) => state.cart.cartItems);
+    const subtotal = useSelector((state) => state.cart.subtotal);
 
     const [coupon, setCoupon] = useState("");
     const [discount, setDiscount] = useState(0);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-    // Calculate totals
-    const subtotal = cartItems.reduce((sum, item) => sum + item.subtotal, 0);
     const total = subtotal - discount;
 
-    // Handle coupon application
     const applyCoupon = () => {
         if (coupon.toLowerCase() === "save10") {
-            setDiscount(subtotal * 0.1); // 10% discount
+            setDiscount(subtotal * 0.1);
         } else {
             setDiscount(0);
         }
     };
 
-    // Remove item from cart
-    const removeItem = (id) => {
-        setCartItems(cartItems.filter((item) => item.id !== id));
-    };
-
-    // Mock checkout action with loading state
     const handleCheckout = () => {
         setIsCheckingOut(true);
-        setTimeout(() => {
-            setIsCheckingOut(false);
-            alert("Checkout successful!"); // Replace with actual checkout logic
-        }, 2000);
+        dispatch(setStepCount(2));
     };
 
     return (
-        // Entrance animation for the entire component
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="h-auto w-full py-8"
         >
-            {/* Responsive grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-                {/* Product list section */}
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                     className="col-span-1 md:col-span-2"
                 >
-                    {/* Header for product list */}
                     <div className="grid grid-cols-2 uppercase text-gray-800 font-medium text-sm border-b border-gray-200 pb-2 mb-4">
                         <h1 className="text-left">Product</h1>
                         <div className="grid grid-cols-4 text-right">
@@ -79,7 +55,6 @@ function ShoppingBag() {
                             <h1>Subtotal</h1>
                         </div>
                     </div>
-                    {/* Product cards */}
                     {cartItems.length === 0 ? (
                         <motion.p
                             initial={{ opacity: 0 }}
@@ -96,8 +71,18 @@ function ShoppingBag() {
                                     <Card
                                         key={item.id}
                                         data={item}
-                                        onRemove={() => removeItem(item.id)}
                                         index={idx}
+                                        onQuantityChange={(qty) =>
+                                            dispatch(
+                                                updateQuantity({
+                                                    id: item.id,
+                                                    quantity: qty,
+                                                })
+                                            )
+                                        }
+                                        onRemove={() =>
+                                            dispatch(removeFromCart(item.id))
+                                        }
                                     />
                                 ))}
                             </AnimatePresence>
@@ -105,7 +90,6 @@ function ShoppingBag() {
                     )}
                 </motion.div>
 
-                {/* Order summary section */}
                 <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -116,17 +100,14 @@ function ShoppingBag() {
                         Order Summary
                     </h2>
                     <div className="space-y-3">
-                        {/* Subtotal */}
                         <div className="flex justify-between text-sm text-gray-600">
                             <span>Subtotal</span>
                             <span>${subtotal.toFixed(2)}</span>
                         </div>
-                        {/* Shipping */}
                         <div className="flex justify-between text-sm text-gray-600">
                             <span>Shipping</span>
                             <span>Free</span>
                         </div>
-                        {/* Coupon code input */}
                         <div className="flex gap-2">
                             <input
                                 type="text"
@@ -142,7 +123,6 @@ function ShoppingBag() {
                                 <Button text="Apply" onClick={applyCoupon} />
                             </motion.div>
                         </div>
-                        {/* Discount (if applied) */}
                         {discount > 0 && (
                             <motion.div
                                 initial={{ opacity: 0, y: -10 }}
@@ -154,7 +134,6 @@ function ShoppingBag() {
                                 <span>-${discount.toFixed(2)}</span>
                             </motion.div>
                         )}
-                        {/* Total */}
                         <div className="border-t border-gray-200 pt-3 mt-3">
                             <div className="flex justify-between text-lg font-semibold text-gray-800">
                                 <span>Total</span>
@@ -169,7 +148,6 @@ function ShoppingBag() {
                             </div>
                         </div>
                     </div>
-                    {/* Checkout button */}
                     <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
@@ -198,22 +176,23 @@ function ShoppingBag() {
     );
 }
 
-function Card({ data, onRemove, index }) {
+function Card({ data, onQuantityChange, onRemove, index }) {
     const [quantity, setQuantity] = useState(data.quantity);
 
-    // Handle quantity changes
-    const handleIncrement = () => setQuantity(quantity + 1);
-    const handleDecrement = () => {
-        if (quantity > 1) setQuantity(quantity - 1);
+    const handleIncrement = () => {
+        const newQty = quantity + 1;
+        setQuantity(newQty);
+        onQuantityChange(newQty);
     };
 
-    // Update subtotal based on quantity
-    const subtotal = data.price * quantity;
+    const handleDecrement = () => {
+        const newQty = quantity > 1 ? quantity - 1 : 1;
+        setQuantity(newQty);
+        onQuantityChange(newQty);
+    };
 
-    // Update the data.subtotal (for parent component)
-    React.useEffect(() => {
-        data.subtotal = subtotal;
-    }, [quantity, data]);
+    const subtotal = data.price * quantity;
+    const imageUrl = Array.isArray(data.images) ? data.images[0] : data.image;
 
     return (
         <motion.div
@@ -224,10 +203,9 @@ function Card({ data, onRemove, index }) {
             whileHover={{ scale: 1.01 }}
             className="grid grid-cols-2 gap-4 items-center border-b border-gray-200 pb-4"
         >
-            {/* Product image and name */}
             <div className="flex items-center gap-4">
                 <motion.img
-                    src={data.image}
+                    src={imageUrl}
                     alt={data.name}
                     className="w-20 h-20 object-cover rounded-md"
                     whileHover={{ scale: 1.05 }}
@@ -238,20 +216,16 @@ function Card({ data, onRemove, index }) {
                 </h2>
             </div>
 
-            {/* Price, Quantity, Subtotal, Remove */}
             <div className="grid grid-cols-4 items-center text-right gap-2">
-                {/* Price */}
                 <span className="text-sm text-gray-600">
                     ${data.price.toFixed(2)}
                 </span>
 
-                {/* Quantity selector */}
                 <div className="flex items-center justify-center border border-gray-300 w-24 py-3">
                     <motion.button
                         onClick={handleDecrement}
                         whileTap={{ scale: 0.9 }}
                         className="px-2 py-1 text-gray-600 hover:text-primary"
-                        aria-label="Decrease quantity"
                     >
                         -
                     </motion.button>
@@ -259,19 +233,17 @@ function Card({ data, onRemove, index }) {
                         type="text"
                         value={quantity}
                         readOnly
-                        className="w-10 text-center border-x border-gray-300 text-sm text-gray-800 outline-gray-400"
+                        className="w-10 text-center border-x border-gray-300 text-sm text-gray-800"
                     />
                     <motion.button
                         onClick={handleIncrement}
                         whileTap={{ scale: 0.9 }}
                         className="px-2 py-1 text-gray-600 hover:text-primary"
-                        aria-label="Increase quantity"
                     >
                         +
                     </motion.button>
                 </div>
 
-                {/* Subtotal */}
                 <motion.span
                     key={subtotal}
                     initial={{ scale: 1.2, color: "#16a34a" }}
@@ -282,13 +254,11 @@ function Card({ data, onRemove, index }) {
                     ${subtotal.toFixed(2)}
                 </motion.span>
 
-                {/* Remove button */}
                 <motion.button
                     onClick={onRemove}
                     whileHover={{ scale: 1.1, color: "#b91c1c" }}
                     whileTap={{ scale: 0.9 }}
                     className="text-red-500 text-sm"
-                    aria-label={`Remove ${data.name} from cart`}
                 >
                     Remove
                 </motion.button>

@@ -1,132 +1,275 @@
-import { NavLink } from "react-router-dom"; // Import for routing
+import React from "react";
+import {
+    FaFacebookF,
+    FaTwitter,
+    FaInstagram,
+    FaYoutube,
+    FaPinterest,
+    FaChevronUp,
+    FaChevronDown,
+} from "react-icons/fa";
 
-function Footer() {
-    // Navigation links for footer, consistent with Header
-    const footerLinks = [
-        { title: "Home", path: "/" },
-        { title: "Product", path: "/products" },
-        { title: "About Us", path: "/about" },
-    ];
-
-    // Social media links with SVG paths for icons
-    const socialLinks = [
-        {
-            name: "Facebook",
-            path: "https://facebook.com",
-            icon: "M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z",
-        },
-        {
-            name: "Twitter",
-            path: "https://twitter.com",
-            icon: "M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z",
-        },
-        {
-            name: "Instagram",
-            path: "https://instagram.com",
-            icon: "M16 2H8a6 6 0 0 0-6 6v8a6 6 0 0 0 6 6h8a6 6 0 0 0 6-6V8a6 6 0 0 0-6-6zm-4 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4-10a1 1 0 1 1 0-2 1 1 0 0 1 0 2z",
-        },
-    ];
-
+const Footer = () => {
     return (
-        // Footer wrapper with dark background, pinned to bottom
-        <footer className="bg-gray-900 text-gray-300 py-8 relative">
-            {/* Constrained container for centered content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6">
-                {/* Main footer content with responsive grid layout */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-                    {/* Logo and description section */}
-                    <div className="flex flex-col items-center sm:items-start">
-                        <img
-                            src="https://themesflat.co/html/ecomus/images/logo/logo.svg"
-                            alt="Footer Logo"
-                            className="h-8 sm:h-10 w-20 md:w-auto mb-4"
-                        />
-                        <p className="text-sm text-center sm:text-left">
-                            Discover elegance with our curated collection of
-                            sarees, blending tradition and modernity.
+        <footer className="bg-[#E4E4E4] pt-12 pb-4 text-gray-800">
+            <div className="container mx-auto px-4">
+                {/* Main Footer Content */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+                    {/* Logo and Contact Info */}
+                    <div className="lg:col-span-1">
+                        <div className="flex items-center mb-6">
+                            <div className="text-2xl font-bold">
+                                Sr
+                                <span className="relative">
+                                    Ij
+                                    <span className="absolute -right-1 -top-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                                </span>
+                                A<span className="relative">N</span>
+                            </div>
+                        </div>
+
+                        <p className="text-sm mb-2">
+                            1418 River Drive, Suite 35 Cottonhall,
+                            <br />
+                            CA 9622 United States
                         </p>
+
+                        <p className="text-sm mb-2">sale@uomo.com</p>
+                        <p className="text-sm mb-6">+1 246-345-0695</p>
+
+                        <div className="flex space-x-4">
+                            <a
+                                href="#"
+                                className="text-gray-700 hover:text-gray-900"
+                            >
+                                <FaFacebookF />
+                            </a>
+                            <a
+                                href="#"
+                                className="text-gray-700 hover:text-gray-900"
+                            >
+                                <FaTwitter />
+                            </a>
+                            <a
+                                href="#"
+                                className="text-gray-700 hover:text-gray-900"
+                            >
+                                <FaInstagram />
+                            </a>
+                            <a
+                                href="#"
+                                className="text-gray-700 hover:text-gray-900"
+                            >
+                                <FaYoutube />
+                            </a>
+                            <a
+                                href="#"
+                                className="text-gray-700 hover:text-gray-900"
+                            >
+                                <FaPinterest />
+                            </a>
+                        </div>
                     </div>
 
-                    {/* Navigation links section */}
-                    <div className="flex flex-col items-center sm:items-start">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Quick Links
-                        </h3>
-                        <ul className="flex flex-col gap-2 text-sm">
-                            {footerLinks.map((link) => (
-                                <li key={link.title}>
-                                    <NavLink
-                                        to={link.path}
-                                        end // Ensures exact match for root path "/"
-                                        className={({ isActive }) =>
-                                            `hover:text-primary transition-colors ${
-                                                isActive
-                                                    ? "text-primary font-semibold"
-                                                    : ""
-                                            }`
-                                        }
-                                    >
-                                        {link.title}
-                                    </NavLink>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Contact information section */}
-                    <div className="flex flex-col items-center sm:items-start">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Contact Us
-                        </h3>
-                        <ul className="flex flex-col gap-2 text-sm">
-                            <li>Email: support@example.com</li>
-                            <li>Phone: +1 (123) 456-7890</li>
-                            <li>Address: 123 Elegance St, City, Country</li>
-                        </ul>
-                    </div>
-
-                    {/* Social media icons section */}
-                    <div className="flex flex-col items-center sm:items-start">
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                            Follow Us
-                        </h3>
-                        <div className="flex gap-3">
-                            {socialLinks.map((social) => (
-                                <a
-                                    key={social.name}
-                                    href={social.path}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="p-1.5"
-                                    aria-label={`Follow us on ${social.name}`}
-                                >
-                                    <svg
-                                        className="w-5 sm:w-6 h-5 sm:h-6 text-gray-300 hover:text-primary transition-all duration-300"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path d={social.icon} />
-                                    </svg>
+                    {/* Company Links */}
+                    <div className="lg:col-span-1">
+                        <h3 className="font-bold text-lg mb-4">COMPANY</h3>
+                        <ul className="space-y-3">
+                            <li>
+                                <a href="#" className="text-sm  headerLinks">
+                                    About Us
                                 </a>
-                            ))}
+                            </li>
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    Careers
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    Affiliates
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    Blog
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    Contact Us
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* Shop Links */}
+                    <div className="lg:col-span-1">
+                        <h3 className="font-bold text-lg mb-4">SHOP</h3>
+                        <ul className="space-y-3">
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    New Arrivals
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    Accessories
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    Men
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    Women
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    Shop All
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* Help Links */}
+                    <div className="lg:col-span-1">
+                        <h3 className="font-bold text-lg mb-4">HELP</h3>
+                        <ul className="space-y-3">
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    Customer Service
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    My Account
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    Find a Store
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    Legal & Privacy
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    Contact
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" className="text-sm headerLinks">
+                                    Gift Card
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* Subscribe */}
+                    <div className="lg:col-span-1">
+                        <h3 className="font-bold text-lg mb-4">SUBSCRIBE</h3>
+                        <p className="text-sm mb-4">
+                            Be the first to get the latest news about trends,
+                            promotions, and much more!
+                        </p>
+
+                        <div className="flex mb-6">
+                            <input
+                                type="email"
+                                placeholder="Your email address"
+                                className="flex-grow p-2 border border-gray-300 focus:outline-none"
+                            />
+                            <button className="bg-gray-800 text-white px-4 py-2 font-medium">
+                                JOIN
+                            </button>
+                        </div>
+
+                        <p className="text-sm font-medium mb-3">
+                            Secure payments
+                        </p>
+                        <div className="flex space-x-2">
+                            <img
+                                src="https://uomo-html.flexkitux.com/images/payment-options.png"
+                                alt="Discover"
+                                className="h-6"
+                            />
+                            {/* <img
+                                src="https://uomo-html.flexkitux.com/images/payment-options.png"
+                                alt="Mastercard"
+                                className="h-6"
+                            />
+                            <img
+                                src="https://uomo-html.flexkitux.com/images/payment-options.png"
+                                alt="PayPal"
+                                className="h-6"
+                            />
+                            <img
+                                src="https://uomo-html.flexkitux.com/images/payment-options.png"
+                                alt="Skrill"
+                                className="h-6"
+                            />
+                            <img
+                                src="https://uomo-html.flexkitux.com/images/payment-options.png"
+                                alt="Visa"
+                                className="h-6"
+                            /> */}
                         </div>
                     </div>
                 </div>
 
-                {/* Divider */}
-                <div className="border-t border-gray-700 my-6" />
+                {/* Footer Bottom */}
+                <div className="border-t border-gray-300 pt-4">
+                    <div className="flex flex-col md:flex-row justify-between items-center">
+                        <div className="mb-4 md:mb-0">
+                            <p className="text-sm">©2025 Srijan Fabrics</p>
+                        </div>
 
-                {/* Copyright notice */}
-                <div className="text-center text-sm">
-                    <p>
-                        © {new Date().getFullYear()} Ecomus. All rights
-                        reserved.
-                    </p>
+                        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
+                            <div className="flex items-center">
+                                <span className="text-sm mr-2">Language</span>
+                                <button className="flex items-center text-sm">
+                                    United Kingdom | English
+                                    {/* <FaChevronDown className="ml-1" /> */}
+                                </button>
+                            </div>
+
+                            <div className="flex items-center">
+                                <span className="text-sm mr-2">Currency</span>
+                                <button className="flex items-center text-sm">
+                                    ₹ INR
+                                    {/* <FaChevronDown className="ml-1" /> */}
+                                </button>
+                            </div>
+                        </div>
+
+                        <a
+                            href="#top"
+                            className="hidden md:flex items-center justify-center w-8 h-8 border border-gray-300 rounded-full mt-4 md:mt-0"
+                        >
+                            <FaChevronUp />
+                        </a>
+                    </div>
                 </div>
+            </div>
+
+            {/* Mobile Back to Top */}
+            <div className="flex justify-center md:hidden mt-6">
+                <a
+                    href="#top"
+                    className="flex items-center justify-center w-10 h-10 border border-gray-300 rounded-full"
+                >
+                    <FaChevronUp />
+                </a>
             </div>
         </footer>
     );
-}
+};
 
 export default Footer;

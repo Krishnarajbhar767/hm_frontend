@@ -6,6 +6,7 @@ import SignUp from "../pages/public/signup/SignUp";
 import Login from "../pages/public/login/Login";
 import ResetPassword from "../pages/public/reset password/ResetPassword";
 import Cart from "../pages/public/cart/Cart";
+import VerifyOtp from "../pages/public/verify otp/VerifyOtp";
 
 const PublicRoutes = (
     <Route element={<MainLayout />}>
@@ -13,6 +14,7 @@ const PublicRoutes = (
         <Route path="/login" element={<Login />} />
         <Route path="/Sign-up" element={<SignUp />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/About" element={<h1>About</h1>} />
         <Route path="/contact" element={<h1>Contact</h1>} />
         <Route path="/cart" element={<Cart />} />

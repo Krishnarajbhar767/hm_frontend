@@ -3,7 +3,7 @@ import Heading from "../home/components/Heading";
 import SubHeading from "../home/components/SubHeading";
 import ShoppingBag from "./components/ShoppingBag";
 import ShippingAndCheckout from "./components/ShippingAndCheckout";
-
+import { useSelector } from "react-redux";
 function Cart() {
     const Data = [
         {
@@ -22,7 +22,9 @@ function Cart() {
             subHeading: "Review and submit your order",
         },
     ];
-    const [stepCount, setSetCount] = useState(1);
+    // State Cart Slice For Count Step Count
+    const { stepCount } = useSelector((state) => state.cart);
+
     return (
         <div className="boxedContainer h-auto w-full py-10">
             <h1 className=" text-[35px] font-bold uppercase ">Cart</h1>
@@ -49,8 +51,9 @@ function Cart() {
                 ))}
             </div>
             <div className="">
-                {/* <ShoppingBag /> */}
-                <ShippingAndCheckout />
+                {stepCount === 1 && <ShoppingBag />}
+                {stepCount === 2 && <ShippingAndCheckout />}
+                {/* {stepCount === 1 && <ShoppingBag />} */}
             </div>
         </div>
     );
