@@ -1,10 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Heading from "../../pages/public/home/components/Heading";
 import { AnimatePresence, motion } from "framer-motion";
 import InputField from "./InputField";
 import { useForm } from "react-hook-form";
 import Button from "./Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import authApis from "../../services/api/auth/auth.apis";
+import { setUser } from "../../redux/slices/userSlice";
+import toast from "react-hot-toast";
+import { handleAxiosError } from "../../utils/handleAxiosError";
+import { useDispatch } from "react-redux";
 
 const LoginSidebar = ({ isOpen, closeHandler }) => {
     const {
@@ -33,10 +38,25 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
             document.body.style.paddingRight = "";
         };
     }, []);
-
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const emailValue = watch("email");
     const passwordValue = watch("password");
+    async function loginHandler(loginCredentials) {
+        setIsLoading(true);
+        try {
+            const userData = await authApis.login(loginCredentials);
+            dispatch(setUser(userData?.user));
 
+            toast.success(`Welcome ${userData?.user?.firstName}`);
+            navigate("/account");
+        } catch (error) {
+            handleAxiosError(error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
     return (
         <div
             className="fixed z-[100] inset-0 w-screen h-screen flex bg-gray-900/25"
@@ -59,7 +79,7 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
                         aria-label="Close login"
                     >
                         <svg
-                            className="w-5 h-5 text-gray-800 hover:text-gray-600"
+                            className="w-7 h-7 text-gray-800 hover:text-gray-600"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor"
                             viewBox="0 0 24 24"
@@ -148,11 +168,8 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
                     <Button
                         text="Login"
                         type="submit"
-                        className="w-full py-2 text-sm sm:text-base rounded"
-                        onClick={handleSubmit(
-                            (data) => alert(JSON.stringify(data)),
-                            (err) => console.log(err)
-                        )}
+                        disabled={isLoading}
+                        onSubmitHandler={handleSubmit(loginHandler)}
                     />
                     <div className="mt-3 text-center">
                         <p className="text-gray-600 text-xs sm:text-sm">

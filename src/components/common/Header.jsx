@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
-import { NavLink } from "react-router-dom"; // Import for routing
+import { Link, NavLink, useNavigate } from "react-router-dom"; // Import for routing
 import Search from "./Search";
 import { AnimatePresence } from "framer-motion"; // Import for sidebar animations
 import LoginSidebar from "./LoginSidebar";
 import CartSidebar from "./CartSidebar";
+import { useSelector } from "react-redux";
 
 function Header() {
     // Memoize navigation links to prevent re-renders
@@ -30,12 +31,13 @@ function Header() {
     );
 
     // State for sidebar and mobile menu visibility
+    const isLoggedIn = useSelector((state) => state?.user?.user);
     const [isSearching, setIsSearching] = useState(false);
     const [isLogin, setIsLogin] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false); // Mobile menu toggle
     const [openSubmenu, setOpenSubmenu] = useState(null); // Track open submenu in mobile
-
+    const navigate = useNavigate();
     // Toggle submenu in mobile menu
     const toggleSubmenu = (title) => {
         setOpenSubmenu(openSubmenu === title ? null : title);
@@ -49,13 +51,13 @@ function Header() {
                 {/* Constrained container for centered content */}
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     {/* Logo with responsive width and height */}
-                    <div className="flex-shrink-0">
+                    <Link className="flex-shrink-0 cursor-pointer" to={"/"}>
                         <img
                             src="https://themesflat.co/html/ecomus/images/logo/logo.svg"
                             alt="Logo"
                             className="h-8 sm:h-10 w-20 md:w-auto"
                         />
-                    </div>
+                    </Link>
 
                     {/* Desktop navigation (hidden on mobile) */}
                     <nav className="hidden md:flex gap-4 lg:gap-6 text-gray-800 font-medium text-sm lg:text-[14px] tracking-wide uppercase">
@@ -151,7 +153,12 @@ function Header() {
 
                         {/* User account icon */}
                         <button
-                            onClick={() => setIsLogin(true)}
+                            onClick={() => {
+                                if (isLoggedIn) {
+                                    return navigate("/account/dashboard");
+                                }
+                                setIsLogin(true);
+                            }}
                             className="p-1.5"
                             aria-label="Open login"
                         >

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import InputField from "../../../components/common/InputField";
 import { useForm } from "react-hook-form";
 import Button from "../../../components/common/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Heading from "../home/components/Heading";
 import authApis from "../../../services/api/auth/auth.apis";
 import { useDispatch } from "react-redux";
@@ -22,6 +22,7 @@ function Login() {
     const emailValue = watch("email");
     const passwordValue = watch("password");
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
     // Animation variants for staggered input fields
     const inputVariants = {
         hidden: { opacity: 0, y: 10 },
@@ -38,6 +39,7 @@ function Login() {
             dispatch(setUser(userData?.user));
             console.log(userData);
             toast.success(`Welcome ${userData?.user?.firstName}`);
+            navigate("/account");
         } catch (error) {
             handleAxiosError(error);
         } finally {

@@ -14,7 +14,7 @@ const Footer = () => {
         <footer className="bg-[#E4E4E4] pt-12 pb-4 text-gray-800">
             <div className="container mx-auto px-4">
                 {/* Main Footer Content */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+                <div className="grid grid-cols-3 content-center md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
                     {/* Logo and Contact Info */}
                     <div className="lg:col-span-1">
                         <div className="flex items-center mb-6">

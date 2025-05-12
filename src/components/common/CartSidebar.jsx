@@ -1,67 +1,40 @@
+// CartSidebar.jsx
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+    removeFromCart,
+    setStepCount,
+    updateQuantity,
+} from "../../redux/slices/cartSlice"; // Adjust path as needed
 import Heading from "../../pages/public/home/components/Heading";
 import Button from "./Button";
+import { Link, useNavigate } from "react-router-dom";
 
 const CartSidebar = ({ isOpen, closeHandler }) => {
-    const [cartItems, setCartItems] = useState([
-        {
-            id: 1,
-            name: "Zessi Dresses",
-            color: "Yellow",
-            size: "L",
-            quantity: 1,
-            price: 99,
-            image: "https://images.pexels.com/photos/2923156/pexels-photo-2923156.jpeg?auto=compress&cs=tinysrgb&w=150",
-        },
-        {
-            id: 86,
-            name: "Beckko",
-            color: "Black",
-            size: "XS",
-            quantity: 4,
-            price: 89,
-            image: "https://images.pexels.com/photos/2922442/pexels-photo-2922442.jpeg?auto=compress&cs=tinysrgb&w=150",
-        },
-        {
-            id: 653,
-            name: "Hekko",
-            color: "Black",
-            size: "XS",
-            quantity: 4,
-            price: 89,
-            image: "https://images.pexels.com/photos/2922442/pexels-photo-2922442.jpeg?auto=compress&cs=tinysrgb&w=150",
-        },
-        {
-            id: 2,
-            name: "Kirby T-Shirt",
-            color: "Black",
-            size: "XS",
-            quantity: 4,
-            price: 89,
-            image: "https://images.pexels.com/photos/2922442/pexels-photo-2922442.jpeg?auto=compress&cs=tinysrgb&w=150",
-        },
-    ]);
+    const dispatch = useDispatch();
+    const cartItems = useSelector((state) => state.cart.cartItems);
+    const subtotal = useSelector((state) => state.cart.subtotal);
 
-    const updateQuantity = (id, change) => {
-        setCartItems((items) =>
-            items.map((item) =>
-                item.id === id
-                    ? { ...item, quantity: Math.max(1, item.quantity + change) }
-                    : item
-            )
-        );
+    const updateQuantityHandler = (id, change) => {
+        const item = cartItems.find((item) => item.id === id);
+        if (item) {
+            const newQuantity = Math.max(1, item.quantity + change);
+            dispatch(updateQuantity({ id, quantity: newQuantity }));
+        }
     };
 
     const removeItem = (id) => {
-        setCartItems((items) => items.filter((item) => item.id !== id));
+        dispatch(removeFromCart(id));
     };
-
-    const subtotal = cartItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-    );
-
+    const navigate = useNavigate(); //
+    const checkOutHandler = () => {
+        dispatch(setStepCount(2));
+        navigate("/cart");
+    };
+    const viewCartHandler = () => {
+        closeHandler();
+        dispatch(setStepCount(1));
+    };
     return (
         <div
             className="fixed z-[100] inset-0 w-screen h-screen flex bg-gray-900/25"
@@ -84,7 +57,7 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                         aria-label="Close cart"
                     >
                         <svg
-                            className="w-5 h-5 text-gray-800 hover:text-gray-600"
+                            className="w-7 h-7 text-gray-800 hover:text-gray-600"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor"
                             viewBox="0 0 24 24"
@@ -97,70 +70,91 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
 
                 {/* Cart Items (Scrollable) */}
                 <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-4">
-                    {cartItems.map((item) => (
-                        <motion.div
-                            key={item.id}
-                            layout
+                    {cartItems.length === 0 ? (
+                        <motion.p
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="flex gap-3 mb-4 pb-4 border-b border-gray-300"
+                            transition={{ duration: 0.3 }}
+                            className="text-gray-600 text-center"
                         >
-                            <img
-                                src={item.image}
-                                alt={item.name}
-                                className="w-16 h-20 sm:w-20 sm:h-24 object-cover rounded"
-                            />
-                            <div className="flex-1">
-                                <div className="flex justify-between items-start mb-1">
-                                    <h3 className="font-light text-sm sm:text-base text-gray-800 line-clamp-1">
-                                        {item.name}
-                                    </h3>
-                                    <button
-                                        onClick={() => removeItem(item.id)}
-                                        className="text-gray-400 hover:text-gray-600 text-base p-1"
-                                        aria-label={`Remove ${item.name}`}
-                                    >
-                                        ×
-                                    </button>
-                                </div>
-                                <p className="text-gray-600 text-xs">
-                                    Color: {item.color}
-                                </p>
-                                <p className="text-gray-600 text-xs">
-                                    Size: {item.size}
-                                </p>
-                                <div className="flex justify-between items-center mt-2">
-                                    <div className="flex items-center gap-2">
+                            Your cart is empty.
+                        </motion.p>
+                    ) : (
+                        cartItems.map((item) => (
+                            <motion.div
+                                key={item.id}
+                                layout
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="flex gap-3 mb-4 pb-4 border-b border-gray-300"
+                            >
+                                <img
+                                    src={
+                                        Array.isArray(item.images)
+                                            ? item.images[0]
+                                            : item.image
+                                    }
+                                    alt={item.name}
+                                    className="w-16 h-full sm:w-20 h-full object-cover "
+                                />
+                                <div className="flex-1">
+                                    <div className="flex justify-between items-start mb-1">
+                                        <h3 className="font-light text-sm sm:text-base text-gray-800 line-clamp-1">
+                                            {item.name}
+                                        </h3>
                                         <button
-                                            onClick={() =>
-                                                updateQuantity(item.id, -1)
-                                            }
-                                            className="w-7 h-7 flex items-center justify-center border rounded text-gray-800 hover:bg-gray-100 text-sm"
-                                            aria-label="Decrease quantity"
+                                            onClick={() => removeItem(item.id)}
+                                            className="text-gray-400 hover:text-gray-600 text-base p-1"
+                                            aria-label={`Remove ${item.name}`}
                                         >
-                                            -
-                                        </button>
-                                        <span className="text-xs sm:text-sm">
-                                            {item.quantity}
-                                        </span>
-                                        <button
-                                            onClick={() =>
-                                                updateQuantity(item.id, 1)
-                                            }
-                                            className="w-7 h-7 flex items-center justify-center border rounded text-gray-800 hover:bg-gray-100 text-sm"
-                                            aria-label="Increase quantity"
-                                        >
-                                            +
+                                            ×
                                         </button>
                                     </div>
-                                    <p className="font-medium text-xs sm:text-sm">
-                                        ${item.price}
+                                    <p className="text-gray-600 text-xs">
+                                        Color: {item.color}
                                     </p>
+                                    <p className="text-gray-600 text-xs">
+                                        Weight: {item.weight}
+                                    </p>
+                                    <div className="flex justify-between items-center mt-2">
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() =>
+                                                    updateQuantityHandler(
+                                                        item.id,
+                                                        -1
+                                                    )
+                                                }
+                                                className="w-7 h-7 flex items-center justify-center border  text-gray-800 hover:bg-gray-100 text-sm"
+                                                aria-label="Decrease quantity"
+                                            >
+                                                -
+                                            </button>
+                                            <span className="text-xs sm:text-sm">
+                                                {item.quantity}
+                                            </span>
+                                            <button
+                                                onClick={() =>
+                                                    updateQuantityHandler(
+                                                        item.id,
+                                                        1
+                                                    )
+                                                }
+                                                className="w-7 h-7 flex items-center justify-center border  text-gray-800 hover:bg-gray-100 text-sm"
+                                                aria-label="Increase quantity"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                        <p className="font-medium text-xs sm:text-sm">
+                                            ${item.price}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                        </motion.div>
-                    ))}
+                            </motion.div>
+                        ))
+                    )}
                 </div>
 
                 {/* Footer (Fixed to Bottom) */}
@@ -173,15 +167,20 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                             ${subtotal.toFixed(2)}
                         </span>
                     </div>
-                    <button
-                        className="w-full mb-2 py-2 px-4 bg-gray-100 text-gray-800 font-light text-sm sm:text-base hover:bg-gray-200 transition-colors rounded"
-                        aria-label="View cart"
-                    >
-                        View Cart
-                    </button>
+                    <Link to={"/cart"} onClick={viewCartHandler}>
+                        <button
+                            className="w-full mb-2 py-2 px-4 bg-gray-100 text-gray-800 font-light text-sm sm:text-base hover:bg-gray-200 transition-colors "
+                            aria-label="View cart"
+                        >
+                            View Cart
+                        </button>
+                    </Link>
                     <Button
                         text="Checkout"
-                        className="w-full py-2 text-sm sm:text-base rounded"
+                        onSubmitHandler={
+                            cartItems.length ? checkOutHandler : () => {}
+                        }
+                        className="w-full py-2 text-sm sm:text-base"
                     />
                 </div>
             </motion.div>
