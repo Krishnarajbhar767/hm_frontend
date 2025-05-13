@@ -50,7 +50,7 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
             dispatch(setUser(userData?.user));
 
             toast.success(`Welcome ${userData?.user?.firstName}`);
-            navigate("/account");
+            navigate("/account/dashboard");
         } catch (error) {
             handleAxiosError(error);
         } finally {

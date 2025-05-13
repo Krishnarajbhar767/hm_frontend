@@ -60,7 +60,7 @@ function Dashboard() {
     const user = useSelector((state) => state.user.user) || mockUser;
     const orders = mockOrders;
     const addresses = mockAddresses;
-
+    console.log("User Guide ->", user);
     return (
         <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -71,10 +71,10 @@ function Dashboard() {
             {/* Welcome Section */}
             <div className="bg-gray-800 text-white p-6 shadow-lg rounded-md">
                 <h2 className="text-lg sm:text-xl md:text-2xl font-semibold uppercase tracking-wide">
-                    Welcome, {user.name}!
+                    Welcome, {user?.firstName} {user?.lastName}!
                 </h2>
                 <p className="text-sm sm:text-base text-gray-200 mt-2">
-                    Member since {user.joinDate}
+                    Member since {user.createdAt}
                 </p>
             </div>
 

@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { handleAxiosError } from "../../../utils/handleAxiosError";
 import { setUser } from "../../../redux/slices/userSlice";
 import toast from "react-hot-toast";
+import getCookieByName from "../../../utils/getCookie";
 
 function Login() {
     const {
@@ -35,11 +36,12 @@ function Login() {
     async function loginHandler(loginCredentials) {
         setIsLoading(true);
         try {
+            console.log("Login loginCredentials", loginCredentials);
             const userData = await authApis.login(loginCredentials);
             dispatch(setUser(userData?.user));
-            console.log(userData);
             toast.success(`Welcome ${userData?.user?.firstName}`);
-            navigate("/account");
+            console.log(getCookieByName("token"));
+            navigate("/account/dashboard");
         } catch (error) {
             handleAxiosError(error);
         } finally {
