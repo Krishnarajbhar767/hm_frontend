@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import Button from "./Button";
 import { Link, useNavigate } from "react-router-dom";
 import authApis from "../../services/api/auth/auth.apis";
-import { setUser } from "../../redux/slices/userSlice";
+import { setToken, setUser } from "../../redux/slices/userSlice";
 import toast from "react-hot-toast";
 import { handleAxiosError } from "../../utils/handleAxiosError";
 import { useDispatch } from "react-redux";
@@ -48,9 +48,9 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
         try {
             const userData = await authApis.login(loginCredentials);
             dispatch(setUser(userData?.user));
-
+            localStorage.setItem("token", userData.token);
             toast.success(`Welcome ${userData?.user?.firstName}`);
-            navigate("/account/dashboard");
+            return navigate("/account/dashboard");
         } catch (error) {
             handleAxiosError(error);
         } finally {

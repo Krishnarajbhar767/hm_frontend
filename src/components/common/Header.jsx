@@ -30,8 +30,6 @@ function Header() {
         []
     );
 
-    // State for sidebar and mobile menu visibility
-    const isLoggedIn = useSelector((state) => state?.user?.user);
     const [isSearching, setIsSearching] = useState(false);
     const [isLogin, setIsLogin] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
@@ -154,7 +152,7 @@ function Header() {
                         {/* User account icon */}
                         <button
                             onClick={() => {
-                                if (isLoggedIn) {
+                                if (localStorage.getItem("token")) {
                                     return navigate("/account/dashboard");
                                 }
                                 setIsLogin(true);

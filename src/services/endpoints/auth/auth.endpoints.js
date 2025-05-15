@@ -3,6 +3,7 @@ const authEndpoints = {
     sendOtp: "/auth/send-otp",
     login: "/auth/login",
     changePassword: "/auth/change-password",
+    getUserDetails: "/auth/user",
     forgotPasswordToken: (token) => `/auth/forgot-password/${token}`,
 };
 

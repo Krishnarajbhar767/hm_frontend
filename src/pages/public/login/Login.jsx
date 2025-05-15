@@ -8,7 +8,7 @@ import Heading from "../home/components/Heading";
 import authApis from "../../../services/api/auth/auth.apis";
 import { useDispatch } from "react-redux";
 import { handleAxiosError } from "../../../utils/handleAxiosError";
-import { setUser } from "../../../redux/slices/userSlice";
+import { setToken, setUser } from "../../../redux/slices/userSlice";
 import toast from "react-hot-toast";
 import getCookieByName from "../../../utils/getCookie";
 
@@ -39,9 +39,10 @@ function Login() {
             console.log("Login loginCredentials", loginCredentials);
             const userData = await authApis.login(loginCredentials);
             dispatch(setUser(userData?.user));
+            localStorage.setItem("token", userData.token);
+            dispatch(setToken(userData?.token));
             toast.success(`Welcome ${userData?.user?.firstName}`);
-            console.log(getCookieByName("token"));
-            navigate("/account/dashboard");
+            return navigate("/account/dashboard");
         } catch (error) {
             handleAxiosError(error);
         } finally {

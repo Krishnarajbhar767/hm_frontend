@@ -5,13 +5,15 @@ import { useSelector } from "react-redux";
 import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import UserAccountDashboard from "../pages/user/UserAccountDashboard";
+import getCookieByName from "../utils/getCookie";
+import authApis from "../services/api/auth/auth.apis";
+import { handleAxiosError } from "../utils/handleAxiosError";
 
 function UserLayout() {
-    const isLoggedIn = useSelector((state) => state?.user?.user);
-    console.log(isLoggedIn);
     const navigate = useNavigate();
+    const token = useSelector((state) => state?.user?.token);
     useEffect(() => {
-        if (!isLoggedIn) {
+        if (!token) {
             return navigate("/login");
         }
     });

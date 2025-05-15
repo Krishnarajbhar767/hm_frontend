@@ -8,12 +8,10 @@ import { Provider as ReduxProvider } from "react-redux";
 import { store } from "./redux/store.js";
 import { BrowserRouter } from "react-router";
 createRoot(document.getElementById("root")).render(
-    <StrictMode>
-        <BrowserRouter>
-            <ReduxProvider store={store}>
-                <App />
-                <Toaster />
-            </ReduxProvider>
-        </BrowserRouter>
-    </StrictMode>
+    <BrowserRouter>
+        <ReduxProvider store={store}>
+            <App />
+            <Toaster />
+        </ReduxProvider>
+    </BrowserRouter>
 );
