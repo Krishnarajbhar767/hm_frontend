@@ -57,9 +57,9 @@ const mockAddresses = [
 ];
 
 function Dashboard() {
-    const user = useSelector((state) => state.user.user) || mockUser;
-    const orders = mockOrders;
-    const addresses = mockAddresses;
+    const user = useSelector((state) => state?.user?.user);
+    const orders = useSelector((state) => state?.order?.orders);
+    const addresses = user?.shippingAddress;
     console.log("User Guide ->", user);
     return (
         <motion.div
@@ -74,7 +74,7 @@ function Dashboard() {
                     Welcome, {user?.firstName} {user?.lastName}!
                 </h2>
                 <p className="text-sm sm:text-base text-gray-200 mt-2">
-                    Member since {user.createdAt}
+                    Member since {user?.createdAt}
                 </p>
             </div>
 
@@ -85,7 +85,7 @@ function Dashboard() {
                         Total Orders
                     </p>
                     <p className="text-xl sm:text-2xl font-bold text-gray-800">
-                        {user.totalOrders || 0}
+                        {orders?.length - 1 || 0}
                     </p>
                 </div>
                 <div className="p-4 border border-gray-200 bg-white rounded-md shadow-sm">
@@ -93,7 +93,10 @@ function Dashboard() {
                         Total Spent
                     </p>
                     <p className="text-xl sm:text-2xl font-bold text-gray-800">
-                        ${user.totalSpent ? user.totalSpent.toFixed(2) : "0.00"}
+                        &#8377;
+                        {user?.totalSpent
+                            ? user?.totalSpent?.toFixed(2)
+                            : "0.00"}
                     </p>
                 </div>
                 <div className="p-4 border border-gray-200 bg-white rounded-md shadow-sm">
@@ -101,7 +104,7 @@ function Dashboard() {
                         Saved Addresses
                     </p>
                     <p className="text-xl sm:text-2xl font-bold text-gray-800">
-                        {addresses.length}
+                        {addresses?.length}
                     </p>
                 </div>
             </div>
@@ -117,9 +120,9 @@ function Dashboard() {
                     </p>
                 ) : (
                     <div className="space-y-3">
-                        {orders.slice(0, 2).map((order) => (
+                        {orders?.slice(0, 2)?.map((order) => (
                             <motion.div
-                                key={order.id}
+                                key={order._id}
                                 whileHover={{ scale: 1.02 }}
                                 className=" p-4 border border-gray-200 bg-white rounded-md shadow-sm"
                             >
@@ -129,7 +132,7 @@ function Dashboard() {
                                             Order ID:
                                         </p>
                                         <p className="text-sm sm:text-base text-gray-800">
-                                            {order.id}
+                                            {order?._id}
                                         </p>
                                     </div>
                                     <div>
@@ -137,7 +140,7 @@ function Dashboard() {
                                             Date:
                                         </p>
                                         <p className="text-sm sm:text-base text-gray-800">
-                                            {order.date}
+                                            {order?.createdAt}
                                         </p>
                                     </div>
                                     <div>
@@ -145,7 +148,7 @@ function Dashboard() {
                                             Total:
                                         </p>
                                         <p className="text-sm sm:text-base text-gray-800">
-                                            ${order.total.toFixed(2)}
+                                            &#8377;{order?.totalAmount}
                                         </p>
                                     </div>
                                     <div>
@@ -153,23 +156,25 @@ function Dashboard() {
                                             Status:
                                         </p>
                                         <p
-                                            className={`text-sm sm:text-base ${
-                                                order.status === "Delivered"
+                                            className={`text-sm sm:text-base capitalize ${
+                                                order?.deliveryStatus ===
+                                                "Delivered"
                                                     ? "text-green-600"
-                                                    : order.status === "Shipped"
+                                                    : order?.deliveryStatus ===
+                                                      "Shipped"
                                                     ? "text-blue-600"
                                                     : "text-yellow-600"
                                             }`}
                                         >
-                                            {order.status}
+                                            {order?.deliveryStatus}
                                         </p>
                                     </div>
                                 </div>
                                 <p className="text-xs sm:text-sm text-gray-600 mt-2">
                                     Items:{" "}
-                                    {order.items
-                                        .map((item) => item.name)
-                                        .join(", ")}
+                                    {order?.items
+                                        ?.map((item) => item?.name)
+                                        ?.join(", ")}
                                 </p>
                             </motion.div>
                         ))}

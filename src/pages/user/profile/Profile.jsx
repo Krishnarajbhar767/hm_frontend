@@ -18,12 +18,12 @@ function Profile() {
         formState: { errors: profileErrors },
     } = useForm({
         defaultValues: {
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            phone: user.phone,
-            gender: user.gender,
-            dob: user.dob,
+            firstName: user?.firstName,
+            lastName: user?.lastName,
+            email: user?.email,
+            phone: user?.phone,
+            gender: user?.gender,
+            dob: user?.dob,
         },
     });
 
@@ -84,14 +84,14 @@ function Profile() {
             <div className="flex items-center gap-4">
                 <div className="relative">
                     <img
-                        src={`https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}`}
+                        src={`https://ui-avatars.com/api/?name=${user?.firstName}+${user?.lastName}`}
                         alt="Profile"
                         className="w-24 h-24 object-cover border-2 border-gray-300"
                     />
                 </div>
                 <div>
                     <p className="text-lg sm:text-xl font-medium text-gray-800">
-                        {user.firstName} {user.lastName}
+                        {user?.firstName} {user?.lastName}
                     </p>
                     <p className="text-sm sm:text-base text-gray-600">
                         Member since 2024-01-15

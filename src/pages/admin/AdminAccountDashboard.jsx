@@ -2,10 +2,10 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     FiHome,
-    FiUser,
-    FiShoppingBag,
-    FiMapPin,
-    FiCreditCard,
+    FiBox,
+    FiGrid,
+    FiUsers,
+    FiShoppingCart,
     FiSettings,
 } from "react-icons/fi";
 
@@ -35,14 +35,15 @@ const tabLinkVariants = {
     }),
 };
 
-function UserAccountDashboard() {
+function AdminAccountDashboard() {
     const location = useLocation();
 
     const navItems = [
-        { path: "dashboard", label: "Dashboard", icon: <FiHome size={20} /> },
-        { path: "profile", label: "Profile", icon: <FiUser size={20} /> },
-        { path: "orders", label: "Orders", icon: <FiShoppingBag size={20} /> },
-        { path: "addresses", label: "Addresses", icon: <FiMapPin size={20} /> },
+        { path: "overview", label: "Overview", icon: <FiHome size={20} /> },
+        { path: "products", label: "Products", icon: <FiBox size={20} /> },
+        { path: "categories", label: "Categories", icon: <FiGrid size={20} /> },
+        { path: "users", label: "Users", icon: <FiUsers size={20} /> },
+        { path: "orders", label: "Orders", icon: <FiShoppingCart size={20} /> },
     ];
 
     return (
@@ -50,10 +51,8 @@ function UserAccountDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="h-auto w-full boxedContainer py-6 sm:py-8 md:py-10 px-4 sm:px-6 md:px-8  min-h-screen"
+            className="h-auto w-full boxedContainer py-6 sm:py-8 md:py-10 px-4 sm:px-6 md:px-8 min-h-screen"
         >
-            {/* Header */}
-
             {/* Mobile Navigation: Tabbed Interface */}
             <div className="md:hidden flex border-b border-gray-200 mb-6 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                 {navItems.map((item, index) => (
@@ -65,16 +64,16 @@ function UserAccountDashboard() {
                         variants={tabLinkVariants}
                     >
                         <Link
-                            to={`/account/${item.path}`}
+                            to={`/admin/${item.path}`}
                             className={`relative flex items-center gap-2 px-4 py-3 text-sm font-medium uppercase transition-colors duration-300 whitespace-nowrap ${
-                                location.pathname === `/account/${item.path}`
+                                location.pathname === `/admin/${item.path}`
                                     ? "text-gray-800"
                                     : "text-gray-600 hover:text-gray-800"
                             }`}
                         >
                             {item.icon}
                             {item.label}
-                            {location.pathname === `/account/${item.path}` && (
+                            {location.pathname === `/admin/${item.path}` && (
                                 <motion.div
                                     className="absolute bottom-0 left-0 w-full h-1 bg-gray-800"
                                     layoutId="underline"
@@ -103,10 +102,10 @@ function UserAccountDashboard() {
                                 variants={sidebarLinkVariants}
                             >
                                 <Link
-                                    to={`/account/${item.path}`}
+                                    to={`/admin/${item.path}`}
                                     className={`flex items-center gap-3 px-4 py-3 text-base font-medium uppercase rounded-md transition-all duration-300 ${
                                         location.pathname ===
-                                        `/account/${item.path}`
+                                        `/admin/${item.path}`
                                             ? "bg-gray-800 text-white shadow-sm"
                                             : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
                                     }`}
@@ -138,4 +137,4 @@ function UserAccountDashboard() {
     );
 }
 
-export default UserAccountDashboard;
+export default AdminAccountDashboard;
