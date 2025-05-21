@@ -12,12 +12,14 @@ import { handleAxiosError } from "../utils/handleAxiosError";
 function UserLayout() {
     const navigate = useNavigate();
     const token = useSelector((state) => state?.user?.token);
+    const role = useSelector((state) => state?.user?.user?.role);
     useEffect(() => {
-        if (!token) {
+        if (!token || role !== "user") {
             return navigate("/login");
         }
-    });
+    }, [token]);
 
+    if (!token || role !== "user") return null;
     // fetch All Others Data For Show In Of User
     return (
         <div className="flex flex-col min-h-screen overflow-hidden">

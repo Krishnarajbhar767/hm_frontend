@@ -5,10 +5,19 @@ import AppRoutes from "./routes/appRoutes";
 import { handleAxiosError } from "./utils/handleAxiosError";
 import authApis from "./services/api/auth/auth.apis";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "./redux/slices/userSlice";
+import { clearUser, setUser } from "./redux/slices/userSlice";
+import productApis from "./services/api/public/products.apis";
+import { setIsProductLoaded, setProducts } from "./redux/slices/productSlice";
+import categoriesApi from "./services/api/public/category.api";
+import {
+    setCategories,
+    setIsCategoriesLoaded,
+} from "./redux/slices/categorySlice";
 
 function App() {
     const dispatch = useDispatch();
+    const isProductLoaded = useSelector((state) => state.product?.isLoaded);
+    const isCategoryLoaded = useSelector((state) => state.category?.isLoaded);
     const token = useSelector((state) => state?.user?.token);
     const user = useSelector((state) => state?.user?.user);
     const fetchUser = async () => {
@@ -17,11 +26,40 @@ function App() {
                 const userData = await authApis.getUser(token);
                 dispatch(setUser(userData));
             } catch (error) {
+                dispatch(clearUser());
                 handleAxiosError(error);
             }
         }
     };
+    const fetchProducts = async () => {
+        try {
+            const products = await productApis.getAllProduct();
+            dispatch(setProducts(products));
+            dispatch(setIsProductLoaded(true));
+        } catch (error) {
+            handleAxiosError(error);
+        }
+    };
+    const fetchCategories = async () => {
+        try {
+            const categories = await categoriesApi.getAllCategories();
+            dispatch(setCategories(categories));
+            dispatch(setIsCategoriesLoaded(true));
+        } catch (error) {
+            handleAxiosError(error);
+        }
+    };
 
+    useEffect(() => {
+        if (!isProductLoaded) {
+            fetchProducts();
+        }
+    }, [isProductLoaded]);
+    useEffect(() => {
+        if (!isCategoryLoaded) {
+            fetchCategories();
+        }
+    }, [isCategoryLoaded]);
     useEffect(() => {
         fetchUser();
     });

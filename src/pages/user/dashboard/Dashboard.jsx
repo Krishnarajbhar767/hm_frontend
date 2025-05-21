@@ -2,65 +2,11 @@ import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { FiShoppingBag, FiMapPin, FiCreditCard } from "react-icons/fi";
 
-// Mock data
-const mockUser = {
-    name: "John Doe",
-    totalOrders: 5,
-    totalSpent: 285.49,
-    joinDate: "2024-01-15",
-};
-
-const mockOrders = [
-    {
-        id: "ORD001",
-        date: "2025-05-01",
-        total: 150.0,
-        status: "Delivered",
-        items: [
-            {
-                name: "Wireless Headphones",
-                quantity: 1,
-                price: 100.0,
-                image: "https://via.placeholder.com/50",
-            },
-            {
-                name: "Phone Case",
-                quantity: 2,
-                price: 25.0,
-                image: "https://via.placeholder.com/50",
-            },
-        ],
-    },
-    {
-        id: "ORD002",
-        date: "2025-05-03",
-        total: 89.99,
-        status: "Shipped",
-        items: [
-            {
-                name: "USB-C Cable",
-                quantity: 3,
-                price: 29.99,
-                image: "https://via.placeholder.com/50",
-            },
-        ],
-    },
-];
-
-const mockAddresses = [
-    { id: 1, label: "Home", address: "123 Main St, New York, NY 10001, USA" },
-    {
-        id: 2,
-        label: "Work",
-        address: "456 Office Rd, Los Angeles, CA 90001, USA",
-    },
-];
-
 function Dashboard() {
     const user = useSelector((state) => state?.user?.user);
     const orders = useSelector((state) => state?.order?.orders);
     const addresses = user?.shippingAddress;
-    console.log("User Guide ->", user);
+
     return (
         <motion.div
             initial={{ opacity: 0, x: 20 }}

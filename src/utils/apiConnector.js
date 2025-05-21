@@ -2,6 +2,7 @@ import axios from "axios";
 import getCookieByName from "./getCookie"; // Utility function to get a cookie by its name.
 import { store } from "../redux/store";
 import { clearUser, setToken } from "../redux/slices/userSlice";
+import authApis from "../services/api/auth/auth.apis";
 // Create an axios instance with custom configuration
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL, // Base URL for the API calls (can be configured later).
@@ -48,13 +49,12 @@ axiosInstance.interceptors.response.use(
             try {
                 const res = await axiosInstance.post("/auth/regenerate-token");
                 const newToken = res.data?.data;
-
                 localStorage.setItem("token", newToken);
                 store.dispatch(setToken(newToken));
-
                 originalRequest.headers.Authorization = `Bearer ${newToken}`;
                 return axiosInstance(originalRequest);
             } catch (refreshError) {
+                await authApis.logOut();
                 store.dispatch(clearUser()); // user is logged out here
                 const customError = new Error(
                     "Session expired. Please log in again."

@@ -1,7 +1,8 @@
 import axiosInstance from "../../../utils/apiConnector";
 import { handleAxiosError } from "../../../utils/handleAxiosError";
 import authEndpoints from "../../endpoints/auth/auth.endpoints";
-
+import { store } from "../../../redux/store";
+import { clearUser } from "../../../redux/slices/userSlice";
 const authApis = {
     register: async (data) => {
         const res = await axiosInstance.post(authEndpoints.register, data);
@@ -16,7 +17,11 @@ const authApis = {
         const res = await axiosInstance.post(authEndpoints.login, data);
         return res?.data?.data;
     },
-    logOut: async (data) => {},
+    logOut: async (data) => {
+        const res = await axiosInstance.post(authEndpoints.logout, data);
+        store.dispatch(clearUser());
+        return res;
+    },
     changePassword: async (data) => {
         const res = await axiosInstance.put(authEndpoints.changePassword, data);
         return res;

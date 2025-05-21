@@ -7,11 +7,15 @@ import Footer from "../components/common/Footer";
 function AdminLayout() {
     const navigate = useNavigate();
     const token = useSelector((state) => state?.user?.token);
+    const role = useSelector((state) => state?.user?.user?.role);
+
     useEffect(() => {
-        if (!token) {
+        if (!token || role !== "admin") {
             return navigate("/login");
         }
-    });
+    }, [token]);
+
+    if (!token || role !== "admin") return null;
     return (
         <div className="flex flex-col min-h-screen bg-gray-50 text-gray-900">
             <Header />

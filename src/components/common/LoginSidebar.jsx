@@ -49,7 +49,11 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
             const userData = await authApis.login(loginCredentials);
             dispatch(setUser(userData?.user));
             localStorage.setItem("token", userData.token);
+            dispatch(setToken(userData.token));
             toast.success(`Welcome ${userData?.user?.firstName}`);
+            if (userData?.user.role === "admin") {
+                return navigate("/admin/overview");
+            }
             return navigate("/account/dashboard");
         } catch (error) {
             handleAxiosError(error);
@@ -139,23 +143,10 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
                             className="text-sm sm:text-base"
                         />
                         <div className="flex justify-between items-center text-gray-800 text-xs sm:text-sm">
-                            <div className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    id="remember_me"
-                                    className="h-4 w-4"
-                                />
-                                <label
-                                    htmlFor="remember_me"
-                                    className="text-xs sm:text-sm"
-                                >
-                                    Remember me
-                                </label>
-                            </div>
                             <Link
                                 to="/reset-password"
                                 onClick={closeHandler}
-                                className="text-xs sm:text-sm underline hover:text-gray-600"
+                                className="text-sm sm:text-sm underline hover:text-gray-600"
                             >
                                 Lost Password?
                             </Link>

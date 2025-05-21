@@ -7,10 +7,23 @@ import { useState } from "react";
 import authApis from "../../../services/api/auth/auth.apis";
 import toast from "react-hot-toast";
 import { handleAxiosError } from "../../../utils/handleAxiosError";
+import Button from "../../../components/common/Button";
 
 function Profile() {
     const user = useSelector((state) => state?.user?.user);
-
+    async function logOutHandler() {
+        const toastId = toast.loading("Please wait...");
+        try {
+            const res = await authApis.logOut();
+            if (res) {
+                toast.success("logged out successfully");
+                toast.dismiss(toastId);
+            }
+        } catch (error) {
+            handleAxiosError(error);
+            toast.dismiss(toastId);
+        }
+    }
     // Profile form setup
     const {
         register: registerProfile,
@@ -282,6 +295,8 @@ function Profile() {
                     </form>
                 )}
             </div>
+
+            <Button onSubmitHandler={logOutHandler} text="Log Out" />
         </motion.div>
     );
 }

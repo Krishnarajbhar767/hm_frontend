@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom"; // Import for routing
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom"; // Import for routing
 import Search from "./Search";
 import { AnimatePresence } from "framer-motion"; // Import for sidebar animations
 import LoginSidebar from "./LoginSidebar";
@@ -29,7 +29,11 @@ function Header() {
         ],
         []
     );
-
+    const location = useLocation().pathname;
+    const token =
+        useSelector((state) => state?.user?.token) ||
+        localStorage.getItem("token");
+    const role = useSelector((state) => state?.user?.user?.role);
     const [isSearching, setIsSearching] = useState(false);
     const [isLogin, setIsLogin] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
@@ -152,10 +156,16 @@ function Header() {
                         {/* User account icon */}
                         <button
                             onClick={() => {
-                                if (localStorage.getItem("token")) {
-                                    return navigate("/account/dashboard");
+                                if (token) {
+                                    if (role === "user") {
+                                        return navigate("/account/dashboard");
+                                    } else {
+                                        return navigate("/admin/overview");
+                                    }
                                 }
-                                setIsLogin(true);
+                                if (location !== "/login") {
+                                    setIsLogin(true);
+                                }
                             }}
                             className="p-1.5"
                             aria-label="Open login"
@@ -336,7 +346,7 @@ function Header() {
                         isOpen={isSearching}
                     />
                 )}
-                {isLogin && (
+                {isLogin && location !== "/login" && (
                     <LoginSidebar
                         closeHandler={() => setIsLogin(false)}
                         isOpen={isLogin}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import InputField from "../../../components/common/InputField";
 import { useForm } from "react-hook-form";
@@ -6,13 +6,18 @@ import Button from "../../../components/common/Button";
 import { Link, useNavigate } from "react-router-dom";
 import Heading from "../home/components/Heading";
 import authApis from "../../../services/api/auth/auth.apis";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { handleAxiosError } from "../../../utils/handleAxiosError";
 import { setToken, setUser } from "../../../redux/slices/userSlice";
 import toast from "react-hot-toast";
 import getCookieByName from "../../../utils/getCookie";
 
 function Login() {
+    const token =
+        useSelector((state) => state?.user?.token) ||
+        localStorage.getItem("token");
+    const role = useSelector((state) => state?.user?.user?.role);
+
     const {
         register,
         watch,
@@ -42,11 +47,21 @@ function Login() {
             localStorage.setItem("token", userData.token);
             dispatch(setToken(userData?.token));
             toast.success(`Welcome ${userData?.user?.firstName}`);
+            if (userData?.user?.role === "admin") {
+                return navigate("/admin/overview");
+            }
             return navigate("/account/dashboard");
         } catch (error) {
             handleAxiosError(error);
         } finally {
             setIsLoading(false);
+        }
+    }
+    if (token && role) {
+        if (role === "admin") {
+            return navigate("/admin/overview");
+        } else {
+            return navigate("/account/dashboard");
         }
     }
     return (
@@ -123,21 +138,10 @@ function Login() {
                     transition={{ duration: 0.5, delay: 0.4 }}
                     className="items-center flex justify-between text-gray-800"
                 >
-                    <div className="flex items-center gap-2">
-                        <input
-                            type="checkbox"
-                            id="remember_me"
-                            className="h-4 w-4"
-                            {...register("remember")}
-                        />
-                        <label htmlFor="remember_me" className="text-sm">
-                            Remember me
-                        </label>
-                    </div>
                     <div>
                         <Link
                             to={"/reset-password"}
-                            className="text-xs underline cursor-pointer"
+                            className="text-sm underline cursor-pointer"
                         >
                             Lost Password ?
                         </Link>
