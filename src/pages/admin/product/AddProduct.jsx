@@ -3,7 +3,14 @@ import { FiImage } from "react-icons/fi";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import InputField from "../../../components/common/InputField";
-
+import SelectField from "../../../components/common/SelectField";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
+import uploadMedia from "../../../utils/uploadMedia";
+import productApis from "../../../services/api/admin/product/product.api";
+import { handleAxiosError } from "../../../utils/handleAxiosError";
+import { setProducts } from "../../../redux/slices/productSlice";
+import { useNavigate } from "react-router-dom";
 const AddProduct = () => {
     const {
         register,
@@ -11,26 +18,52 @@ const AddProduct = () => {
         formState: { errors },
         reset,
     } = useForm();
+    const navigate = useNavigate();
+    const categories = useSelector((state) => state.category.categories || []);
+    const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
-
-    // Placeholder for handling image uploads (to be implemented by you)
+    const dispatch = useDispatch();
+    // Handle file input and generate preview
     const handleImageUpload = (e) => {
-        // Logic to be added manually
+        const files = Array.from(e.target.files);
+        setImageFiles(files);
+        const previews = files.map((file) => URL.createObjectURL(file));
+        setImagePreviews(previews);
     };
 
-    // Placeholder for form submission (to be implemented by you)
-    const handleFormSubmit = handleSubmit((data) => {
-        // Logic to be added manually
-        // After submission, you may want to navigate back to the product list
-        // Example: navigate("/admin/products");
-    });
+    // Form submit handler
+    const onSubmit = async (data) => {
+        if (imageFiles.length === 0) {
+            toast.error("Please upload at least one image.");
+            return;
+        }
+        const toastId = toast.loading("Please wait...");
+        try {
+            const imagesUrls = await uploadMedia(imageFiles);
+            if (!imagesUrls) return;
+            data.images = imagesUrls; // inserting images url into  formData;
+            const products = await productApis.createProduct(data);
+            dispatch(setProducts(products));
+            reset();
+            setImageFiles([]);
+            setImagePreviews([]);
+            toast.success("Product created successfully");
+        } catch (error) {
+            handleAxiosError(error);
+        } finally {
+            toast.dismiss(toastId);
+        }
 
-    // Handle cancel action
+        // Handle your API call here with:
+        // 1. `data` (form fields)
+        // 2. `imageFiles` (for upload API)
+    };
+
     const handleCancel = () => {
         reset();
+        setImageFiles([]);
         setImagePreviews([]);
-        // You can add navigation logic here
-        // Example: navigate("/admin/products");
+        navigate(-1);
     };
 
     return (
@@ -43,7 +76,8 @@ const AddProduct = () => {
             <h3 className="text-lg font-semibold uppercase text-gray-800 mb-4 tracking-wide">
                 Add Product
             </h3>
-            <form onSubmit={handleFormSubmit} className="space-y-4">
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <InputField
                     label="Name"
                     name="name"
@@ -58,6 +92,7 @@ const AddProduct = () => {
                     errors={errors}
                     rules={{ required: "Description is required" }}
                 />
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                         label="Price"
@@ -67,10 +102,7 @@ const AddProduct = () => {
                         errors={errors}
                         rules={{
                             required: "Price is required",
-                            min: {
-                                value: 0,
-                                message: "Price must be positive",
-                            },
+                            min: { value: 0, message: "Must be positive" },
                         }}
                     />
                     <InputField
@@ -81,20 +113,24 @@ const AddProduct = () => {
                         errors={errors}
                         rules={{
                             required: "Stock is required",
-                            min: {
-                                value: 0,
-                                message: "Stock must be positive",
-                            },
+                            min: { value: 0, message: "Must be positive" },
                         }}
                     />
                 </div>
-                <InputField
+
+                <SelectField
                     label="Category"
                     name="category"
                     register={register}
                     errors={errors}
                     rules={{ required: "Category is required" }}
+                    options={categories.map((cat) => ({
+                        value: cat._id || cat.value,
+                        label: cat.name || cat.label,
+                    }))}
                 />
+
+                {/* Image Upload */}
                 <div>
                     <label className="block text-sm text-gray-600 mb-1 flex items-center gap-2">
                         <FiImage size={16} /> Images
@@ -106,24 +142,21 @@ const AddProduct = () => {
                         onChange={handleImageUpload}
                         className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800"
                     />
-                    {errors.images && (
-                        <p className="text-red-500 text-xs mt-1">
-                            {errors.images.message}
-                        </p>
-                    )}
                     {imagePreviews.length > 0 && (
                         <div className="mt-2 flex flex-wrap gap-2">
-                            {imagePreviews.map((preview, index) => (
+                            {imagePreviews.map((src, i) => (
                                 <img
-                                    key={index}
-                                    src={preview}
-                                    alt={`Preview ${index}`}
+                                    key={i}
+                                    src={src}
+                                    alt={`Preview ${i}`}
                                     className="w-16 h-16 object-cover rounded-md"
                                 />
                             ))}
                         </div>
                     )}
                 </div>
+
+                {/* More Fields */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                         label="Fabric"
@@ -140,6 +173,7 @@ const AddProduct = () => {
                         rules={{ required: "Technique is required" }}
                     />
                 </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                         label="Color"
@@ -149,13 +183,14 @@ const AddProduct = () => {
                         rules={{ required: "Color is required" }}
                     />
                     <InputField
-                        label="Weight"
+                        label="Weight (KG)"
                         name="weight"
                         register={register}
                         errors={errors}
                         rules={{ required: "Weight is required" }}
                     />
                 </div>
+
                 <InputField
                     label="Assurance"
                     name="assurance"
@@ -168,12 +203,20 @@ const AddProduct = () => {
                     name="hsnCode"
                     register={register}
                     errors={errors}
-                    rules={{ required: "HSN Code is required" }}
+                    rules={{
+                        required: "HSN Code is required",
+                        pattern: {
+                            value: /^[0-9]+$/,
+                            message: "HSN Code must contain only numbers",
+                        },
+                    }}
                 />
+
+                {/* Submit Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
                     <button
                         type="submit"
-                        className="bg-gray-800 text-white px-4 py-2 text-sm uppercase hover:bg-gray-700 transition-colors duration-200 shadow-md w-full"
+                        className="bg-neutral-950 h-12 text-white px-4 py-2 text-sm uppercase hover:bg-gray-700 transition-colors duration-200 shadow-md w-full"
                     >
                         Save
                     </button>

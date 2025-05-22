@@ -1,72 +1,131 @@
 import { useForm } from "react-hook-form";
 import { FiImage } from "react-icons/fi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import InputField from "../../../components/common/InputField";
-import { useSelector } from "react-redux";
+import SelectField from "../../../components/common/SelectField";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
+import uploadMedia from "../../../utils/uploadMedia";
+import productApis from "../../../services/api/admin/product/product.api";
+import { setProducts } from "../../../redux/slices/productSlice";
 
 const EditProduct = () => {
-    const products = useSelector((state) => state?.product?.products) || [];
-    // You will need to get the product ID from the route params
-    // Example: const { id } = useParams();
-    // For now, I'll assume the ID is passed or you will handle it
-    const id = null; // Replace with your logic to get the ID
-    const product = products?.find((p) => p.id === parseInt(id));
+    const navigate = useNavigate();
+    const { id } = useParams();
 
+    const { products } = useSelector((state) => state.product);
+    const categories = useSelector((state) => state.category.categories || []);
+    const product = products?.find((p) => p._id === id);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const {
         register,
         handleSubmit,
         formState: { errors },
         reset,
-        setValue,
-    } = useForm({
-        defaultValues: product
-            ? {
-                  name: product.name,
-                  description: product.description,
-                  price: product.price.toString(),
-                  category: product.category.name,
-                  stock: product.stock.toString(),
-                  fabric: product.fabric,
-                  technique: product.technique,
-                  color: product.color,
-                  weight: product.weight,
-                  assurance: product.assurance,
-                  hsnCode: product.hsnCode,
-              }
-            : {},
-    });
+        watch,
+    } = useForm();
 
-    const [imagePreviews, setImagePreviews] = useState(
-        product ? product.images || [] : []
-    );
+    const [imageFiles, setImageFiles] = useState([]);
+    const [imagePreviews, setImagePreviews] = useState([]);
+    const [initialData, setInitialData] = useState(null);
 
-    // Placeholder for handling image uploads (to be implemented by you)
+    const watchedFields = watch();
+    const dispatch = useDispatch();
+    useEffect(() => {
+        if (product) {
+            const init = {
+                name: product.name,
+                description: product.description,
+                price: product.price,
+                stock: product.stock,
+                category: product.category._id || product.category,
+                fabric: product.fabric,
+                technique: product.technique,
+                color: product.color,
+                weight: product.weight,
+                assurance: product.assurance,
+                hsnCode: product.hsnCode,
+            };
+            reset(init);
+            setInitialData(init);
+            setImagePreviews(product.images || []);
+        }
+    }, [product, reset]);
+
     const handleImageUpload = (e) => {
-        // Logic to be added manually
+        const files = Array.from(e.target.files);
+        setImageFiles(files);
+        const previews = files.map((file) => URL.createObjectURL(file));
+        setImagePreviews((prev) => [...prev, ...previews]);
     };
 
-    // Placeholder for form submission (to be implemented by you)
-    const handleFormSubmit = handleSubmit((data) => {
-        // Logic to be added manually
-        // After submission, you may want to navigate back to the product list
-        // Example: navigate("/admin/products");
-    });
-
-    // Handle cancel action
-    const handleCancel = () => {
-        reset();
-        setImagePreviews([]);
-        // You can add navigation logic here
-        // Example: navigate("/admin/products");
+    const isFormChanged = () => {
+        if (!initialData) return false;
+        for (let key in initialData) {
+            if (String(watchedFields[key]) !== String(initialData[key])) {
+                return true;
+            }
+        }
+        if (imageFiles.length > 0) return true;
+        return false;
     };
+
+    const onSubmit = async (data) => {
+        if (!isFormChanged()) {
+            toast.error("No changes detected.");
+            return;
+        }
+        setIsSubmitting((prev) => true);
+        const toastId = toast.loading("Please wait...");
+        let uploadedImageUrls = [];
+        if (imageFiles.length > 0) {
+            const formData = new FormData();
+            imageFiles.forEach((file) => formData.append("files", file));
+
+            try {
+                const response = await uploadMedia(formData);
+
+                uploadedImageUrls = Array.isArray(response)
+                    ? response
+                    : [response];
+            } catch (error) {
+                toast.error("Failed to upload images");
+                return;
+            }
+        }
+
+        const finalImages = [...(product.images || []), ...uploadedImageUrls];
+
+        const updatedData = {
+            ...data,
+            images: finalImages,
+        };
+
+        try {
+            console.log("Updated product data:", updatedData);
+            const updatedProducts = await productApis.updateProduct(
+                updatedData,
+                id
+            );
+            dispatch(setProducts(updatedProducts));
+            toast.success("Product updated");
+            navigate(-1);
+        } catch (error) {
+            toast.error("Failed to update product");
+        } finally {
+            toast.dismiss(toastId);
+            setIsSubmitting((prev) => false);
+        }
+    };
+
+    const handleCancel = () => navigate(-1);
 
     if (!product) {
         return (
             <div className="text-center py-8">
                 <p className="text-gray-600 text-sm">Product not found.</p>
-                {/* You can add a link or navigation back to the product list */}
-                {/* Example: <Link to="/admin/products" className="text-blue-600 hover:text-blue-700 text-sm">Back to Products</Link> */}
             </div>
         );
     }
@@ -81,10 +140,12 @@ const EditProduct = () => {
             <h3 className="text-lg font-semibold uppercase text-gray-800 mb-4 tracking-wide">
                 Edit Product
             </h3>
-            <form onSubmit={handleFormSubmit} className="space-y-4">
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <InputField
                     label="Name"
                     name="name"
+                    value={product?.name}
                     register={register}
                     errors={errors}
                     rules={{ required: "Product name is required" }}
@@ -92,47 +153,52 @@ const EditProduct = () => {
                 <InputField
                     label="Description"
                     name="description"
+                    value={product?.description}
                     register={register}
                     errors={errors}
                     rules={{ required: "Description is required" }}
                 />
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                         label="Price"
                         name="price"
+                        value={product?.price}
                         type="number"
                         register={register}
                         errors={errors}
                         rules={{
                             required: "Price is required",
-                            min: {
-                                value: 0,
-                                message: "Price must be positive",
-                            },
+                            min: { value: 0, message: "Must be positive" },
                         }}
                     />
                     <InputField
                         label="Stock"
                         name="stock"
+                        value={product?.stock}
                         type="number"
                         register={register}
                         errors={errors}
                         rules={{
                             required: "Stock is required",
-                            min: {
-                                value: 0,
-                                message: "Stock must be positive",
-                            },
+                            min: { value: 0, message: "Must be positive" },
                         }}
                     />
                 </div>
-                <InputField
+
+                <SelectField
                     label="Category"
                     name="category"
+                    value={product?.category}
                     register={register}
                     errors={errors}
                     rules={{ required: "Category is required" }}
+                    options={categories.map((cat) => ({
+                        value: cat._id || cat.value,
+                        label: cat.name || cat.label,
+                    }))}
                 />
+
                 <div>
                     <label className="block text-sm text-gray-600 mb-1 flex items-center gap-2">
                         <FiImage size={16} /> Images
@@ -144,28 +210,25 @@ const EditProduct = () => {
                         onChange={handleImageUpload}
                         className="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800"
                     />
-                    {errors.images && (
-                        <p className="text-red-500 text-xs mt-1">
-                            {errors.images.message}
-                        </p>
-                    )}
                     {imagePreviews.length > 0 && (
                         <div className="mt-2 flex flex-wrap gap-2">
-                            {imagePreviews.map((preview, index) => (
+                            {imagePreviews.map((src, i) => (
                                 <img
-                                    key={index}
-                                    src={preview}
-                                    alt={`Preview ${index}`}
+                                    key={i}
+                                    src={src}
+                                    alt={`Preview ${i}`}
                                     className="w-16 h-16 object-cover rounded-md"
                                 />
                             ))}
                         </div>
                     )}
                 </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                         label="Fabric"
                         name="fabric"
+                        value={product?.fabric}
                         register={register}
                         errors={errors}
                         rules={{ required: "Fabric is required" }}
@@ -173,15 +236,18 @@ const EditProduct = () => {
                     <InputField
                         label="Technique"
                         name="technique"
+                        value={product?.technique}
                         register={register}
                         errors={errors}
                         rules={{ required: "Technique is required" }}
                     />
                 </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                         label="Color"
                         name="color"
+                        value={product?.color}
                         register={register}
                         errors={errors}
                         rules={{ required: "Color is required" }}
@@ -189,14 +255,17 @@ const EditProduct = () => {
                     <InputField
                         label="Weight"
                         name="weight"
+                        value={product?.weight}
                         register={register}
                         errors={errors}
                         rules={{ required: "Weight is required" }}
                     />
                 </div>
+
                 <InputField
                     label="Assurance"
                     name="assurance"
+                    value={product?.assurance}
                     register={register}
                     errors={errors}
                     rules={{ required: "Assurance is required" }}
@@ -204,14 +273,22 @@ const EditProduct = () => {
                 <InputField
                     label="HSN Code"
                     name="hsnCode"
+                    value={product?.hsnCode}
                     register={register}
                     errors={errors}
                     rules={{ required: "HSN Code is required" }}
                 />
+
                 <div className="flex flex-col sm:flex-row gap-3">
                     <button
                         type="submit"
-                        className="bg-gray-800 text-white px-4 py-2 text-sm uppercase hover:bg-gray-700 transition-colors duration-200 shadow-md w-full"
+                        style={{
+                            cursor: `${
+                                isSubmitting ? "not-allowed" : "pointer"
+                            }`,
+                        }}
+                        disabled={isSubmitting}
+                        className="bg-neutral-950 text-white px-4 py-2 h-12 text-sm uppercase hover:bg-gray-700 transition-colors duration-200 shadow-md w-full "
                     >
                         Save
                     </button>

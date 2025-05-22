@@ -108,9 +108,9 @@ const ProductList = () => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {products.map((product) => (
+                    {products?.map((product) => (
                         <motion.div
-                            key={product.id}
+                            key={product._id}
                             whileHover={{ scale: 1.02 }}
                             className="bg-white border border-gray-200 rounded-md shadow-sm p-4 flex flex-col gap-2"
                         >
@@ -134,18 +134,18 @@ const ProductList = () => {
                             <p className="text-sm text-gray-600">
                                 Stock: {product.stock}
                             </p>
-                            <p className="text-sm text-gray-600">
-                                Rating: {product.rating.toFixed(1)}
-                            </p>
+                            {/* <p className="text-sm text-gray-600">
+                                Rating: {product?.reviews?.toFixed(1)}
+                            </p> */}
                             <div className="flex justify-between mt-2">
                                 <Link
-                                    to={`/admin/products/edit/${product.id}`}
+                                    to={`/admin/products/edit/${product._id}`}
                                     className="flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm"
                                 >
                                     <FiEdit size={14} /> Edit
                                 </Link>
                                 <button
-                                    onClick={() => handleDelete(product.id)}
+                                    onClick={() => handleDelete(product._id)}
                                     className="flex items-center gap-1 text-red-600 hover:text-red-700 text-sm"
                                 >
                                     <FiTrash size={14} /> Delete

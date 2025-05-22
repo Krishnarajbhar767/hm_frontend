@@ -1,7 +1,7 @@
 import axiosInstance from "../../../utils/apiConnector";
 import productEndpoints from "../../endpoints/public/product.endpoints";
 
-const productApis = {
+const productPublicApis = {
     getAllProduct: async () => {
         const res = await axiosInstance.get(productEndpoints.getAllProducts);
         return res?.data?.data;
@@ -14,4 +14,4 @@ const productApis = {
     },
 };
 
-export default productApis;
+export default productPublicApis;
