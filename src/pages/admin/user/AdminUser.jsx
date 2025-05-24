@@ -1,31 +1,15 @@
+// src/pages/admin/users/AdminUsers.jsx
 import { useForm } from "react-hook-form";
 import { FiUsers, FiEdit, FiTrash, FiX, FiPlus } from "react-icons/fi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import InputField from "../../../components/common/InputField";
 
-// Mock data for users
-const USERS_DATA = [
-    {
-        id: 1,
-        name: "John Doe",
-        email: "john.doe@example.com",
-        role: "Customer",
-        joined: "2025-05-18",
-        ordersCount: 3,
-    },
-    {
-        id: 2,
-        name: "Jane Smith",
-        email: "jane.smith@example.com",
-        role: "Admin",
-        joined: "2025-05-19",
-        ordersCount: 0,
-    },
-];
+import { toast } from "react-hot-toast";
+import adminUserApis from "../../../services/api/admin/product/user.api";
 
 function AdminUsers() {
-    const [users, setUsers] = useState(USERS_DATA);
+    const [users, setUsers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editUser, setEditUser] = useState(null);
     const [deleteUserId, setDeleteUserId] = useState(null);
@@ -37,45 +21,70 @@ function AdminUsers() {
         reset,
     } = useForm();
 
-    // Function to handle form submission
-    const onSubmit = handleSubmit((data) => {
-        if (editUser) {
-            console.log("Editing User:", data);
-            setUsers(
-                users.map((user) =>
-                    user.id === editUser.id ? { ...user, ...data } : user
-                )
-            );
-        } else {
-            console.log("Adding User:", data);
-            setUsers([
-                ...users,
-                {
-                    id: users.length + 1,
-                    ...data,
-                    joined: new Date().toISOString().split("T")[0],
-                    ordersCount: 0,
-                },
-            ]);
+    // fetch on mount
+    useEffect(() => {
+        (async () => {
+            try {
+                const data = await adminUserApis.getAllUsers();
+                setUsers(data);
+            } catch (err) {
+                toast.error("Failed to load users");
+            }
+        })();
+    }, []);
+
+    // add / edit
+    const onSubmit = handleSubmit(async (formData) => {
+        const toastId = toast.loading("Please wait...");
+        try {
+            let updatedList;
+            if (editUser) {
+                // update
+                updatedList = await userApis.update(editUser._id, formData);
+            } else {
+                // create
+                updatedList = await userApis.create(formData);
+            }
+            setUsers(updatedList);
+            toast.success(editUser ? "User updated" : "User added");
+            setIsModalOpen(false);
+            setEditUser(null);
+            reset();
+        } catch (err) {
+            toast.error("Operation failed");
+        } finally {
+            toast.dismiss(toastId);
         }
-        setIsModalOpen(false);
-        setEditUser(null);
-        reset();
     });
 
-    // Function to open edit modal
+    // open edit
     const onEditUser = (user) => {
-        console.log("Opening Edit Modal for User:", user);
         setEditUser(user);
-        reset({ name: user.name, email: user.email, role: user.role });
+        reset({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            dob: user.dob,
+            email: user.email,
+            phone: user.phone,
+            role: user.role,
+            avatar: user.avatar,
+        });
         setIsModalOpen(true);
     };
 
-    // Function to confirm deletion
-    const confirmDelete = (id) => {
-        console.log("Deleting User ID:", id);
-        setUsers(users.filter((user) => user.id !== id));
-        setDeleteUserId(null);
+    // delete
+    const confirmDelete = async (id) => {
+        const toastId = toast.loading("Deleting...");
+        try {
+            const updatedList = await userApis.delete(id);
+            setUsers(updatedList);
+            toast.success("User deleted");
+            setDeleteUserId(null);
+        } catch {
+            toast.error("Delete failed");
+        } finally {
+            toast.dismiss(toastId);
+        }
     };
 
     return (
@@ -107,24 +116,36 @@ function AdminUsers() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {users.map((user) => (
                         <motion.div
-                            key={user.id}
+                            key={user._id}
                             whileHover={{ scale: 1.02 }}
                             className="bg-white border border-gray-200 rounded-md shadow-sm p-4 flex flex-col gap-2"
                         >
                             <h3 className="text-base font-medium text-gray-800">
-                                {user.name}
+                                {`${user.firstName} ${user.lastName}`}
                             </h3>
                             <p className="text-sm text-gray-600">
                                 Email: {user.email}
                             </p>
                             <p className="text-sm text-gray-600">
+                                Phone: {user.phone}
+                            </p>
+                            <p className="text-sm text-gray-600">
                                 Role: {user.role}
                             </p>
                             <p className="text-sm text-gray-600">
-                                Joined: {user.joined}
+                                Joined:{" "}
+                                {
+                                    new Date(user.createdAt)
+                                        .toISOString()
+                                        .split("T")[0]
+                                }
                             </p>
                             <p className="text-sm text-gray-600">
-                                Orders: {user.ordersCount}
+                                Cart Items:{" "}
+                                {user.cart.reduce(
+                                    (sum, c) => sum + c.items.length,
+                                    0
+                                )}
                             </p>
                             <div className="flex justify-between mt-2">
                                 <button
@@ -134,7 +155,7 @@ function AdminUsers() {
                                     <FiEdit size={14} /> Edit
                                 </button>
                                 <button
-                                    onClick={() => setDeleteUserId(user.id)}
+                                    onClick={() => setDeleteUserId(user._id)}
                                     className="flex items-center gap-1 text-red-600 hover:text-red-700 text-sm"
                                 >
                                     <FiTrash size={14} /> Delete
@@ -147,7 +168,7 @@ function AdminUsers() {
 
             {/* Add/Edit Modal */}
             <div
-                className={`glass h-screen fixed inset-0 bg-opacity-30 flex items-center items-center justify-center z-50 p-4 sm:p-6 overflow-y-auto ${
+                className={`glass h-screen fixed inset-0 bg-opacity-30 flex items-center justify-center z-50 p-4 sm:p-6 overflow-y-auto ${
                     isModalOpen ? "" : "hidden"
                 }`}
             >
@@ -172,11 +193,25 @@ function AdminUsers() {
                     </h3>
                     <form onSubmit={onSubmit} className="space-y-4">
                         <InputField
-                            label="Name"
-                            name="name"
+                            label="First Name"
+                            name="firstName"
                             register={register}
                             errors={errors}
-                            rules={{ required: "Name is required" }}
+                            rules={{ required: "First name is required" }}
+                        />
+                        <InputField
+                            label="Last Name"
+                            name="lastName"
+                            register={register}
+                            errors={errors}
+                            rules={{ required: "Last name is required" }}
+                        />
+                        <InputField
+                            label="Date of Birth"
+                            name="dob"
+                            type="date"
+                            register={register}
+                            errors={errors}
                         />
                         <InputField
                             label="Email"
@@ -187,11 +222,30 @@ function AdminUsers() {
                             rules={{ required: "Email is required" }}
                         />
                         <InputField
+                            label="Phone"
+                            name="phone"
+                            register={register}
+                            errors={errors}
+                            rules={{
+                                required: "Phone is required",
+                                pattern: {
+                                    value: /^[1-9][0-9]{9}$/,
+                                    message: "Enter a valid 10-digit phone",
+                                },
+                            }}
+                        />
+                        <InputField
                             label="Role"
                             name="role"
                             register={register}
                             errors={errors}
                             rules={{ required: "Role is required" }}
+                        />
+                        <InputField
+                            label="Avatar URL"
+                            name="avatar"
+                            register={register}
+                            errors={errors}
                         />
                         <div className="flex flex-wrap gap-3">
                             <button

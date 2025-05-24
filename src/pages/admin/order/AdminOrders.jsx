@@ -1,44 +1,63 @@
 import { FiShoppingCart, FiArrowUp, FiArrowDown } from "react-icons/fi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-
-// Mock data for orders
-const ORDERS_DATA = [
-    {
-        id: "ORD001",
-        customer: "John Doe",
-        products: [
-            { name: "Handwoven Saree", quantity: 1, price: 4999 },
-            { name: "Embroidered Kurta", quantity: 1, price: 2999 },
-        ],
-        total: 7998,
-        status: "Delivered",
-        date: "2025-05-18",
-    },
-    {
-        id: "ORD002",
-        customer: "Jane Smith",
-        products: [{ name: "Embroidered Kurta", quantity: 2, price: 2999 }],
-        total: 5998,
-        status: "Pending",
-        date: "2025-05-19",
-    },
-];
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../../utils/apiConnector";
 
 function AdminOrders() {
-    const [orders, setOrders] = useState(ORDERS_DATA);
+    const [orders, setOrders] = useState([]);
+    const [filteredOrders, setFilteredOrders] = useState([]);
     const [sortField, setSortField] = useState(null);
     const [sortOrder, setSortOrder] = useState("asc");
 
-    // Function to handle sorting by a specific field
+    const [deliveryFilter, setDeliveryFilter] = useState("all");
+    const [paymentFilter, setPaymentFilter] = useState("all");
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await axiosInstance.get(
+                    "/admin/orders/all-orders"
+                );
+                setOrders(response.data?.data || []);
+            } catch (error) {
+                console.error("Error fetching orders:", error);
+            }
+        };
+        fetchOrders();
+    }, []);
+
+    useEffect(() => {
+        let filtered = [...orders];
+
+        if (deliveryFilter !== "all") {
+            filtered = filtered.filter(
+                (order) =>
+                    order.deliveryStatus?.toLowerCase() ===
+                    deliveryFilter.toLowerCase()
+            );
+        }
+
+        if (paymentFilter !== "all") {
+            filtered = filtered.filter(
+                (order) =>
+                    order.paymentStatus?.toLowerCase() ===
+                    paymentFilter.toLowerCase()
+            );
+        }
+
+        setFilteredOrders(filtered);
+    }, [orders, deliveryFilter, paymentFilter]);
+
     const handleSortByField = (field) => {
         const newSortOrder =
             sortField === field && sortOrder === "asc" ? "desc" : "asc";
-        console.log("Sorting by:", field, "Order:", newSortOrder);
         setSortField(field);
         setSortOrder(newSortOrder);
 
-        const sortedOrders = [...orders].sort((a, b) => {
+        const sorted = [...filteredOrders].sort((a, b) => {
             const valueA = a[field];
             const valueB = b[field];
             return newSortOrder === "asc"
@@ -49,26 +68,26 @@ function AdminOrders() {
                 ? 1
                 : -1;
         });
-        setOrders(sortedOrders);
-        console.log("Sorted Orders:", sortedOrders);
+        setFilteredOrders(sorted);
     };
 
-    // Function to handle status updates
-    const handleStatusUpdate = (id, newStatus) => {
-        console.log(
-            "Updating Status for Order ID:",
-            id,
-            "New Status:",
-            newStatus
-        );
-        setOrders(
-            orders.map((order) =>
-                order.id === id ? { ...order, status: newStatus } : order
-            )
-        );
+    const handleStatusUpdate = async (id, newStatus) => {
+        try {
+            await axiosInstance.put(`/admin/orders/order/${id}/status`, {
+                status: newStatus,
+            });
+            setOrders((prev) =>
+                prev.map((order) =>
+                    order._id === id
+                        ? { ...order, deliveryStatus: newStatus }
+                        : order
+                )
+            );
+        } catch (error) {
+            console.error("Error updating order status:", error);
+        }
     };
 
-    // Function to determine status color
     const getStatusColor = (status) => {
         switch (status.toLowerCase()) {
             case "delivered":
@@ -92,19 +111,18 @@ function AdminOrders() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
         >
-            {/* Header */}
             <h2 className="flex items-center gap-2 text-xl font-semibold uppercase text-gray-800 tracking-wide">
                 <FiShoppingCart size={20} /> Orders
             </h2>
 
-            {/* Sorting Controls */}
             <div className="flex flex-wrap gap-2">
+                {/* Sorting Buttons */}
                 <button
-                    onClick={() => handleSortByField("total")}
+                    onClick={() => handleSortByField("totalAmount")}
                     className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
                 >
                     Sort by Total
-                    {sortField === "total" &&
+                    {sortField === "totalAmount" &&
                         (sortOrder === "asc" ? (
                             <FiArrowUp size={16} />
                         ) : (
@@ -112,21 +130,58 @@ function AdminOrders() {
                         ))}
                 </button>
                 <button
-                    onClick={() => handleSortByField("date")}
+                    onClick={() => handleSortByField("createdAt")}
                     className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
                 >
                     Sort by Date
-                    {sortField === "date" &&
+                    {sortField === "createdAt" &&
                         (sortOrder === "asc" ? (
                             <FiArrowUp size={16} />
                         ) : (
                             <FiArrowDown size={16} />
                         ))}
                 </button>
+
+                {/* Filters */}
+                <select
+                    value={deliveryFilter}
+                    onChange={(e) => setDeliveryFilter(e.target.value)}
+                    className="px-3 py-1 text-sm border border-gray-300 rounded-md"
+                >
+                    <option value="all">All Delivery Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="out for delivery">Out for Delivery</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="canceled">Canceled</option>
+                </select>
+
+                <select
+                    value={paymentFilter}
+                    onChange={(e) => setPaymentFilter(e.target.value)}
+                    className="px-3 py-1 text-sm border border-gray-300 rounded-md"
+                >
+                    <option value="all">All Payment Status</option>
+                    <option value="paid">Paid</option>
+                    <option value="unpaid">Unpaid</option>
+                    <option value="refunded">Refunded</option>
+                    <option value="failed">Failed</option>
+                </select>
+
+                {(deliveryFilter !== "all" || paymentFilter !== "all") && (
+                    <button
+                        onClick={() => {
+                            setDeliveryFilter("all");
+                            setPaymentFilter("all");
+                        }}
+                        className="px-3 py-1 text-sm bg-red-100 text-red-800 rounded-md hover:bg-red-200"
+                    >
+                        Clear Filters
+                    </button>
+                )}
             </div>
 
-            {/* Order List */}
-            {orders.length === 0 ? (
+            {filteredOrders.length === 0 ? (
                 <div className="text-center py-8">
                     <p className="text-gray-600 text-sm">
                         No orders available.
@@ -134,67 +189,65 @@ function AdminOrders() {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {orders.map((order) => (
+                    {filteredOrders.map((order) => (
                         <motion.div
-                            key={order.id}
+                            key={order._id}
                             whileHover={{ scale: 1.02 }}
-                            className="bg-white border border-gray-200 rounded-md shadow-sm p-4 flex flex-col justify-between min-h-[360px] w-full"
+                            className="bg-white border border-gray-200 rounded-md shadow-sm p-4 flex flex-col justify-between min-h-[300px] w-full"
                         >
-                            {/* Top content */}
-                            <div className="flex-grow flex flex-col gap-2">
+                            <div
+                                className="flex-grow flex flex-col gap-2 cursor-pointer"
+                                onClick={() =>
+                                    navigate(`/admin/orders/order/${order._id}`)
+                                }
+                            >
                                 <h3 className="text-base font-medium text-gray-800">
-                                    Order #{order.id}
+                                    Order #{order._id}
                                 </h3>
-                                <p className="text-sm text-gray-600">
-                                    Customer: {order.customer}
+                                <p className="text-sm text-gray-600 capitalize">
+                                    Customer: {order?.user?.firstName}{" "}
+                                    {order?.user?.lastName}
                                 </p>
                                 <p className="text-sm text-gray-600">
-                                    Products:
-                                    {order.products.map((prod, idx) => (
-                                        <span
-                                            key={idx}
-                                            className="block line-clamp-1"
-                                        >
-                                            {prod.name} (Qty: {prod.quantity}, ₹
-                                            {prod.price})
-                                        </span>
-                                    ))}
+                                    Total: ₹{order.totalAmount} <br />
+                                    Date:{" "}
+                                    {
+                                        new Date(order?.createdAt)
+                                            ?.toISOString()
+                                            ?.split("T")[0]
+                                    }
                                 </p>
-                                <p className="text-sm text-gray-600">
-                                    Total: ₹{order.total}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                    Date: {order.date}
+                                <p className="text-sm text-gray-500 capitalize">
+                                    Payment: {order.paymentStatus || "Unknown"}
                                 </p>
                             </div>
 
-                            {/* Bottom section: Status + Select */}
-                            <div className="mt-4 flex flex-col gap-2">
+                            <div className="mt-4 flex flex-col gap-2 capitalize">
                                 <span
                                     className={`inline-block px-2 py-1 text-xs rounded w-fit ${getStatusColor(
-                                        order.status
+                                        order.deliveryStatus
                                     )}`}
                                 >
-                                    {order.status}
+                                    {order.deliveryStatus}
                                 </span>
 
                                 <select
-                                    value={order.status}
+                                    value={order.deliveryStatus}
                                     onChange={(e) =>
                                         handleStatusUpdate(
-                                            order.id,
+                                            order._id,
                                             e.target.value
                                         )
                                     }
-                                    className="p-2 border border-gray-300 rounded-md text-sm text-gray-800 w-full"
+                                    className="mt-2 p-1 text-sm border border-gray-300 rounded-md"
                                 >
-                                    <option value="Pending">Pending</option>
-                                    <option value="Shipped">Shipped</option>
-                                    <option value="Out for Delivery">
+                                    <option value="pending">Pending</option>
+                                    <option value="shipped">Shipped</option>
+                                    <option value="out for delivery">
                                         Out for Delivery
                                     </option>
-                                    <option value="Delivered">Delivered</option>
-                                    <option value="Canceled">Canceled</option>
+                                    <option value="delivered">Delivered</option>
+                                    <option value="canceled">Canceled</option>
                                 </select>
                             </div>
                         </motion.div>
