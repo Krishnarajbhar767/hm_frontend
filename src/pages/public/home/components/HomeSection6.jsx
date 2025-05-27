@@ -24,9 +24,9 @@ function HomeSection6() {
                         <motion.img
                             whileTap={{ scale: 0.9 }}
                             key={index}
-                            src="https://placehold.co/400"
+                            src="https://tilfi.com/cdn/shop/files/antinomy_feature_800x.jpg?v=1744377593"
                             alt="Sarees"
-                            className="w-full h-[300px] md:h-[400px] object-cover object-center rounded hover:scale-[101%] transition-all ease-linear duration-200 shadow-sm  border border-gray-200 hover:grayscale-75"
+                            className="w-full h-[300px] md:h-[600px] object-cover object-center  hover:scale-[101%] transition-all ease-linear duration-200 hover:grayscale-75"
                         />
                     ))}
             </div>

@@ -7,6 +7,7 @@ import Login from "../pages/public/login/Login";
 import ResetPassword from "../pages/public/reset password/ResetPassword";
 import Cart from "../pages/public/cart/Cart";
 import VerifyOtp from "../pages/public/verify otp/VerifyOtp";
+import NotFound from "../components/common/NotFound";
 
 const PublicRoutes = (
     <Route element={<MainLayout />}>
@@ -18,6 +19,7 @@ const PublicRoutes = (
         <Route path="/About" element={<h1>About</h1>} />
         <Route path="/contact" element={<h1>Contact</h1>} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="*" element={<NotFound />} />
     </Route>
 );
 

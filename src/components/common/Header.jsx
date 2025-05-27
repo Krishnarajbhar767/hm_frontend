@@ -1,34 +1,40 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom"; // Import for routing
 import Search from "./Search";
 import { AnimatePresence } from "framer-motion"; // Import for sidebar animations
 import LoginSidebar from "./LoginSidebar";
 import CartSidebar from "./CartSidebar";
 import { useSelector } from "react-redux";
-
+import slugify from "slugify";
 function Header() {
-    // Memoize navigation links to prevent re-renders
-    const Links = useMemo(
-        () => [
-            { title: "Home", path: "/" },
-            {
-                title: "Product",
-                path: "#", // Not a real route, used for dropdown
-                subLinks: [
-                    {
-                        title: "Banarasi Sarees",
-                        path: "/products/banarasi-sarees",
-                    }, // Valid paths for active state
-                    {
-                        title: "Wedding Sarees",
-                        path: "/products/wedding-sarees",
-                    },
-                ],
-            },
-            { title: "About Us", path: "/about" },
-        ],
-        []
+    const headerRef = useRef(null); // 👈 Create ref for header
+    const categories = useSelector(
+        (state) => state?.category?.categories || []
     );
+    const [optimisedCategoriesList, setOptimisedCategoriesList] = useState([]);
+    useEffect(() => {
+        const navLinks = categories.map((item) => {
+            const slug = slugify(item.name, { lower: true, strict: true });
+
+            return {
+                title: item.name,
+                _id: item._id,
+                path: `/products/${slug}/${item._id}`,
+            };
+        });
+        setOptimisedCategoriesList(navLinks);
+    }, [categories]);
+
+    // Memoize navigation links to prevent re-renders
+    const Links = [
+        { title: "Home", path: "/" },
+        {
+            title: "Product",
+            path: "#", // Not a real route, used for dropdown
+            subLinks: optimisedCategoriesList,
+        },
+        { title: "About Us", path: "/about" },
+    ];
     const location = useLocation().pathname;
     const token =
         useSelector((state) => state?.user?.token) ||
@@ -44,22 +50,30 @@ function Header() {
     const toggleSubmenu = (title) => {
         setOpenSubmenu(openSubmenu === title ? null : title);
     };
+    useEffect(() => {
+        const handleScroll = () => {
+            const header = headerRef.current;
+            if (!header) return;
+
+            if (window.scrollY > 0) {
+                header.classList.add("sticky-header");
+            } else {
+                header.classList.remove("sticky-header");
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     return (
         // Relative wrapper for header and sidebars
-        <div className="relative">
+        <div className="header-wrapper" ref={headerRef}>
             {/* Header with white background, shadow, and responsive padding */}
-            <header className="bg-white text-gray-800 px-4 sm:px-6 py-4 shadow">
+            <header className="bg-white text-gray-800 px-4 sm:px-6  h-20 shadow  ">
                 {/* Constrained container for centered content */}
-                <div className="max-w-7xl mx-auto flex items-center justify-between">
+                <div className="max-w-6xl mx-auto flex items-center justify-between h-full">
                     {/* Logo with responsive width and height */}
-                    <Link className="flex-shrink-0 cursor-pointer" to={"/"}>
-                        <img
-                            src="https://themesflat.co/html/ecomus/images/logo/logo.svg"
-                            alt="Logo"
-                            className="h-8 sm:h-10 w-20 md:w-auto"
-                        />
-                    </Link>
 
                     {/* Desktop navigation (hidden on mobile) */}
                     <nav className="hidden md:flex gap-4 lg:gap-6 text-gray-800 font-medium text-sm lg:text-[14px] tracking-wide uppercase">
@@ -129,6 +143,14 @@ function Header() {
                         ))}
                     </nav>
 
+                    {/* Logo */}
+                    <Link className="flex-shrink-0 cursor-pointer" to={"/"}>
+                        <img
+                            src="https://tilfi.com/cdn/shop/files/TILFI_Logo_standard-_cropped_200x.png?v=1683886030"
+                            alt="Logo"
+                            className="h-16 w-50   object-contain"
+                        />
+                    </Link>
                     {/* Action icons and hamburger menu */}
                     <div className="flex items-center gap-2 sm:gap-3">
                         {/* Search icon with touch-friendly padding */}

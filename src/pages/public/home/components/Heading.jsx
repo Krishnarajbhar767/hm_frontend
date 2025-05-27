@@ -1,8 +1,10 @@
 import React from "react";
 
-function Heading({ text }) {
+function Heading({ text, color = "#4a5565" }) {
     return (
-        <h1 className="text-center font-medium text-xl leading-none md:text-3xl capitalize tracking-tighter text-gray-800">
+        <h1
+            className={`text-center  font-medium text-xl leading-none md:text-3xl capitalize  text-[${color}]`}
+        >
             {text}
         </h1>
     );

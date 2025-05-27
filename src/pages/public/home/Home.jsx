@@ -1,14 +1,15 @@
 import React from "react";
 import HomeHeroSlider from "./components/HomeHeroSlider";
-import HomeMovingText from "./components/HomeMovingText";
-import HomeSection1 from "./components/HomeSection1";
-import HomeSection2 from "./components/HomeSection2";
-import HomeSection3 from "./components/HomeSection3";
-import HomeSection4 from "./components/HomeSection4";
-import HomeSection5 from "./components/HomeSection5";
-import HomeSection6 from "./components/HomeSection6";
-import ShopByCategory from "./components/ShopByCategory";
+
+import HomeSection4 from "./components/HomeOnlyTwoSlideGrid";
+
 import WhyChooseUs from "./components/WhyChooseUs";
+import Home3Grid from "./components/Home3Grid";
+import HomeVideo from "./components/HomeVideo";
+import Home2BigGrid from "./components/Home2BigGrid";
+import HomeOnlyTwoSlideGrid from "./components/HomeOnlyTwoSlideGrid";
+import HomeOneImageOnly from "./components/HomeOneImageOnly";
+import HomeLetsExplore from "./components/HomeLetsExplore";
 
 function Home() {
     return (
@@ -16,34 +17,32 @@ function Home() {
             <div>
                 <HomeHeroSlider />
             </div>
-            <div>
-                <HomeMovingText />
-            </div>
-            <div className="hidden lg:block">
-                <ShopByCategory />
-            </div>
+
             {/* Section Starts */}
             {/* Section1 */}
             <div>
-                <HomeSection1 />
+                <Home3Grid />
             </div>
             {/* Section 2 */}
             <div>
-                <HomeSection2 />
+                <HomeVideo />
             </div>
             {/* Section 3 */}
             <div>
-                <HomeSection3 />
+                <Home2BigGrid />
             </div>
-            {/* Home Section 4 */}
+            <div className="boxedContainer py-4">
+                <HomeHeroSlider textPosition={true} />
+            </div>
+
             <div>
-                <HomeSection4 />
+                <HomeOneImageOnly />
             </div>
             <div>
-                <HomeSection5 />
+                <HomeOnlyTwoSlideGrid />
             </div>
             <div>
-                <HomeSection6 />
+                <HomeLetsExplore />
             </div>
             <div>
                 <WhyChooseUs />
