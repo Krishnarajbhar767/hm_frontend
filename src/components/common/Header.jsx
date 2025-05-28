@@ -6,6 +6,7 @@ import LoginSidebar from "./LoginSidebar";
 import CartSidebar from "./CartSidebar";
 import { useSelector } from "react-redux";
 import slugify from "slugify";
+import LOGO from "../../assets/images/logo/SRIJAN FABS PNG VERTICAL.png";
 function Header() {
     const headerRef = useRef(null); // 👈 Create ref for header
     const categories = useSelector(
@@ -146,9 +147,9 @@ function Header() {
                     {/* Logo */}
                     <Link className="flex-shrink-0 cursor-pointer" to={"/"}>
                         <img
-                            src="https://tilfi.com/cdn/shop/files/TILFI_Logo_standard-_cropped_200x.png?v=1683886030"
+                            src={LOGO}
                             alt="Logo"
-                            className="h-16 w-50   object-contain"
+                            className="h-16 w-50   object-cover"
                         />
                     </Link>
                     {/* Action icons and hamburger menu */}

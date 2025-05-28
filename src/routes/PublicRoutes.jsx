@@ -8,6 +8,8 @@ import ResetPassword from "../pages/public/reset password/ResetPassword";
 import Cart from "../pages/public/cart/Cart";
 import VerifyOtp from "../pages/public/verify otp/VerifyOtp";
 import NotFound from "../components/common/NotFound";
+import CategoryPage from "../pages/public/category/CategoryPage";
+import ProductDetailsPage from "../components/common/ProductDetailsPage";
 
 const PublicRoutes = (
     <Route element={<MainLayout />}>
@@ -17,6 +19,8 @@ const PublicRoutes = (
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/About" element={<h1>About</h1>} />
+        <Route path="/products/:category/:id" element={<CategoryPage />} />
+        <Route path="/product/:id" element={<ProductDetailsPage />} />
         <Route path="/contact" element={<h1>Contact</h1>} />
         <Route path="/cart" element={<Cart />} />
         <Route path="*" element={<NotFound />} />

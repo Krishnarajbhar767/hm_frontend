@@ -2,14 +2,16 @@ import React from "react";
 import { motion } from "motion/react";
 import Heading from "./Heading";
 import SubHeading from "./SubHeading";
+import Banner1 from "../../../../assets/images/Home/Home2BigGrid/SF_772x772_1.jpg";
+import Banner2 from "../../../../assets/images/Home/Home2BigGrid/SF_772x772_2.jpg";
 function Home2BigGrid() {
     const data = [
         {
-            image: "https://tilfi.com/cdn/shop/products/SSATAPK10451RosyPink_Aparajita_PureSoftSatinTanchoiMeenaZariBorder_PalluSaree220_1200x.jpg?v=1725544713",
+            image: Banner1,
             text: "Saree",
         },
         {
-            image: "https://tilfi.com/cdn/shop/products/SSATAPK10451RosyPink_Aparajita_PureSoftSatinTanchoiMeenaZariBorder_PalluSaree220_1200x.jpg?v=1725544713",
+            image: Banner2,
             text: "Duppata",
         },
     ];

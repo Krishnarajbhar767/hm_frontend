@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import Heading from "./Heading";
 import SubHeading from "./SubHeading";
 import { motion, AnimatePresence } from "framer-motion"; // Import framer-motion for animations
-
+import Banner1 from "../../../../assets/images/Home/HomeOnlyTwoSlideGrid/SF_640x640_1.jpg";
+import Banner2 from "../../../../assets/images/Home/HomeOnlyTwoSlideGrid/SF_640x640_2.jpg";
 function HomeOnlyTwoSlideGrid() {
     const [slideIndex, setSlideIndex] = useState(0);
     const slideData = [
@@ -11,14 +12,14 @@ function HomeOnlyTwoSlideGrid() {
             subHeading:
                 "The Gulab Bari collection pays homage to this heritage Banarasi music festival, translating its ethos through handwoven, hand-dyed, and brush-painted textile artistry. Light and airy Khaddi Georgettes are adorned with Chaiti roses in full bloom, lyrical drapes display serene ombrés symbolic of seasonal transitions, and cascading roseate vines come together in a silken symphony.",
             discoverLink: "href",
-            image: "https://tilfi.com/cdn/shop/products/KOH0003Red_Kashi_PureKatanSilkKashiGhatSaree3_1200x.jpg?v=1689252962",
+            image: Banner1,
         },
         {
             heading: "Antinomy",
             subHeading:
                 "Antinomy reimagines Banarasi artistry through a modern lens, where classic craftsmanship evolves into contemporary expression, bringing forth pieces that challenge convention while remaining deeply rooted in tradition.",
             discoverLink: "href2",
-            image: "https://tilfi.com/cdn/shop/files/0005_037A3127.jpg?v=1689252834",
+            image: Banner2,
         },
     ];
 

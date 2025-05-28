@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import Slide1 from "../../../../assets/images/slider/Slider Placeholder.svg";
+
 import { motion, AnimatePresence } from "framer-motion";
 
 // Animation variants for text (adjusted for hero slider context)
@@ -46,34 +46,7 @@ const buttonVariants = {
     },
 };
 
-function HomeHeroSlider({ textPosition = false }) {
-    const sliderData = useMemo(
-        () => [
-            {
-                image: "https://tilfi.com/cdn/shop/files/korasbanner_3000x.jpg?v=1748004291",
-                heading: "Grace in Every Thread",
-                subheading: "Handwoven Elegance",
-                paragraph:
-                    "Celebrate timeless tradition with sarees that carry the legacy of skilled artisans. Every fold speaks of heritage.",
-            },
-            {
-                image: "https://tilfi.com/cdn/shop/files/korasbanner_3000x.jpg?v=1748004291",
-                heading: "Drape Your Story",
-                subheading: "Modern Roots in Classic Weaves",
-                paragraph:
-                    "From boardrooms to banquets, our sarees blend contemporary chic with cultural richness, made for every woman’s journey.",
-            },
-            {
-                image: "https://tilfi.com/cdn/shop/files/korasbanner_3000x.jpg?v=1748004291",
-                heading: "Crafted with Heart",
-                subheading: "From Loom to Love",
-                paragraph:
-                    "Each piece is more than fabric — it’s an emotion. Woven by hands, worn with pride. Discover sarees that feel like home.",
-            },
-        ],
-        []
-    );
-
+function HomeHeroSlider({ textPosition = false, sliderData = [] }) {
     const [activeSlide, setActiveSlide] = useState(0);
     const [isHovered, setIsHovered] = useState(false); // For pause on hover
     const sliderLength = sliderData.length - 1;
@@ -157,7 +130,7 @@ function HomeHeroSlider({ textPosition = false }) {
                     <motion.img
                         key={sliderData[activeSlide].image + activeSlide} // Unique key to trigger animation
                         src={sliderData[activeSlide].image}
-                        className="h-full w-full object-center object-cover"
+                        className="h-full w-full object-top object-cover"
                         alt={`Slide ${activeSlide + 1}`}
                         variants={imageVariants}
                         initial="hidden"

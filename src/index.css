@@ -5,8 +5,10 @@
 }
 html,
 body {
-    font-family: "Jost", sans-serif;
+    font-family: "Optima", sans-serif;
+
     overflow-x: hidden;
+    /* color: #533e2d; */
     color: #1e2939;
 }
 

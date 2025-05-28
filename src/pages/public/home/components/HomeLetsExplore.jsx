@@ -17,7 +17,7 @@ function HomeLetsExplore() {
                     />
                 </div>
             </div>
-            <div className="h-[400px] md:h-[600px]  py-4 bg-[url('https://tilfi.com/cdn/shop/files/12tilfi_copy_1600x.jpg?v=1614850539')] bg-center bg-cover bg-no-repeat text-white relative">
+            <div className="h-[400px] md:h-[600px]  py-4 bg-[url('./assets/images/Home/HomeLetsExplore/SF_1920x1080.jpg')] bg-center bg-cover bg-no-repeat text-white relative">
                 <div className="flex items-center justify-center flex-col h-full text-center ">
                     {/* <h1 className="max-w-1/2 uppercase text-4xl font-Thin">
                         Explore Our Premium Products
