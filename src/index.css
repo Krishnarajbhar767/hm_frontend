@@ -1,15 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-    --color-primary: #ef233c;
+    --color-primary: #f17f21;
+    --color-foreground: rgb(83, 62, 45);
 }
 html,
 body {
-    font-family: "Optima", sans-serif;
+    /* font-family: "AvertaStd-Regular"; */
+    /* font-family: "Optima", sans-serif; */
+    /* font-family: "Cardo", serif; */
+    font-family: "Jost";
+    /* font-family: "allright", sans-serif; */
 
     overflow-x: hidden;
     /* color: #533e2d; */
-    color: #1e2939;
+    color: rgb(83, 62, 45);
 }
 
 button {
@@ -112,3 +117,49 @@ button {
         transform: translateY(0);
     }
 }
+
+/* Category Page SideFilter And Product Details Addon CSS Start */
+/* Custom utility classes for enhanced components */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.animate-shimmer {
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Custom slider styles */
+.slider::-webkit-slider-thumb {
+    appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #1f2937;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.slider::-moz-range-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #1f2937;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Category Page SideFilter And Product Details Addon CSS ENd  */

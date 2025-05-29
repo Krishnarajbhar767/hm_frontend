@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import SidebarFilter from "../../../components/common/SidebarFilter"; // Adjust path as needed
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import SidebarFilter from "../../../components/common/SidebarFilter";
+import { Star, Filter, Grid, List, ChevronDown } from "lucide-react";
 
-// CategoryPage Component to display products in a category
+// Enhanced CategoryPage Component with premium UI and better mobile experience
 function CategoryPage() {
-    // Extract category ID from URL
     const { id, category } = useParams();
-    const displayCategory = category?.replace(/-/g, " ") || "Category"; // Convert to display format
+    const displayCategory = category?.replace(/-/g, " ") || "Category";
 
-    // State management
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [categoryDetails, setCategoryDetails] = useState(null);
@@ -18,6 +15,34 @@ function CategoryPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [sortOption, setSortOption] = useState("default");
+    const [viewMode, setViewMode] = useState("grid");
+
+    // Enhanced skeleton loader with shimmer effect
+    const ProductSkeleton = () => (
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+            <div className="relative">
+                <div className="aspect-[4/5] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50 animate-shimmer"></div>
+                </div>
+            </div>
+            <div className="p-4 space-y-3">
+                <div className="h-5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded animate-pulse">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50 animate-shimmer"></div>
+                </div>
+                <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-3/4 animate-pulse">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50 animate-shimmer"></div>
+                </div>
+                <div className="flex justify-between items-center">
+                    <div className="h-6 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-20 animate-pulse">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50 animate-shimmer"></div>
+                    </div>
+                    <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-16 animate-pulse">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50 animate-shimmer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 
     // Fetch products and category details
     useEffect(() => {
@@ -36,7 +61,7 @@ function CategoryPage() {
                     name: data?.data?.name || displayCategory,
                     description:
                         data?.data?.description ||
-                        "Explore our curated collection of products.",
+                        "Explore our curated collection of premium products.",
                 });
             } catch (err) {
                 setError(err.message);
@@ -78,6 +103,13 @@ function CategoryPage() {
             sorted.sort((a, b) => a.price - b.price);
         } else if (option === "price-high-to-low") {
             sorted.sort((a, b) => b.price - a.price);
+        } else if (option === "rating") {
+            sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        } else if (option === "newest") {
+            sorted.sort(
+                (a, b) =>
+                    new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+            );
         }
         return sorted;
     };
@@ -90,150 +122,282 @@ function CategoryPage() {
         setFilteredProducts(sorted);
     };
 
-    // Skeleton loader for product cards
-    const ProductSkeleton = () => (
-        <div className="bg-white border border-gray-300">
-            <Skeleton height={256} />
-            <div className="p-4 space-y-2">
-                <Skeleton width="75%" height={24} />
-                <Skeleton width="100%" height={16} />
-                <Skeleton width="50%" height={24} />
-                <Skeleton width="30%" height={16} />
-            </div>
-        </div>
-    );
+    const renderStars = (rating) => {
+        return Array(5)
+            .fill()
+            .map((_, index) => (
+                <Star
+                    key={index}
+                    className={`w-3 h-3 ${
+                        index < Math.floor(rating || 0)
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-gray-300"
+                    }`}
+                />
+            ));
+    };
 
     return (
-        <main className="min-h-screen bg-white py-8">
-            <div className="max-w-7xl mx-auto px-4">
-                {/* Category Title and Description */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-black capitalize">
-                        {categoryDetails?.name || displayCategory}
-                    </h1>
-                    <p className="text-gray-600 mt-2">
-                        {categoryDetails?.description}
-                    </p>
-                    <p className="text-sm text-gray-500 mt-1">
-                        {filteredProducts.length} Products Found
-                    </p>
+        <main className=" ">
+            <div className="boxedContainer pb-4">
+                {/* Enhanced Header Section */}
+                <div className="py-8 border-b border-gray-200 bg-white mb-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="text-center space-y-4">
+                            <h1 className="text-3xl md:text-4xl font-medium text-foreground capitalize tracking-tight">
+                                {categoryDetails?.name || displayCategory}
+                            </h1>
+                            <p className="text-lg text-foreground max-w-2xl mx-auto leading-relaxed">
+                                {categoryDetails?.description}
+                            </p>
+                            <div className="flex items-center justify-center gap-2 text-sm text-foreground">
+                                <span className="w-2 h-2 bg-green-500 rounded-full "></span>
+                                <span className="text-foreground">
+                                    {filteredProducts.length} Products Available
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Filter and Sort Controls */}
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4 border-b border-gray-300 pb-4">
-                    <button
-                        onClick={() => setIsSidebarOpen(true)}
-                        className="md:hidden text-sm bg-black text-white px-4 py-2 hover:bg-gray-800 transition-all duration-200"
-                    >
-                        Filter Products
-                    </button>
-                    <div className="flex items-center gap-2">
-                        <label className="text-sm font-medium text-black">
-                            Sort By:
-                        </label>
-                        <select
-                            value={sortOption}
-                            onChange={handleSortChange}
-                            className="p-2 border border-gray-300 focus:outline-none focus:border-black text-black"
+                {/* Enhanced Filter and Sort Controls */}
+                <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setIsSidebarOpen(true)}
+                            className="lg:hidden flex items-center gap-2 bg-foreground text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 font-medium"
                         >
-                            <option value="default">Default</option>
-                            <option value="price-low-to-high">
-                                Price: Low to High
-                            </option>
-                            <option value="price-high-to-low">
-                                Price: High to Low
-                            </option>
-                        </select>
+                            <Filter className="w-4 h-4" />
+                            Filters
+                        </button>
+
+                        {/* View Mode Toggle */}
+                        <div className="hidden sm:flex items-center gap-1 bg-gray-100 p-1 rounded-lg">
+                            <button
+                                onClick={() => setViewMode("grid")}
+                                className={`p-2 rounded-md transition-colors ${
+                                    viewMode === "grid"
+                                        ? "bg-white shadow-sm text-foreground"
+                                        : "text-foreground hover:text-foreground"
+                                }`}
+                            >
+                                <Grid className="w-4 h-4" />
+                            </button>
+                            <button
+                                onClick={() => setViewMode("list")}
+                                className={`p-2 rounded-md transition-colors ${
+                                    viewMode === "list"
+                                        ? "bg-white shadow-sm text-foreground"
+                                        : "text-foreground hover:text-foreground"
+                                }`}
+                            >
+                                <List className="w-4 h-4" />
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        <label className="text-sm font-medium text-foreground">
+                            Sort by:
+                        </label>
+                        <div className="relative">
+                            <select
+                                value={sortOption}
+                                onChange={handleSortChange}
+                                className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-foreground focus:border-transparent text-sm font-medium cursor-pointer transition-all duration-200"
+                            >
+                                <option value="default">Featured</option>
+                                <option value="newest">Newest First</option>
+                                <option value="price-low-to-high">
+                                    Price: Low to High
+                                </option>
+                                <option value="price-high-to-low">
+                                    Price: High to Low
+                                </option>
+                                <option value="rating">Highest Rated</option>
+                            </select>
+                            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground pointer-events-none" />
+                        </div>
                     </div>
                 </div>
 
                 <div className="flex gap-8">
-                    {/* Sidebar Filter */}
+                    {/* Enhanced Sidebar Filter */}
                     <SidebarFilter
                         onFilterChange={handleFilterChange}
                         isOpen={isSidebarOpen}
                         toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
                     />
 
-                    {/* Product Grid */}
+                    {/* Enhanced Product Grid */}
                     <div className="flex-1">
                         {loading ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {Array(3)
+                            <div
+                                className={`grid gap-6 ${
+                                    viewMode === "grid"
+                                        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
+                                        : "grid-cols-1"
+                                }`}
+                            >
+                                {Array(6)
                                     .fill()
                                     .map((_, index) => (
                                         <ProductSkeleton key={index} />
                                     ))}
                             </div>
                         ) : error ? (
-                            <p className="text-red-600 text-lg text-center">
-                                Error: {error}
-                            </p>
+                            <div className="text-center py-12">
+                                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <span className="text-red-600 text-2xl">
+                                        ⚠
+                                    </span>
+                                </div>
+                                <h3 className="text-lg font-medium text-foreground mb-2">
+                                    Something went wrong
+                                </h3>
+                                <p className="text-red-600">{error}</p>
+                            </div>
                         ) : filteredProducts.length === 0 ? (
-                            <p className="text-gray-600 text-lg">
-                                No products found in this category.
-                            </p>
+                            <div className="text-center py-12">
+                                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <span className="text-foreground text-2xl">
+                                        📦
+                                    </span>
+                                </div>
+                                <h3 className="text-lg font-medium text-foreground mb-2">
+                                    No products found
+                                </h3>
+                                <p className="text-foreground">
+                                    Try adjusting your filters or search
+                                    criteria
+                                </p>
+                            </div>
                         ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div
+                                className={`grid gap-6 ${
+                                    viewMode === "grid"
+                                        ? "grid-cols-1 sm:grid-cols-2"
+                                        : "grid-cols-1"
+                                }`}
+                            >
                                 {filteredProducts.map((product) => (
                                     <div
                                         key={product._id}
-                                        className="bg-white border border-gray-300 hover:border-gray-500 transition-all duration-200"
+                                        className={`group bg-white border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-300 rounded-lg overflow-hidden ${
+                                            viewMode === "list" ? "flex" : ""
+                                        }`}
                                     >
                                         {/* Product Image */}
-                                        <img
-                                            src={
-                                                product.images[0] ||
-                                                "https://via.placeholder.com/400"
-                                            }
-                                            alt={product.name}
-                                            className="w-full h-64 object-cover"
-                                            onError={(e) =>
-                                                (e.target.src =
-                                                    "https://via.placeholder.com/400")
-                                            }
-                                        />
-                                        <div className="p-4 space-y-2">
+                                        <div
+                                            className={`relative overflow-hidden bg-gray-50 ${
+                                                viewMode === "list"
+                                                    ? "w-48 flex-shrink-0"
+                                                    : "aspect-[4/5]"
+                                            }`}
+                                        >
+                                            <img
+                                                src={
+                                                    product.images[0] ||
+                                                    "/placeholder.svg?height=400&width=400" ||
+                                                    "/placeholder.svg"
+                                                }
+                                                alt={product.name}
+                                                className="w-full h-full object-cover object-top group-hover:scale-102 transition-transform duration-300"
+                                                onError={(e) =>
+                                                    (e.target.src =
+                                                        "/placeholder.svg?height=400&width=400")
+                                                }
+                                            />
+                                            {product.stock < 10 &&
+                                                product.stock > 0 && (
+                                                    <div className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                                                        Only {product.stock}{" "}
+                                                        left
+                                                    </div>
+                                                )}
+                                            {product.stock === 0 && (
+                                                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                                    <span className="bg-white text-foreground px-3 py-1 rounded-full text-sm font-medium">
+                                                        Out of Stock
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="p-4 flex-1 space-y-3">
                                             {/* Product Title */}
-                                            <h3 className="text-lg font-semibold text-black truncate">
+                                            <h3 className="text-lg font-semibold text-foreground line-clamp-2 group-hover:text-foreground transition-colors">
                                                 {product.name}
                                             </h3>
+
                                             {/* Product Description */}
-                                            <p className="text-sm text-gray-600 line-clamp-2">
+                                            <p className="text-sm text-foreground line-clamp-2 leading-relaxed">
                                                 {product.description ||
-                                                    "No description available."}
+                                                    "Premium quality product with excellent craftsmanship."}
                                             </p>
-                                            {/* Product Price and Rating */}
-                                            <div className="flex justify-between items-center">
-                                                <p className="text-lg font-bold text-black">
-                                                    ₹
-                                                    {product.price?.toLocaleString() ||
-                                                        "N/A"}
-                                                </p>
-                                                <p className="text-sm text-gray-600">
-                                                    ★ {product.rating || "N/A"}
-                                                </p>
-                                            </div>
-                                            {/* Additional Details */}
-                                            <div className="text-sm text-gray-600">
-                                                <p>
-                                                    Fabric:{" "}
-                                                    {product.fabric || "N/A"}
-                                                </p>
-                                                <p>
-                                                    Stock:{" "}
-                                                    {product.stock || "N/A"}
-                                                </p>
-                                                {product.stock < 10 && (
-                                                    <span className="text-xs bg-gray-200 text-gray-800 px-2 py-1">
-                                                        Low Stock
+
+                                            {/* Rating and Reviews */}
+                                            {product.rating && (
+                                                <div className="flex items-center gap-2">
+                                                    <div className="flex items-center">
+                                                        {renderStars(
+                                                            product.rating
+                                                        )}
+                                                    </div>
+                                                    <span className="text-sm text-foreground">
+                                                        {product.rating} (
+                                                        {product.reviewCount ||
+                                                            0}{" "}
+                                                        reviews)
                                                     </span>
-                                                )}
+                                                </div>
+                                            )}
+
+                                            {/* Price and Stock */}
+                                            <div className="flex justify-between items-center">
+                                                <div className="space-y-1">
+                                                    <p className="text-xl font-bold text-foreground">
+                                                        ₹
+                                                        {product.price?.toLocaleString() ||
+                                                            "N/A"}
+                                                    </p>
+                                                    {product.originalPrice &&
+                                                        product.originalPrice >
+                                                            product.price && (
+                                                            <p className="text-sm text-foreground line-through">
+                                                                ₹
+                                                                {product.originalPrice.toLocaleString()}
+                                                            </p>
+                                                        )}
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-sm text-foreground">
+                                                        Stock:{" "}
+                                                        {product.stock || "N/A"}
+                                                    </p>
+                                                </div>
                                             </div>
+
+                                            {/* Product Details */}
+                                            <div className="grid grid-cols-2 gap-2 text-xs text-foreground bg-gray-50 p-3 rounded-lg">
+                                                <div>
+                                                    <span className="font-medium">
+                                                        Fabric:
+                                                    </span>{" "}
+                                                    {product.fabric || "N/A"}
+                                                </div>
+                                                <div>
+                                                    <span className="font-medium">
+                                                        Color:
+                                                    </span>{" "}
+                                                    {product.color || "N/A"}
+                                                </div>
+                                            </div>
+
                                             {/* View Details Button */}
                                             <Link
                                                 to={`/product/${product._id}`}
-                                                className="block text-center text-sm bg-black text-white px-4 py-2 hover:bg-gray-800 transition-all duration-200"
+                                                className="block w-full text-center bg-foreground text-white py-3 px-4 rounded-lg hover:bg-foreground/90 transition-colors duration-200 font-medium"
                                             >
                                                 View Details
                                             </Link>

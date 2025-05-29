@@ -1,9 +1,9 @@
 import React from "react";
 
-function Heading({ text, color = "#533e2d" }) {
+function Heading({ text }) {
     return (
         <h1
-            className={`text-center  font-medium text-xl leading-none md:text-[2rem] capitalize  text-[${color}]`}
+            className={`text-center  font-medium text-xl leading-none md:text-[2rem] capitalize  `}
         >
             {text}
         </h1>

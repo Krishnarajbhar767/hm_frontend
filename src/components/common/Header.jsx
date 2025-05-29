@@ -69,15 +69,18 @@ function Header() {
 
     return (
         // Relative wrapper for header and sidebars
-        <div className="header-wrapper" ref={headerRef}>
+        <div
+            className="header-wrapper border-b-1 border-gray-300"
+            ref={headerRef}
+        >
             {/* Header with white background, shadow, and responsive padding */}
-            <header className="bg-white text-gray-800 px-4 sm:px-6  h-20 shadow  ">
+            <header className="bg-white text-foreground px-4 sm:px-6  h-20 shadow  ">
                 {/* Constrained container for centered content */}
                 <div className="max-w-6xl mx-auto flex items-center justify-between h-full">
                     {/* Logo with responsive width and height */}
 
                     {/* Desktop navigation (hidden on mobile) */}
-                    <nav className="hidden md:flex gap-4 lg:gap-6 text-gray-800 font-medium text-sm lg:text-[14px] tracking-wide uppercase">
+                    <nav className="hidden md:flex gap-4 lg:gap-6 text-foreground font-medium text-sm lg:text-[14px] tracking-wide uppercase">
                         {Links.map((link) => (
                             // Navigation link or dropdown container
                             <div key={link.title} className="relative group">
@@ -88,7 +91,7 @@ function Header() {
                                             {link.title}
                                         </span>
                                         <svg
-                                            className="w-4 h-4 text-gray-800 group-hover:rotate-180 transition-all duration-300"
+                                            className="w-4 h-4 text-foreground group-hover:rotate-180 transition-all duration-300"
                                             aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill="none"
@@ -161,7 +164,7 @@ function Header() {
                             aria-label="Open search"
                         >
                             <svg
-                                className="w-5 sm:w-6 h-5 sm:h-6 text-gray-800 hover:text-primary transition-all duration-300"
+                                className="w-5 sm:w-6 h-5 sm:h-6 text-foreground hover:text-primary transition-all duration-300"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -194,7 +197,7 @@ function Header() {
                             aria-label="Open login"
                         >
                             <svg
-                                className="w-5 sm:w-6 h-5 sm:h-6 text-gray-800 hover:text-primary transition-all duration-300"
+                                className="w-5 sm:w-6 h-5 sm:h-6 text-foreground hover:text-primary transition-all duration-300"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -217,7 +220,7 @@ function Header() {
                             aria-label="Open cart"
                         >
                             <svg
-                                className="w-5 sm:w-6 h-5 sm:h-6 text-gray-800 hover:text-primary transition-all duration-300"
+                                className="w-5 sm:w-6 h-5 sm:h-6 text-foreground hover:text-primary transition-all duration-300"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -240,7 +243,7 @@ function Header() {
                             aria-label="Toggle menu"
                         >
                             <svg
-                                className="w-5 sm:w-6 h-5 sm:h-6 text-gray-800 hover:text-primary"
+                                className="w-5 sm:w-6 h-5 sm:h-6 text-foreground hover:text-primary"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -271,7 +274,7 @@ function Header() {
                                     <div className="flex justify-between items-center">
                                         {link.subLinks ? (
                                             // Dropdown toggle for "Product" in mobile menu
-                                            <span className="text-gray-950 text-sm tracking-wider capitalize">
+                                            <span className="text-foreground text-sm tracking-wider capitalize">
                                                 {link.title}
                                             </span>
                                         ) : (

@@ -27,16 +27,16 @@ function WhyChooseUs() {
             {data.map((item) => (
                 <div className=" p-4 flex flex-col items-center gap-2">
                     {/* icon */}
-                    <span className="text-6xl leading-none font-thin text-gray-800">
+                    <span className="text-6xl leading-none font-thin text-foreground">
                         {item.icon}
                     </span>
                     {/* Heading */}
                     <div>
-                        <h1 className="uppercase text-xl font-medium text-gray-800 text-center">
+                        <h1 className="uppercase text-xl font-medium text-foreground/90 text-center">
                             {item.heading}
                         </h1>
                         {/* Subheading */}
-                        <h2 className="text-sm font-normal text-gray-600 text-center">
+                        <h2 className="text-sm font-normal text-foreground/80 text-center">
                             {item.subheading}
                         </h2>
                     </div>
