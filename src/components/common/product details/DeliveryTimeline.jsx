@@ -1,68 +1,93 @@
 import { Clock, Package, Truck, Check } from "lucide-react";
 
-/**
- * DeliveryTimeline Component
- * Shows the delivery process timeline
- */
 function DeliveryTimeline() {
-    const timelineSteps = [
+    const primaryColor = "rgb(83, 62, 45)";
+    const steps = [
         {
             icon: Clock,
             title: "Order Confirmation",
             description: "Within 24 hours of placing your order",
-            bgColor: "bg-gray-900",
-            textColor: "text-white",
         },
         {
             icon: Package,
             title: "Processing & Packaging",
             description: "1-2 business days",
-            bgColor: "bg-gray-200",
-            textColor: "text-gray-700",
         },
         {
             icon: Truck,
             title: "Shipping",
             description:
                 "3-5 business days (standard) or 1-2 business days (express)",
-            bgColor: "bg-gray-200",
-            textColor: "text-gray-700",
         },
         {
             icon: Check,
             title: "Delivery",
             description: "Signature required upon delivery",
-            bgColor: "bg-gray-200",
-            textColor: "text-gray-700",
         },
     ];
 
     return (
-        <div className="bg-white rounded-lg overflow-hidden mb-8 p-6 lg:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        <div className="bg-white p-6 lg:p-10 rounded-lg max-w-5xl mx-auto">
+            <h2
+                className="text-2xl font-bold mb-10 text-center"
+                style={{ color: primaryColor }}
+            >
                 Delivery Timeline
             </h2>
-            <div className="relative">
-                <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-                <div className="space-y-8 relative">
-                    {timelineSteps.map((step, index) => (
-                        <div key={index} className="flex gap-6">
+
+            <div className="flex flex-col lg:flex-row items-center justify-center space-y-8 lg:space-y-0 lg:space-x-10">
+                {steps.map((step, idx) => {
+                    const Icon = step.icon;
+                    return (
+                        <div
+                            key={idx}
+                            className="flex flex-col items-center text-center max-w-xs"
+                        >
+                            {/* Icon circle */}
                             <div
-                                className={`w-8 h-8 rounded-full ${step.bgColor} ${step.textColor} flex items-center justify-center flex-shrink-0 relative z-10`}
+                                className="rounded-full border-4 flex items-center justify-center mb-4"
+                                style={{
+                                    width: 60,
+                                    height: 60,
+                                    borderColor: primaryColor,
+                                }}
                             >
-                                <step.icon className="w-4 h-4" />
+                                <Icon
+                                    className="w-8 h-8"
+                                    style={{ color: primaryColor }}
+                                />
                             </div>
-                            <div>
-                                <h3 className="font-medium text-gray-900">
-                                    {step.title}
-                                </h3>
-                                <p className="text-gray-600">
-                                    {step.description}
-                                </p>
-                            </div>
+
+                            {/* Title */}
+                            <h3
+                                className="font-semibold text-lg"
+                                style={{ color: primaryColor }}
+                            >
+                                {step.title}
+                            </h3>
+
+                            {/* Description */}
+                            <p
+                                className="text-sm mt-2"
+                                style={{ color: primaryColor }}
+                            >
+                                {step.description}
+                            </p>
+
+                            {/* Progress dot except after last step */}
+                            {idx < steps.length && (
+                                <div
+                                    className="mt-6 rounded-full block"
+                                    style={{
+                                        width: 16,
+                                        height: 16,
+                                        backgroundColor: primaryColor,
+                                    }}
+                                />
+                            )}
                         </div>
-                    ))}
-                </div>
+                    );
+                })}
             </div>
         </div>
     );

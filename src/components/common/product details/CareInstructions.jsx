@@ -34,22 +34,22 @@ function CareInstructions() {
 
     return (
         <div className="bg-white rounded-lg overflow-hidden mb-8 p-6 lg:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            <h2 className="text-2xl font-bold text-foreground mb-6">
                 Care Instructions
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {careCategories.map((category, index) => (
-                    <div key={index} className="p-5 bg-gray-50 rounded-lg">
-                        <h3 className="font-semibold text-lg text-gray-900 mb-3">
+                    <div key={index} className="p-5 bg-foreground/5 rounded-sm">
+                        <h3 className="font-semibold text-lg text-foreground mb-3">
                             {category.title}
                         </h3>
-                        <ul className="space-y-2 text-gray-600">
+                        <ul className="space-y-2 text-foreground">
                             {category.instructions.map((instruction, idx) => (
                                 <li
                                     key={idx}
                                     className="flex items-start gap-2"
                                 >
-                                    <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                                    <Check className="w-5 h-5 text-gray-600 mt-0.5 flex-shrink-0" />
                                     <span>{instruction}</span>
                                 </li>
                             ))}

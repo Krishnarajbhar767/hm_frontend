@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import Heading from "../../pages/public/home/components/Heading";
 import { AnimatePresence, motion } from "framer-motion";
-
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import slugify from "slugify";
 const Search = ({ isOpen, closeHandler }) => {
     useEffect(() => {
         // Calculate scrollbar width
@@ -22,7 +24,10 @@ const Search = ({ isOpen, closeHandler }) => {
             document.body.style.paddingRight = "";
         };
     }, []);
-
+    const categories = useSelector(
+        (state) => state?.category?.categories || []
+    );
+    const products = useSelector((state) => state?.product?.products || []);
     return (
         <div
             className="fixed z-[100] inset-0 w-screen h-screen flex bg-gray-900/25"
@@ -45,7 +50,7 @@ const Search = ({ isOpen, closeHandler }) => {
                         aria-label="Close search"
                     >
                         <svg
-                            className="w-7 h-7 text-gray-800 hover:text-gray-600"
+                            className="w-7 h-7 text-foreground hover:text-foreground/80"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor"
                             viewBox="0 0 24 24"
@@ -54,18 +59,18 @@ const Search = ({ isOpen, closeHandler }) => {
                         </svg>
                     </button>
                 </div>
-                <hr className="border-gray-300 mx-4 sm:mx-6" />
+                <hr className="border-foreground/50 mx-4 sm:mx-6" />
 
                 {/* Search Input (Pinned Below Header) */}
                 <div className="px-4 sm:px-6 py-4">
-                    <div className="relative pl-8 sm:pl-10 rounded-md border border-gray-300">
+                    <div className="relative pl-8 sm:pl-10 rounded-md border border-foreground/80">
                         <input
                             placeholder="Search..."
                             type="text"
-                            className="outline-none w-full border-none py-2 text-sm sm:text-base text-gray-800"
+                            className="outline-none w-full border-none py-2 text-sm sm:text-base text-foreground"
                         />
                         <svg
-                            className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800 absolute left-2 top-1/2 -translate-y-1/2"
+                            className="w-4 h-4 sm:w-5 sm:h-5 text-foreground absolute left-2 top-1/2 -translate-y-1/2"
                             aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -80,32 +85,45 @@ const Search = ({ isOpen, closeHandler }) => {
                         </svg>
                     </div>
                 </div>
-                <hr className="border-gray-300 mx-4 sm:mx-6" />
+                <hr className="text-foreground/80 mx-4 sm:mx-6" />
 
                 {/* Content (Scrollable) */}
                 <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-4">
-                    <h1 className="font-medium text-base sm:text-lg text-gray-800 tracking-wide">
+                    <h1 className="font-medium text-base sm:text-lg text-foreground tracking-wide mt-2">
                         Quick Links
                     </h1>
-                    <ul className="text-gray-800 mt-2 space-y-1 text-xs sm:text-sm tracking-wide capitalize">
-                        <li className="cursor-pointer hover:text-gray-600">
-                            Category1
-                        </li>
-                        <li className="cursor-pointer hover:text-gray-600">
-                            Category2
-                        </li>
-                        <li className="cursor-pointer hover:text-gray-600">
-                            Category3
-                        </li>
+                    <ul className="text-foreground mt-2 space-y-1 text-xs sm:text-sm tracking-wide capitalize flex flex-col ">
+                        {categories?.map((item, idx) => {
+                            const slug = slugify(item.name, {
+                                lower: true,
+                                strict: true,
+                            });
+
+                            if (idx < 3) {
+                                return (
+                                    <Link
+                                        onClick={closeHandler}
+                                        to={`/products/${slug}/${item._id}`}
+                                        className="cursor-pointer hover:text-foreground/80"
+                                    >
+                                        {item?.name}
+                                    </Link>
+                                );
+                            }
+                        })}
                     </ul>
 
-                    <h1 className="font-medium text-base sm:text-lg text-gray-800 mt-4">
+                    <h1 className="font-medium text-base sm:text-lg text-foreground mt-4">
                         Need some inspiration?
                     </h1>
                     <div className="mt-3 space-y-3">
-                        <Card />
-                        <Card />
-                        <Card />
+                        {products.map((item, idx) => (
+                            <Card
+                                key={item?._id}
+                                item={item}
+                                closeHandler={closeHandler}
+                            />
+                        ))}
                     </div>
                 </div>
             </motion.div>
@@ -115,24 +133,29 @@ const Search = ({ isOpen, closeHandler }) => {
 
 export default Search;
 
-function Card() {
+function Card({ item, closeHandler }) {
+    console.log("Item Data ->", item);
     return (
-        <div className="flex h-20 sm:h-24 gap-3 border-b last:border-b-0 border-neutral-300 pb-3">
-            {/* Image Container */}
-            <div className="w-16 sm:w-20">
-                <img
-                    src="https://themesflat.co/html/ecomus/images/products/white-3.jpg"
-                    className="h-full w-full object-cover cursor-pointer rounded"
-                    alt="Product"
-                />
+        <Link to={`/product/${item?._id}`} onClick={closeHandler}>
+            <div className="flex h-20 sm:h-24 gap-3 border-b last:border-b-0 border-foreground/40 pb-3">
+                {/* Image Container */}
+                <div className="w-16 sm:w-20">
+                    <img
+                        src={item.images[0]}
+                        className="h-full w-full object-cover cursor-pointer "
+                        alt={item?.name}
+                    />
+                </div>
+                {/* Price And Title Container */}
+                <div className="flex-1 space-y-1 mt-1">
+                    <h1 className="capitalize text-xs sm:text-sm cursor-pointer line-clamp-1">
+                        {item?.name}
+                    </h1>
+                    <h2 className="text-xs sm:text-sm cursor-pointer">
+                        {item?.price}
+                    </h2>
+                </div>
             </div>
-            {/* Price And Title Container */}
-            <div className="flex-1 space-y-1 mt-1">
-                <h1 className="capitalize text-xs sm:text-sm cursor-pointer line-clamp-1">
-                    Product Name
-                </h1>
-                <h2 className="text-xs sm:text-sm cursor-pointer">$299</h2>
-            </div>
-        </div>
+        </Link>
     );
 }

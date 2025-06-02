@@ -48,20 +48,20 @@ function ProductFeatures({ product }) {
 
     return (
         <div className="bg-white rounded-lg overflow-hidden mb-8 p-6 lg:p-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+            <h2 className="text-2xl font-semibold text-foreground mb-6">
                 Product Features
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {features.map((feature, index) => (
                     <div key={index} className="flex gap-4">
                         <div className="flex-shrink-0 w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                            <feature.icon className="w-6 h-6 text-gray-900" />
+                            <feature.icon className="w-6 h-6 text-foreground" />
                         </div>
                         <div>
-                            <h3 className="font-medium text-lg text-gray-900 mb-2">
+                            <h3 className="font-medium text-lg text-foreground mb-2">
                                 {feature.title}
                             </h3>
-                            <p className="text-gray-600">
+                            <p className="text-foreground">
                                 {feature.description}
                             </p>
                         </div>

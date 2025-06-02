@@ -136,7 +136,7 @@ function Login() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
-                    className="items-center flex justify-between text-gray-800"
+                    className="items-center flex justify-between text-foreground"
                 >
                     <div>
                         <Link
@@ -165,7 +165,7 @@ function Login() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.6 }}
                 >
-                    <h1 className="mx-auto text-center text-gray-600 text-[16px]">
+                    <h1 className="mx-auto text-center text-foreground text-[16px]">
                         No account yet?{" "}
                         <Link
                             to={"/sign-up"}

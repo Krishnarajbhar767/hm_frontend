@@ -14,7 +14,7 @@ const Button = ({
             whileTap={{ scale: 0.98 }}
             onClick={onSubmitHandler}
             disabled={disabled}
-            className="group relative inline-flex h-12 items-center justify-center overflow-hidden bg-neutral-950 px-6 font-light text-neutral-200 text-md tracking-wide w-full uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+            className="group relative inline-flex h-12 items-center justify-center overflow-hidden bg-foreground px-6 font-light text-neutral-200 text-md tracking-wide w-full uppercase disabled:opacity-50 disabled:cursor-not-allowed"
         >
             {disabled ? (
                 <motion.div

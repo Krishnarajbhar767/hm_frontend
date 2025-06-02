@@ -36,7 +36,7 @@ function Cart() {
                 {/* Mobile Step Indicator (Horizontal Line with Dots) */}
                 <div className="relative flex justify-between items-center md:hidden mb-6">
                     {/* Horizontal Line */}
-                    <div className="absolute top-3 left-0 right-0 h-0.5 bg-gray-300"></div>
+                    <div className="absolute top-3 left-0 right-0 h-0.5 bg-foreground"></div>
                     {/* Dots and Labels */}
                     {Data.map((item) => (
                         <div
@@ -47,8 +47,8 @@ function Cart() {
                                 className={`w-6 h-6 flex items-center justify-center text-xs font-medium
                   ${
                       stepCount >= item.id
-                          ? "bg-gray-800 text-white"
-                          : "bg-white text-gray-500 border border-gray-300"
+                          ? "bg-foreground text-white"
+                          : "bg-white  border border-foreground text-foreground"
                   }`}
                             >
                                 {item.id}
@@ -66,8 +66,8 @@ function Cart() {
                         <div
                             className={`flex gap-4 py-2 ${
                                 stepCount >= item.id
-                                    ? "border-b-2 border-gray-800"
-                                    : "border-b border-gray-300"
+                                    ? "border-b-2 border-foreground"
+                                    : "border-b border-foreground/50"
                             }`}
                             key={item.id}
                         >
@@ -75,10 +75,10 @@ function Cart() {
                                 0{item.id}
                             </h1>
                             <div>
-                                <h1 className="text-sm md:text-base lg:text-[18px] uppercase font-medium text-gray-800">
+                                <h1 className="text-sm md:text-base lg:text-[18px] uppercase font-medium text-foreground">
                                     {item.heading}
                                 </h1>
-                                <h2 className="text-gray-600 text-xs md:text-sm">
+                                <h2 className="text-foreground text-xs md:text-sm">
                                     {item.subHeading}
                                 </h2>
                             </div>

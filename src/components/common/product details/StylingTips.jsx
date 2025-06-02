@@ -24,20 +24,20 @@ function StylingTips() {
         <div className="bg-white rounded-lg overflow-hidden mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2">
                 <div className="p-6 lg:p-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                    <h2 className="text-2xl font-bold text-foreground mb-6">
                         Styling Tips
                     </h2>
                     <div className="space-y-4">
                         {tips.map((tip, index) => (
                             <div key={index} className="flex items-start gap-3">
-                                <div className="w-6 h-6 rounded-full bg-gray-900 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <div className="w-6 h-6 rounded-full bg-foreground text-white flex items-center justify-center flex-shrink-0 mt-0.5">
                                     {index + 1}
                                 </div>
                                 <div>
-                                    <h3 className="font-medium text-gray-900">
+                                    <h3 className="font-medium text-foreground">
                                         {tip.title}
                                     </h3>
-                                    <p className="text-gray-600">
+                                    <p className="text-foreground">
                                         {tip.description}
                                     </p>
                                 </div>
@@ -63,7 +63,7 @@ function StylingTips() {
                             Tag us on Instagram with #YourBrandStyle to be
                             featured on our page
                         </p>
-                        <button className=" text-gray-900 px-6 py-2 rounded-lg font-medium  transition-colors bg-white border border-transparent hover:bg-transparent hover:border-white hover:text-white">
+                        <button className=" text-foreground px-6 py-2 rounded-lg font-medium  transition-colors bg-white border border-transparent hover:bg-transparent hover:border-white hover:text-white">
                             Follow Us
                         </button>
                     </div>

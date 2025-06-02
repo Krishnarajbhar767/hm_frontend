@@ -11,6 +11,8 @@ import StylingTips from "./product details/StylingTips";
 import ProductTabs from "./product details/ProductTabs";
 import DeliveryTimeline from "./product details/DeliveryTimeline";
 import SuggestedProducts from "./product details/SuggestedProducts";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, setCart } from "../../redux/slices/cartSlice";
 
 /**
  * Enhanced ProductDetailsPage Component
@@ -19,7 +21,6 @@ import SuggestedProducts from "./product details/SuggestedProducts";
  */
 function ProductDetailsPage() {
     const { id } = useParams();
-
     // State management
     const [product, setProduct] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
@@ -27,7 +28,8 @@ function ProductDetailsPage() {
     const [error, setError] = useState(null);
     const [isZoomed, setIsZoomed] = useState(false);
     const [zoomedImage, setZoomedImage] = useState("");
-
+    const { user } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
     // Mock reviews data
     const mockReviews = [
         {
@@ -98,18 +100,27 @@ function ProductDetailsPage() {
 
     // Event handlers
     const handleAddToCart = (data) => {
-        console.log("Add to cart:", data);
-        // Implement cart functionality
+        if (!user) {
+            const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+            const isExist = existingCart.some((item) => item._id === data._id);
+
+            if (!isExist) {
+                const updatedCart = [...existingCart, { ...data }];
+                localStorage.setItem("cart", JSON.stringify(updatedCart));
+                console.log("Added to localStorage cart");
+                dispatch(setCart(updatedCart));
+            } else {
+                console.log("Item Already In Cart");
+            }
+        }
     };
 
     const handleBuyNow = (data) => {
         console.log("Buy now:", data);
-        // Implement buy now functionality
     };
 
     const handleWishlistToggle = (product) => {
         console.log("Wishlist toggle:", product);
-        // Implement wishlist functionality
     };
 
     const handleShare = () => {
@@ -261,6 +272,8 @@ function ProductDetailsPage() {
 
                 {/* Product Information Tabs */}
                 <ProductTabs product={product} reviews={mockReviews} />
+                {/* Suggested Products Section */}
+                <SuggestedProducts products={relatedProducts} />
                 {/* Product Features Section */}
                 <ProductFeatures product={product} />
 
@@ -272,9 +285,6 @@ function ProductDetailsPage() {
 
                 {/* Delivery Timeline Section */}
                 <DeliveryTimeline />
-
-                {/* Suggested Products Section */}
-                <SuggestedProducts products={relatedProducts} />
 
                 {/* Zoom Modal */}
                 {isZoomed && (

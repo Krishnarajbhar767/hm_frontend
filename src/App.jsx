@@ -13,6 +13,7 @@ import {
     setCategories,
     setIsCategoriesLoaded,
 } from "./redux/slices/categorySlice";
+import { setCart } from "./redux/slices/cartSlice";
 
 function App() {
     const dispatch = useDispatch();
@@ -63,6 +64,15 @@ function App() {
     useEffect(() => {
         fetchUser();
     });
+
+    useEffect(() => {
+        if (user) {
+            dispatch(setCart(user.cartItems));
+        } else {
+            dispatch(setCart(JSON.parse(localStorage.getItem("cart")) || []));
+        }
+    }, [localStorage, user]);
+
     return <AppRoutes />;
 }
 

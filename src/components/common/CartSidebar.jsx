@@ -14,11 +14,11 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
     const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.cartItems);
     const subtotal = useSelector((state) => state.cart.subtotal);
-
     const updateQuantityHandler = (id, change) => {
-        const item = cartItems.find((item) => item.id === id);
+        const item = cartItems.find((item) => item._id === id);
         if (item) {
             const newQuantity = Math.max(1, item.quantity + change);
+
             dispatch(updateQuantity({ id, quantity: newQuantity }));
         }
     };
@@ -57,7 +57,7 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                         aria-label="Close cart"
                     >
                         <svg
-                            className="w-7 h-7 text-gray-800 hover:text-gray-600"
+                            className="w-7 h-7 text-foreground hover:text-foreground/50"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor"
                             viewBox="0 0 24 24"
@@ -66,7 +66,7 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                         </svg>
                     </button>
                 </div>
-                <hr className="border-gray-300 mx-4 sm:mx-6 mb-2" />
+                <hr className="border-foreground/50 mx-4 sm:mx-6 mb-2" />
 
                 {/* Cart Items (Scrollable) */}
                 <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-4">
@@ -75,19 +75,19 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.3 }}
-                            className="text-gray-600 text-center"
+                            className="text-foreground text-center"
                         >
                             Your cart is empty.
                         </motion.p>
                     ) : (
                         cartItems.map((item) => (
                             <motion.div
-                                key={item.id}
+                                key={item._id}
                                 layout
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
-                                className="flex gap-3 mb-4 pb-4 border-b border-gray-300"
+                                className="flex gap-3 mb-4 pb-4 border-b border-foreground/50"
                             >
                                 <img
                                     src={
@@ -96,37 +96,39 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                                             : item.image
                                     }
                                     alt={item.name}
-                                    className="w-16 h-full sm:w-20 h-full object-cover "
+                                    className="w-16 h-full sm:w-20  object-cover "
                                 />
                                 <div className="flex-1">
                                     <div className="flex justify-between items-start mb-1">
-                                        <h3 className="font-light text-sm sm:text-base text-gray-800 line-clamp-1">
-                                            {item.name}
+                                        <h3 className="font-light text-sm sm:text-base text-foreground line-clamp-1">
+                                            {item?.name}
                                         </h3>
                                         <button
-                                            onClick={() => removeItem(item.id)}
-                                            className="text-gray-400 hover:text-gray-600 text-base p-1"
-                                            aria-label={`Remove ${item.name}`}
+                                            onClick={() =>
+                                                removeItem(item?._id)
+                                            }
+                                            className="text-foreground hover:text-foreground/50 text-base p-1"
+                                            aria-label={`Remove ${item?.name}`}
                                         >
                                             ×
                                         </button>
                                     </div>
-                                    <p className="text-gray-600 text-xs">
-                                        Color: {item.color}
+                                    <p className="text-foreground text-xs">
+                                        Color: {item?.color}
                                     </p>
-                                    <p className="text-gray-600 text-xs">
-                                        Weight: {item.weight}
+                                    <p className="text-foreground text-xs">
+                                        Weight: {item?.weight}
                                     </p>
                                     <div className="flex justify-between items-center mt-2">
                                         <div className="flex items-center gap-2">
                                             <button
                                                 onClick={() =>
                                                     updateQuantityHandler(
-                                                        item.id,
+                                                        item._id,
                                                         -1
                                                     )
                                                 }
-                                                className="w-7 h-7 flex items-center justify-center border  text-gray-800 hover:bg-gray-100 text-sm"
+                                                className="w-7 h-7 flex items-center justify-center border  text-foreground hover:bg-gray-100 text-sm"
                                                 aria-label="Decrease quantity"
                                             >
                                                 -
@@ -137,18 +139,18 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                                             <button
                                                 onClick={() =>
                                                     updateQuantityHandler(
-                                                        item.id,
-                                                        1
+                                                        item._id,
+                                                        +1
                                                     )
                                                 }
-                                                className="w-7 h-7 flex items-center justify-center border  text-gray-800 hover:bg-gray-100 text-sm"
+                                                className="w-7 h-7 flex items-center justify-center border  text-foreground hover:bg-gray-100 text-sm"
                                                 aria-label="Increase quantity"
                                             >
                                                 +
                                             </button>
                                         </div>
                                         <p className="font-medium text-xs sm:text-sm">
-                                            ${item.price}
+                                            &#x20B9;{item.price}
                                         </p>
                                     </div>
                                 </div>
@@ -164,7 +166,7 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                             SUBTOTAL:
                         </span>
                         <span className="font-light text-sm sm:text-base">
-                            ${subtotal.toFixed(2)}
+                            &#x20B9; {subtotal.toFixed(2)}
                         </span>
                     </div>
                     <Link to={"/cart"} onClick={viewCartHandler}>

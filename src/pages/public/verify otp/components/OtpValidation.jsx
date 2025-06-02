@@ -140,7 +140,7 @@ const OtpValidation = ({ userData }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-lg font-semibold uppercase text-gray-800 mb-4"
+                className="text-lg font-semibold uppercase text-foreground mb-4"
             >
                 Enter OTP
             </motion.h2>
@@ -160,7 +160,7 @@ const OtpValidation = ({ userData }) => {
                         onKeyDown={(e) => handleKeyDown(index, e)}
                         onPaste={index === 0 ? handlePaste : undefined}
                         ref={(el) => (inputRefs.current[index] = el)}
-                        className="w-9 md:w-15 lg:w-[3.9rem] h-12 text-center text-xl border-[2px] border-gray-400 focus:outline-none focus:border-gray-800 text-gray-700 transition-all duration-100 ease-linear"
+                        className="w-9 md:w-15 lg:w-[3.9rem] h-12 text-center text-xl border-[2px] border-foreground/50 focus:outline-none focus:border-foreground text-foreground transition-all duration-100 ease-linear"
                     />
                 ))}
             </div>
@@ -191,7 +191,7 @@ const OtpValidation = ({ userData }) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.8 }}
-                        className="text-sm text-gray-600 mb-2"
+                        className="text-sm text-foreground mb-2"
                     >
                         Resend OTP in {formatTime(secondsRemaining)}
                     </motion.p>
@@ -205,7 +205,7 @@ const OtpValidation = ({ userData }) => {
                         <button
                             disabled={isResendDisabled}
                             onClick={handleResendOtp}
-                            className="w-full bg-transparent border-[2px] border-gray-500 text-gray-600 hover:bg-gray-100 disabled:opacity-50 h-12 px-6 "
+                            className="w-full bg-transparent border-[2px] border-foreground/50 text-foreground hover:bg-gray-100 disabled:opacity-50 h-12 px-6 "
                         >
                             Resend OTP
                         </button>

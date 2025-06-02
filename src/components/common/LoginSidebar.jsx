@@ -83,7 +83,7 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
                         aria-label="Close login"
                     >
                         <svg
-                            className="w-7 h-7 text-gray-800 hover:text-gray-600"
+                            className="w-7 h-7 text-foreground hover:text-foreground/80"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor"
                             viewBox="0 0 24 24"
@@ -92,7 +92,7 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
                         </svg>
                     </button>
                 </div>
-                <hr className="border-gray-300 mx-4 sm:mx-6" />
+                <hr className="border-foreground/50 mx-4 sm:mx-6" />
 
                 {/* Form Content (Scrollable) */}
                 <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-4">
@@ -142,11 +142,11 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
                             }}
                             className="text-sm sm:text-base"
                         />
-                        <div className="flex justify-between items-center text-gray-800 text-xs sm:text-sm">
+                        <div className="flex justify-between items-center text-foreground text-xs sm:text-sm">
                             <Link
                                 to="/reset-password"
                                 onClick={closeHandler}
-                                className="text-sm sm:text-sm underline hover:text-gray-600"
+                                className="text-sm sm:text-sm underline hover:text-foreground/60"
                             >
                                 Lost Password?
                             </Link>
@@ -163,7 +163,7 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
                         onSubmitHandler={handleSubmit(loginHandler)}
                     />
                     <div className="mt-3 text-center">
-                        <p className="text-gray-600 text-xs sm:text-sm">
+                        <p className="text-foreground text-xs sm:text-sm">
                             No account yet?{" "}
                             <Link
                                 to="/sign-up"

@@ -26,7 +26,7 @@ function ProductTabs({ product, reviews = [] }) {
                     className={`w-4 h-4 ${
                         index < Math.floor(rating || 0)
                             ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300"
+                            : "text-foreground"
                     }`}
                 />
             ));
@@ -41,7 +41,7 @@ function ProductTabs({ product, reviews = [] }) {
     return (
         <div className="bg-white rounded-lg overflow-hidden mb-8">
             {/* Tab Navigation */}
-            <div className="border-b border-gray-200">
+            <div className="border-b border-foreground/20">
                 <nav className="flex space-x-8 px-6" aria-label="Tabs">
                     {tabs.map((tab) => (
                         <button
@@ -49,8 +49,8 @@ function ProductTabs({ product, reviews = [] }) {
                             onClick={() => setActiveTab(tab.id)}
                             className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors ${
                                 activeTab === tab.id
-                                    ? "border-gray-900 text-gray-900"
-                                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                    ? "border-foreground text-foreground"
+                                    : "border-transparent text-foreground hover:text-foreground hover:border-foreground/400"
                             }`}
                         >
                             <tab.icon className="w-4 h-4" />
@@ -65,7 +65,7 @@ function ProductTabs({ product, reviews = [] }) {
                 {/* Specifications Tab */}
                 {activeTab === "specifications" && (
                     <div className="space-y-6">
-                        <h3 className="text-lg font-semibold text-gray-900">
+                        <h3 className="text-lg font-semibold text-foreground">
                             Product Specifications
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -92,10 +92,10 @@ function ProductTabs({ product, reviews = [] }) {
                                         key={index}
                                         className="flex justify-between py-2 border-b border-gray-100"
                                     >
-                                        <span className="font-medium text-gray-700">
+                                        <span className="font-medium text-foreground">
                                             {spec.label}
                                         </span>
-                                        <span className="text-gray-900">
+                                        <span className="text-foreground">
                                             {spec.value}
                                         </span>
                                     </div>
@@ -124,10 +124,10 @@ function ProductTabs({ product, reviews = [] }) {
                                         key={index}
                                         className="flex justify-between py-2 border-b border-gray-100"
                                     >
-                                        <span className="font-medium text-gray-700">
+                                        <span className="font-medium text-foreground">
                                             {spec.label}
                                         </span>
-                                        <span className="text-gray-900">
+                                        <span className="text-foreground">
                                             {spec.value}
                                         </span>
                                     </div>
@@ -141,14 +141,14 @@ function ProductTabs({ product, reviews = [] }) {
                 {activeTab === "reviews" && (
                     <div className="space-y-6">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-semibold text-gray-900">
+                            <h3 className="text-lg font-semibold text-foreground">
                                 Customer Reviews
                             </h3>
                             <div className="flex items-center gap-2">
                                 <div className="flex items-center">
                                     {renderStars(product?.rating || 4.5)}
                                 </div>
-                                <span className="text-sm text-gray-600">
+                                <span className="text-sm text-foreground">
                                     {product?.rating || 4.5} out of 5 (
                                     {reviews.length} reviews)
                                 </span>
@@ -163,11 +163,11 @@ function ProductTabs({ product, reviews = [] }) {
                                 >
                                     <div className="flex items-start gap-4">
                                         <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                                            <User className="w-5 h-5 text-gray-600" />
+                                            <User className="w-5 h-5 text-foreground" />
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <span className="font-medium text-gray-900">
+                                                <span className="font-medium text-foreground">
                                                     {review.user}
                                                 </span>
                                                 {review.verified && (
@@ -180,14 +180,14 @@ function ProductTabs({ product, reviews = [] }) {
                                                 <div className="flex">
                                                     {renderStars(review.rating)}
                                                 </div>
-                                                <span className="text-sm text-gray-500 flex items-center gap-1">
+                                                <span className="text-sm text-foreground flex items-center gap-1">
                                                     <Calendar className="w-3 h-3" />
                                                     {new Date(
                                                         review.date
                                                     ).toLocaleDateString()}
                                                 </span>
                                             </div>
-                                            <p className="text-gray-700 leading-relaxed">
+                                            <p className="text-foreground leading-relaxed">
                                                 {review.comment}
                                             </p>
                                         </div>
@@ -201,49 +201,49 @@ function ProductTabs({ product, reviews = [] }) {
                 {/* Shipping Tab */}
                 {activeTab === "shipping" && (
                     <div className="space-y-6">
-                        <h3 className="text-lg font-semibold text-gray-900">
+                        <h3 className="text-lg font-semibold text-foreground">
                             Shipping & Returns
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-4">
-                                <h4 className="font-medium text-gray-900">
+                                <h4 className="font-medium text-foreground">
                                     Shipping Information
                                 </h4>
                                 <div className="space-y-3">
                                     <div className="flex items-start gap-3">
-                                        <Truck className="w-5 h-5 text-green-600 mt-0.5" />
+                                        <Truck className="w-5 h-5 text-foreground mt-0.5" />
                                         <div>
                                             <p className="font-medium">
                                                 Free Standard Shipping
                                             </p>
-                                            <p className="text-sm text-gray-600">
+                                            <p className="text-sm text-foreground">
                                                 On orders over ₹5,000
                                             </p>
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
-                                        <Truck className="w-5 h-5 text-blue-600 mt-0.5" />
+                                        <Truck className="w-5 h-5 text-foreground mt-0.5" />
                                         <div>
                                             <p className="font-medium">
                                                 Express Delivery
                                             </p>
-                                            <p className="text-sm text-gray-600">
-                                                1-2 business days
+                                            <p className="text-sm text-foreground">
+                                                7-8 business days
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="space-y-4">
-                                <h4 className="font-medium text-gray-900">
+                                <h4 className="font-medium text-foreground">
                                     Returns & Exchanges
                                 </h4>
                                 <div className="space-y-3">
                                     <div className="flex items-start gap-3">
-                                        <RotateCcw className="w-5 h-5 text-orange-600 mt-0.5" />
+                                        <RotateCcw className="w-5 h-5 text-foreground mt-0.5" />
                                         <div>
                                             <p className="font-medium">
-                                                30-Day Returns
+                                                7-Day Returns
                                             </p>
                                             <p className="text-sm text-gray-600">
                                                 Free returns on all orders
@@ -251,12 +251,12 @@ function ProductTabs({ product, reviews = [] }) {
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
-                                        <Shield className="w-5 h-5 text-purple-600 mt-0.5" />
+                                        <Shield className="w-5 h-5 text-foreground mt-0.5" />
                                         <div>
                                             <p className="font-medium">
                                                 Quality Guarantee
                                             </p>
-                                            <p className="text-sm text-gray-600">
+                                            <p className="text-sm text-foreground">
                                                 100% authentic products
                                             </p>
                                         </div>

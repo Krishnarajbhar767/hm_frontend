@@ -12,10 +12,10 @@ import { useNavigate } from "react-router-dom";
 
 function ShoppingBag() {
     const navigate = useNavigate();
-    const user = useSelector((state) => state.user.user);
+    const user = useSelector((state) => state?.user?.user);
     const dispatch = useDispatch();
-    const cartItems = useSelector((state) => state.cart.cartItems);
-    const subtotal = useSelector((state) => state.cart.subtotal);
+    const cartItems = useSelector((state) => state?.cart?.cartItems);
+    const subtotal = useSelector((state) => state?.cart?.subtotal);
 
     const [coupon, setCoupon] = useState("");
     const [discount, setDiscount] = useState(0);
@@ -33,7 +33,7 @@ function ShoppingBag() {
 
     const handleCheckout = () => {
         // If Cart is Empty Then Toast.error
-        if (cartItems.length === 0) {
+        if (cartItems?.length === 0) {
             return toast.error("Your cart is empty");
         }
         // check is user is loggen in or not
@@ -53,17 +53,19 @@ function ShoppingBag() {
             className="h-auto w-full max-w-7xl mx-auto py-4 sm:py-6 md:py-8 px-3 sm:px-6 md:px-8"
         >
             {/* Mobile Cart Summary Sticky Bar (shows on small screens) */}
-            <div className="sticky top-0 z-10 bg-white border-b border-gray-200 pb-3 flex justify-between items-center lg:hidden mb-4">
+            <div className="sticky top-0 z-10 bg-white border-b border-foreground/50 pb-3 flex justify-between items-center lg:hidden mb-4">
                 <div>
                     <p className="text-xs font-medium">Cart Total:</p>
-                    <p className="text-base font-bold">${total.toFixed(2)}</p>
+                    <p className="text-base font-bold">
+                        &#x20B9;{total.toFixed(2)}
+                    </p>
                 </div>
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleCheckout}
                     // disabled={cartItems.length === 0 || isCheckingOut}
-                    className="bg-neutral-950 text-white px-4 py-2 text-sm uppercase"
+                    className="bg-foreground text-white px-4 py-2 text-sm uppercase"
                 >
                     {isCheckingOut ? (
                         <motion.div
@@ -72,7 +74,7 @@ function ShoppingBag() {
                                 repeat: Number.POSITIVE_INFINITY,
                                 duration: 1,
                             }}
-                            className="w-4 h-4 border-2 border-t-transparent border-white"
+                            className="w-4 h-4 border-2 border-t-transparent border-foreground"
                         />
                     ) : (
                         "Checkout"
@@ -89,7 +91,7 @@ function ShoppingBag() {
                     className="col-span-1 lg:col-span-2"
                 >
                     {/* Cart Header - Responsive */}
-                    <div className="grid grid-cols-2 sm:grid-cols-5 uppercase text-gray-800 font-medium text-xs sm:text-sm border-b border-gray-200 pb-2 mb-3 sm:mb-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-5 uppercase text-foreground font-medium text-xs sm:text-sm border-b border-foreground/50 pb-2 mb-3 sm:mb-4">
                         <h1 className="text-left col-span-1">Product</h1>
                         <div className="grid grid-cols-1 sm:grid-cols-4 col-span-1 sm:col-span-4 text-right gap-2">
                             <h1 className="sm:hidden">Details</h1>
@@ -111,7 +113,7 @@ function ShoppingBag() {
                             <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 flex items-center justify-center bg-gray-100">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400"
+                                    className="w-8 h-8 sm:w-10 sm:h-10 text-foreground"
                                     fill="none"
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
@@ -124,13 +126,13 @@ function ShoppingBag() {
                                     />
                                 </svg>
                             </div>
-                            <p className="text-gray-600 text-sm sm:text-base mb-2">
+                            <p className="text-foreground text-sm sm:text-base mb-2">
                                 Your cart is empty
                             </p>
-                            <p className="text-gray-500 text-xs sm:text-sm mb-6">
+                            <p className="text-foreground text-xs sm:text-sm mb-6">
                                 Add items to your cart to continue shopping
                             </p>
-                            <button className="bg-gray-800 text-white px-4 py-2 text-xs sm:text-sm uppercase">
+                            <button className="bg-foreground text-white px-4 py-2 text-xs sm:text-sm uppercase">
                                 Continue Shopping
                             </button>
                         </motion.div>
@@ -139,19 +141,19 @@ function ShoppingBag() {
                             <AnimatePresence>
                                 {cartItems.map((item, idx) => (
                                     <Card
-                                        key={item.id}
+                                        key={item._id}
                                         data={item}
                                         index={idx}
                                         onQuantityChange={(qty) =>
                                             dispatch(
                                                 updateQuantity({
-                                                    id: item.id,
+                                                    id: item._id,
                                                     quantity: qty,
                                                 })
                                             )
                                         }
                                         onRemove={() =>
-                                            dispatch(removeFromCart(item.id))
+                                            dispatch(removeFromCart(item._id))
                                         }
                                     />
                                 ))}
@@ -167,15 +169,15 @@ function ShoppingBag() {
                     transition={{ duration: 0.5, delay: 0.4 }}
                     className="col-span-1 p-3 sm:p-4 md:p-6 border shadow-sm"
                 >
-                    <h2 className="text-xs sm:text-sm md:text-base font-medium uppercase text-gray-800 mb-3 sm:mb-4">
+                    <h2 className="text-xs sm:text-sm md:text-base font-medium uppercase text-foreground mb-3 sm:mb-4">
                         Order Summary
                     </h2>
                     <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm md:text-base">
-                        <div className="flex justify-between text-gray-600">
+                        <div className="flex justify-between foreground">
                             <span>Subtotal</span>
-                            <span>${subtotal.toFixed(2)}</span>
+                            <span>&#x20B9;{subtotal.toFixed(2)}</span>
                         </div>
-                        <div className="flex justify-between text-gray-600">
+                        <div className="flex justify-between foreground">
                             <span>Shipping</span>
                             <span>Free</span>
                         </div>
@@ -185,7 +187,7 @@ function ShoppingBag() {
                                 value={coupon}
                                 onChange={(e) => setCoupon(e.target.value)}
                                 placeholder="Enter coupon code"
-                                className="flex-1 border border-gray-300 px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-gray-800"
+                                className="flex-1 border border-foreground/50 px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-foreground"
                             />
                             <motion.div
                                 whileHover={{ scale: 1.05 }}
@@ -206,19 +208,19 @@ function ShoppingBag() {
                                 className="flex justify-between text-green-600"
                             >
                                 <span>Discount</span>
-                                <span>-${discount.toFixed(2)}</span>
+                                <span>-&#x20B9;{discount.toFixed(2)}</span>
                             </motion.div>
                         )}
-                        <div className="border-t border-gray-200 pt-2 sm:pt-3 mt-2 sm:mt-3">
-                            <div className="flex justify-between text-sm sm:text-base md:text-lg font-semibold text-gray-800">
+                        <div className="border-t border-foreground/50 pt-2 sm:pt-3 mt-2 sm:mt-3">
+                            <div className="flex justify-between text-sm sm:text-base md:text-lg font-semibold text-foreground">
                                 <span>Total</span>
                                 <motion.span
                                     key={total}
-                                    initial={{ scale: 1.2, color: "#16a34a" }}
-                                    animate={{ scale: 1, color: "#1f2937" }}
+                                    initial={{ scale: 1.2, color: "#533e2d " }}
+                                    animate={{ scale: 1, color: "#533e2d " }}
                                     transition={{ duration: 0.3 }}
                                 >
-                                    ${total.toFixed(2)}
+                                    &#x20B9;{total.toFixed(2)}
                                 </motion.span>
                             </div>
                         </div>
@@ -230,7 +232,7 @@ function ShoppingBag() {
                         whileTap={{ scale: 0.98 }}
                         onClick={handleCheckout}
                         // disabled={cartItems.length === 0 || isCheckingOut}
-                        className="hidden lg:flex group relative h-9 sm:h-10 md:h-12 items-center justify-center overflow-hidden bg-neutral-950 px-3 sm:px-4 md:px-6 font-light text-neutral-200 text-xs sm:text-sm md:text-base tracking-wide w-full mt-2 sm:mt-4 uppercase"
+                        className="hidden lg:flex group relative h-9 sm:h-10 md:h-12 items-center justify-center overflow-hidden bg-foreground px-3 sm:px-4 md:px-6 font-light text-neutral-200 text-xs sm:text-sm md:text-base tracking-wide w-full mt-2 sm:mt-4 uppercase"
                     >
                         {isCheckingOut ? (
                             <motion.div
@@ -260,7 +262,7 @@ function ShoppingBag() {
                     whileTap={{ scale: 0.98 }}
                     onClick={handleCheckout}
                     disabled={cartItems.length === 0 || isCheckingOut}
-                    className="group relative flex h-12 items-center justify-center overflow-hidden bg-neutral-950 font-light text-neutral-200 text-sm tracking-wide w-full uppercase"
+                    className="group relative flex h-12 items-center justify-center overflow-hidden bg-foreground font-light text-neutral-200 text-sm tracking-wide w-full uppercase"
                 >
                     {isCheckingOut ? (
                         <motion.div
@@ -274,7 +276,7 @@ function ShoppingBag() {
                     ) : (
                         <>
                             <span>
-                                Proceed To Checkout • ${total.toFixed(2)}
+                                Proceed To Checkout • &#x20B9;{total.toFixed(2)}
                             </span>
                             <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
                                 <div className="relative h-full w-8 bg-white/20"></div>
@@ -312,7 +314,7 @@ function Card({ data, onQuantityChange, onRemove, index }) {
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.3, delay: index * 0.1 }}
             whileHover={{ scale: 1.01 }}
-            className="grid grid-cols-1 sm:grid-cols-5 gap-2 sm:gap-4 md:gap-6 items-start sm:items-center border-b border-gray-200 pb-3 sm:pb-4"
+            className="grid grid-cols-1 sm:grid-cols-5 gap-2 sm:gap-4 md:gap-6 items-start sm:items-center border-b border-foreground/50 pb-3 sm:pb-4"
         >
             {/* Product Image and Name */}
             <div className="flex items-start sm:items-center gap-2 sm:gap-3 md:gap-4 col-span-1 sm:col-span-2">
@@ -324,27 +326,27 @@ function Card({ data, onQuantityChange, onRemove, index }) {
                     transition={{ duration: 0.2 }}
                 />
                 <div className="flex-1">
-                    <h2 className="text-xs sm:text-sm md:text-base font-medium text-gray-800 uppercase">
+                    <h2 className="text-xs sm:text-sm md:text-base font-medium text-foreground uppercase">
                         {data.name}
                     </h2>
                     <div className="sm:hidden flex flex-col mt-2 gap-2">
                         <div className="flex justify-between items-center">
-                            <span className="text-xs text-gray-600">
+                            <span className="text-xs text-foreground">
                                 Price:
                             </span>
-                            <span className="text-xs text-gray-600">
-                                ${data.price.toFixed(2)}
+                            <span className="text-xs text-foreground">
+                                &#x20B9;{data.price.toFixed(2)}
                             </span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-xs text-gray-600">
+                            <span className="text-xs text-foreground">
                                 Quantity:
                             </span>
-                            <div className="flex items-center justify-center border border-gray-300 w-20 py-1">
+                            <div className="flex items-center justify-center border border-foreground/50 w-20 py-1">
                                 <motion.button
                                     onClick={handleDecrement}
                                     whileTap={{ scale: 0.9 }}
-                                    className="px-1 py-1 text-gray-600 hover:text-primary text-xs"
+                                    className="px-1 py-1 text-foreground hover:text-primary text-xs"
                                 >
                                     -
                                 </motion.button>
@@ -352,7 +354,7 @@ function Card({ data, onQuantityChange, onRemove, index }) {
                                     type="text"
                                     value={quantity}
                                     readOnly
-                                    className="w-8 text-center border-x border-gray-300 text-xs text-gray-800"
+                                    className="w-8 text-center border-x border-foreground/50 text-xs text-foreground"
                                 />
                                 <motion.button
                                     onClick={handleIncrement}
@@ -364,7 +366,7 @@ function Card({ data, onQuantityChange, onRemove, index }) {
                             </div>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-xs text-gray-600">
+                            <span className="text-xs text-foreground">
                                 Subtotal:
                             </span>
                             <motion.span
@@ -372,13 +374,13 @@ function Card({ data, onQuantityChange, onRemove, index }) {
                                 initial={{ scale: 1.2, color: "#16a34a" }}
                                 animate={{ scale: 1, color: "#1f2937" }}
                                 transition={{ duration: 0.3 }}
-                                className="text-xs text-gray-600"
+                                className="text-xs text-foreground"
                             >
-                                ${subtotal.toFixed(2)}
+                                &#x20B9;{subtotal.toFixed(2)}
                             </motion.span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-xs text-gray-600">
+                            <span className="text-xs text-foreground">
                                 Action:
                             </span>
                             <motion.button
@@ -396,15 +398,15 @@ function Card({ data, onQuantityChange, onRemove, index }) {
 
             {/* Price, Quantity, Subtotal, Action (Tablet and Desktop) */}
             <div className="hidden sm:grid sm:grid-cols-4 col-span-3 items-center justify-items-center gap-2 sm:gap-4 md:gap-6">
-                <span className="text-xs sm:text-sm md:text-base text-gray-600">
-                    ${data.price.toFixed(2)}
+                <span className="text-xs sm:text-sm md:text-base text-foreground">
+                    &#x20B9;{data.price.toFixed(2)}
                 </span>
 
-                <div className="flex items-center justify-center border border-gray-300 w-20 sm:w-24 py-2 sm:py-3">
+                <div className="flex items-center justify-center border border-foreground/50 w-20 sm:w-24 py-2 sm:py-3">
                     <motion.button
                         onClick={handleDecrement}
                         whileTap={{ scale: 0.9 }}
-                        className="px-1 sm:px-2 py-1 text-gray-600 hover:text-primary text-xs sm:text-sm"
+                        className="px-1 sm:px-2 py-1 text-foreground hover:text-primary text-xs sm:text-sm"
                     >
                         -
                     </motion.button>
@@ -412,12 +414,12 @@ function Card({ data, onQuantityChange, onRemove, index }) {
                         type="text"
                         value={quantity}
                         readOnly
-                        className="w-8 sm:w-10 text-center border-x border-gray-300 text-xs sm:text-sm text-gray-800"
+                        className="w-8 sm:w-10 text-center border-x border-foreground/50 text-xs sm:text-sm text-foreground"
                     />
                     <motion.button
                         onClick={handleIncrement}
                         whileTap={{ scale: 0.9 }}
-                        className="px-1 sm:px-2 py-1 text-gray-600 hover:text-primary text-xs sm:text-sm"
+                        className="px-1 sm:px-2 py-1 text-foreground hover:text-primary text-xs sm:text-sm"
                     >
                         +
                     </motion.button>
@@ -425,12 +427,12 @@ function Card({ data, onQuantityChange, onRemove, index }) {
 
                 <motion.span
                     key={subtotal}
-                    initial={{ scale: 1.2, color: "#16a34a" }}
-                    animate={{ scale: 1, color: "#1f2937" }}
+                    initial={{ scale: 1.2, color: "#533e2d " }}
+                    animate={{ scale: 1, color: "#533e2d" }}
                     transition={{ duration: 0.3 }}
-                    className="text-sm sm:text-base md:text-lg font-normal text-gray-800"
+                    className="text-sm sm:text-base md:text-lg font-normal text-foreground"
                 >
-                    ${subtotal.toFixed(2)}
+                    &#x20B9;{subtotal.toFixed(2)}
                 </motion.span>
 
                 <motion.button

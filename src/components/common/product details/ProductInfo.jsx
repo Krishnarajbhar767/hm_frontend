@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     ShoppingCart,
     CreditCard,
@@ -11,6 +11,8 @@ import {
     Shield,
     RotateCcw,
 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 /**
  * ProductInfo Component
@@ -23,11 +25,14 @@ function ProductInfo({
     onWishlistToggle,
     onShare,
 }) {
+    const { cartItems } = useSelector((state) => state?.cart);
     const [selectedSize, setSelectedSize] = useState("");
     const [quantity, setQuantity] = useState(1);
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [withCustomization, setWithCustomization] = useState(false);
-
+    const [isAlreadyInCart, setIsAlreadyInCart] = useState(false);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const customizationPrice = 500;
     const basePrice = product?.price || 0;
     const finalPrice = withCustomization
@@ -44,7 +49,7 @@ function ProductInfo({
                     className={`w-4 h-4 ${
                         index < Math.floor(rating || 0)
                             ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300"
+                            : "text-foreground"
                     }`}
                 />
             ));
@@ -52,14 +57,17 @@ function ProductInfo({
 
     // Handle add to cart
     const handleAddToCart = () => {
+        if (isAlreadyInCart) {
+            navigate("/cart");
+            return;
+        }
         onAddToCart?.({
-            product,
-            size: selectedSize,
+            ...product,
             quantity,
             withCustomization,
             finalPrice,
-            totalPrice: finalPrice * quantity,
         });
+        setIsAlreadyInCart(true);
     };
 
     // Handle buy now
@@ -80,20 +88,33 @@ function ProductInfo({
         onWishlistToggle?.(product);
     };
 
+    useEffect(() => {
+        if (!cartItems?.length) {
+            setIsAlreadyInCart(false);
+            return;
+        }
+        cartItems.map((item) => {
+            console.log(item);
+            if (item._id == product._id) {
+                setIsAlreadyInCart(true);
+            }
+        });
+    }, [localStorage, dispatch]);
+
     return (
         <div className="space-y-6">
             {/* Product Header */}
             <div className="space-y-4 border-b border-gray-100 pb-4">
                 <div className="flex items-start justify-between">
-                    <div className="space-y-2">
-                        <h1 className="text-2xl lg:text-3xl font-medium text-gray-900 leading-tight">
+                    <div className="space-y-2 text-foreground">
+                        <h1 className="text-2xl lg:text-3xl font-medium text-foreground leading-tight">
                             {product?.name}
                         </h1>
                         <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-1 text-foreground">
                                 {renderStars(product?.rating)}
                             </div>
-                            <span className="text-sm text-gray-600">
+                            <span className="text-sm text-foreground">
                                 {product?.rating || "4.5"} (
                                 {product?.reviewCount || 0} reviews)
                             </span>
@@ -102,10 +123,10 @@ function ProductInfo({
                     <div className="flex gap-2">
                         <button
                             onClick={handleWishlistToggle}
-                            className={`p-2 rounded-full transition-colors ${
+                            className={`p-2 rounded-full transition-colors text-foreground ${
                                 isWishlisted
                                     ? "bg-red-50 text-red-600"
-                                    : "bg-gray-50 text-gray-600 hover:text-red-600"
+                                    : "bg-gray-50 text-foreground hover:text-red-600"
                             }`}
                         >
                             <Heart
@@ -116,7 +137,7 @@ function ProductInfo({
                         </button>
                         <button
                             onClick={onShare}
-                            className="p-2 rounded-full bg-gray-50 text-gray-600 hover:text-gray-900 transition-colors"
+                            className="p-2 rounded-full bg-gray-50 text-foreground hover:text-gray-900 transition-colors"
                         >
                             <Share2 className="w-5 h-5" />
                         </button>
@@ -125,7 +146,7 @@ function ProductInfo({
 
                 {/* Price Section */}
                 <div className="flex items-center gap-3">
-                    <span className="text-3xl font-medium text-gray-900">
+                    <span className="text-3xl font-medium text-foreground">
                         ₹{finalPrice.toLocaleString()}
                     </span>
                     {product?.originalPrice &&
@@ -170,41 +191,41 @@ function ProductInfo({
                     )}
                 </div>
 
-                <p className="text-gray-600 leading-relaxed capitalize">
-                    <span className="text-lg font-medium text-gray-800 italic">
+                <p className="text-foreground/80 leading-relaxed capitalize">
+                    <span className="text-lg font-medium text-foreground italic">
                         Overview:
                     </span>{" "}
                     {product?.description}
                 </p>
-                <p className="text-gray-600 leading-relaxed capitalize">
-                    <span className="text-lg font-medium text-gray-800 italic">
+                <p className="text-foreground/80 leading-relaxed capitalize">
+                    <span className="text-lg font-medium text-foreground italic">
                         Color:
                     </span>{" "}
                     {product?.color}
                 </p>
-                <p className="text-gray-600 leading-relaxed capitalize">
-                    <span className="text-lg font-medium text-gray-800 italic">
+                <p className="text-foreground/80 leading-relaxed capitalize">
+                    <span className="text-lg font-medium text-foreground italic">
                         Technique :
                     </span>{" "}
                     {product?.technique}
                 </p>
-                <p className="text-gray-600 leading-relaxed capitalize">
-                    <span className="text-lg font-medium text-gray-800 italic">
+                <p className="text-foreground/80 leading-relaxed capitalize">
+                    <span className="text-lg font-medium text-foreground italic">
                         Fabric :
                     </span>{" "}
                     {product?.fabric}
                 </p>
                 {product?.note && (
-                    <p className="text-gray-600 leading-relaxed capitalize">
-                        <span className="text-lg font-medium text-gray-800 italic">
+                    <p className="text-foreground/80 leading-relaxed capitalize">
+                        <span className="text-lg font-medium text-foreground italic">
                             Note :
                         </span>{" "}
                         {product?.note}
                     </p>
                 )}
                 {product?.assurance && (
-                    <p className="text-gray-600 leading-relaxed capitalize">
-                        <span className="text-lg font-medium text-gray-800 italic">
+                    <p className="text-foreground/80 leading-relaxed capitalize">
+                        <span className="text-lg font-medium text-foreground italic">
                             Assurance :
                         </span>{" "}
                         {product?.assurance}
@@ -216,7 +237,7 @@ function ProductInfo({
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <span className="font-normal text-gray-900">
+                        <span className="font-normal text-foreground">
                             Fall, pico and tassels
                         </span>
                         <button
@@ -236,8 +257,8 @@ function ProductInfo({
                         onClick={() => setWithCustomization(true)}
                         className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
                             withCustomization
-                                ? "bg-gray-900 text-white"
-                                : "bg-white text-gray-700 border border-gray-300 hover:border-gray-400"
+                                ? "bg-foreground text-white"
+                                : "bg-white text-foreground/90 border border-gray-300 hover:border-foreground/60"
                         }`}
                     >
                         <div className="flex items-center justify-center gap-2">
@@ -249,8 +270,8 @@ function ProductInfo({
                         onClick={() => setWithCustomization(false)}
                         className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
                             !withCustomization
-                                ? "bg-gray-900 text-white"
-                                : "bg-white text-gray-700 border border-gray-300 hover:border-gray-400"
+                                ? "bg-foreground text-white"
+                                : "bg-white text-foreground/90 border border-gray-300 hover:border-foreground/60"
                         }`}
                     >
                         <div className="flex items-center justify-center gap-2">
@@ -263,7 +284,7 @@ function ProductInfo({
                 </div>
 
                 {withCustomization && (
-                    <div className="text-sm text-gray-600 bg-green-50 p-3 rounded-lg">
+                    <div className="text-sm text-foreground/80 bg-green-50 p-3 rounded-lg">
                         <p>
                             Custom fall, pico and tassels will be added to your
                             product. This adds elegance and a premium finish.
@@ -296,13 +317,13 @@ function ProductInfo({
 
             {/* Quantity Selection */}
             <div className="space-y-3">
-                <label className="text-sm font-medium text-gray-900">
+                <label className="text-sm font-medium text-foreground">
                     Quantity
                 </label>
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+                        className="w-10 h-10 border border-foreground rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
                     >
                         -
                     </button>
@@ -315,7 +336,7 @@ function ProductInfo({
                                 Math.min(product?.stock || 10, quantity + 1)
                             )
                         }
-                        className="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
+                        className="w-10 h-10 border border-foreground rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
                     >
                         +
                     </button>
@@ -325,36 +346,38 @@ function ProductInfo({
             {/* Action Buttons */}
             <div className="space-y-3">
                 <button
-                    onClick={handleAddToCart}
-                    disabled={!product?.stock}
-                    className="w-full bg-gray-900 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
-                >
-                    <ShoppingCart className="w-5 h-5" />
-                    Add to Cart
-                </button>
-                <button
                     onClick={handleBuyNow}
                     disabled={!product?.stock}
-                    className="w-full bg-white text-gray-900 py-3 px-6 rounded-lg font-medium border border-gray-300 hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
+                    className="w-full bg-foreground text-white py-3 px-6 rounded-lg font-medium hover:bg-foreground/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
                 >
                     <CreditCard className="w-5 h-5" />
                     Buy Now
+                </button>
+                <button
+                    disabled={!product?.stock}
+                    onClick={handleAddToCart}
+                    className="w-full bg-white text-foreground py-3 px-6 rounded-lg font-medium border border-foreground/30 hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2 "
+                >
+                    <ShoppingCart className="w-5 h-5" />
+                    {isAlreadyInCart ? "Go To Cart" : "Add To Cart"}
                 </button>
             </div>
 
             {/* Trust Indicators */}
             <div className="grid grid-cols-3 gap-4 pt-4">
                 <div className="text-center">
-                    <Truck className="w-6 h-6 text-green-600 mx-auto mb-1" />
-                    <p className="text-xs text-gray-600">Free Shipping</p>
+                    <Truck className="w-6 h-6 text-foreground mx-auto mb-1" />
+                    <p className="text-xs text-foreground/80">Free Shipping</p>
                 </div>
                 <div className="text-center">
-                    <Shield className="w-6 h-6 text-blue-600 mx-auto mb-1" />
-                    <p className="text-xs text-gray-600">Authenticated</p>
+                    <Shield className="w-6 h-6 text-foreground mx-auto mb-1" />
+                    <p className="text-xs text-foreground/80">Authenticated</p>
                 </div>
                 <div className="text-center">
-                    <RotateCcw className="w-6 h-6 text-orange-600 mx-auto mb-1" />
-                    <p className="text-xs text-gray-600">7 Days Easy Returns</p>
+                    <RotateCcw className="w-6 h-6 text-foreground mx-auto mb-1" />
+                    <p className="text-xs text-foreground/80">
+                        7 Days Easy Returns
+                    </p>
                 </div>
             </div>
         </div>

@@ -242,7 +242,7 @@ function SignUp() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.7 }}
-                        className="text-xs text-gray-600"
+                        className="text-xs text-foreground"
                     >
                         Your personal data will be used to support your
                         experience throughout this website, to manage access to
