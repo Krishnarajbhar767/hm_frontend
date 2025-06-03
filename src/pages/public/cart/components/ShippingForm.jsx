@@ -5,7 +5,9 @@ import { indianStates } from "./data"; // Assume this is exported separately
 import { useSelector } from "react-redux";
 
 const ShippingForm = () => {
-    const { shippingAddress } = useSelector((state) => state?.user?.user);
+    const shippingAddress = useSelector(
+        (state) => state?.user?.user?.shippingAddress
+    );
     console.log("Shipping Address", shippingAddress);
     return (
         <div className="mb-8">

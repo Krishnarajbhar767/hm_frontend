@@ -12,19 +12,22 @@ import { Link, useNavigate } from "react-router-dom";
 
 const CartSidebar = ({ isOpen, closeHandler }) => {
     const dispatch = useDispatch();
-    const cartItems = useSelector((state) => state.cart.cartItems);
-    const subtotal = useSelector((state) => state.cart.subtotal);
-    const updateQuantityHandler = (id, change) => {
-        const item = cartItems.find((item) => item._id === id);
+    const cartItems = useSelector((state) => state?.cart?.cartItems);
+    const subtotal = useSelector((state) => state?.cart?.subtotal);
+    const updateQuantityHandler = (id, change, idx) => {
+        const item = cartItems.find(
+            (item, index) => index === idx && item._id === id
+        );
+        console.log(item);
         if (item) {
             const newQuantity = Math.max(1, item.quantity + change);
 
-            dispatch(updateQuantity({ id, quantity: newQuantity }));
+            dispatch(updateQuantity({ id, quantity: newQuantity, idx }));
         }
     };
 
-    const removeItem = (id) => {
-        dispatch(removeFromCart(id));
+    const removeItem = (id, idx) => {
+        dispatch(removeFromCart({ id, idx }));
     };
     const navigate = useNavigate(); //
     const checkOutHandler = () => {
@@ -50,7 +53,7 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
             >
                 {/* Header */}
                 <div className="flex justify-between items-center w-full px-4 sm:px-6 py-4">
-                    <Heading text={`Shopping Bag (${cartItems.length})`} />
+                    <Heading text={`Shopping Bag (${cartItems?.length})`} />
                     <button
                         onClick={closeHandler}
                         className="p-2"
@@ -70,7 +73,7 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
 
                 {/* Cart Items (Scrollable) */}
                 <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-4">
-                    {cartItems.length === 0 ? (
+                    {cartItems?.length === 0 ? (
                         <motion.p
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -80,9 +83,12 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                             Your cart is empty.
                         </motion.p>
                     ) : (
-                        cartItems.map((item) => (
+                        cartItems?.map((item, idx) => (
                             <motion.div
-                                key={item._id}
+                                key={
+                                    item._id +
+                                    item?.withCustomization?.toString()
+                                }
                                 layout
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -105,7 +111,7 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                                         </h3>
                                         <button
                                             onClick={() =>
-                                                removeItem(item?._id)
+                                                removeItem(item?._id, idx)
                                             }
                                             className="text-foreground hover:text-foreground/50 text-base p-1"
                                             aria-label={`Remove ${item?.name}`}
@@ -117,7 +123,8 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                                         Color: {item?.color}
                                     </p>
                                     <p className="text-foreground text-xs">
-                                        Weight: {item?.weight}
+                                        Fall, pico and tassels :{" "}
+                                        {item?.withCustomization ? "Yes" : "No"}
                                     </p>
                                     <div className="flex justify-between items-center mt-2">
                                         <div className="flex items-center gap-2">
@@ -125,7 +132,8 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                                                 onClick={() =>
                                                     updateQuantityHandler(
                                                         item._id,
-                                                        -1
+                                                        -1,
+                                                        idx
                                                     )
                                                 }
                                                 className="w-7 h-7 flex items-center justify-center border  text-foreground hover:bg-gray-100 text-sm"
@@ -140,7 +148,8 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                                                 onClick={() =>
                                                     updateQuantityHandler(
                                                         item._id,
-                                                        +1
+                                                        +1,
+                                                        idx
                                                     )
                                                 }
                                                 className="w-7 h-7 flex items-center justify-center border  text-foreground hover:bg-gray-100 text-sm"
@@ -166,7 +175,7 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                             SUBTOTAL:
                         </span>
                         <span className="font-light text-sm sm:text-base">
-                            &#x20B9; {subtotal.toFixed(2)}
+                            &#x20B9; {subtotal?.toFixed(2)}
                         </span>
                     </div>
                     <Link to={"/cart"} onClick={viewCartHandler}>
@@ -180,7 +189,7 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                     <Button
                         text="Checkout"
                         onSubmitHandler={
-                            cartItems.length ? checkOutHandler : () => {}
+                            cartItems?.length ? checkOutHandler : () => {}
                         }
                         className="w-full py-2 text-sm sm:text-base"
                     />

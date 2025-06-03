@@ -4,19 +4,19 @@ const cartItems = localStorage.getItem("cart")
     : [];
 // Helper function to recalculate total items and subtotal
 const recalculateTotals = (state) => {
-    state.totalItems = state.cartItems.reduce(
+    state.totalItems = state?.cartItems?.reduce(
         (sum, item) => sum + item.quantity,
         0
     );
-    state.subtotal = state.cartItems.reduce(
+    state.subtotal = state?.cartItems?.reduce(
         (sum, item) => sum + item.finalPrice * item.quantity,
         0
     );
 };
 // Function to get initial totals
 const getInitialTotals = (items) => ({
-    totalItems: items.reduce((sum, item) => sum + item.quantity, 0),
-    subtotal: items.reduce(
+    totalItems: items?.reduce((sum, item) => sum + item.quantity, 0),
+    subtotal: items?.reduce(
         (sum, item) => sum + item.finalPrice * item.quantity,
         0
     ),
@@ -42,15 +42,20 @@ const cartSlice = createSlice({
             if (existingItem) {
                 existingItem.quantity += item.quantity || 1;
             } else {
-                state.cartItems.push({ ...item, quantity: item.quantity || 1 });
+                state?.cartItems?.push({
+                    ...item,
+                    quantity: item.quantity || 1,
+                });
             }
 
             recalculateTotals(state);
         },
 
         removeFromCart: (state, action) => {
-            const id = action.payload;
-            state.cartItems = state.cartItems.filter((item) => item._id !== id);
+            const { id, idx } = action.payload;
+            state.cartItems = state.cartItems.filter(
+                (item, index) => !(item._id == id && index == idx)
+            );
             const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
             const updatedCart = existingCart.filter((item) => item._id !== id);
             localStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -58,9 +63,9 @@ const cartSlice = createSlice({
         },
 
         updateQuantity: (state, action) => {
-            const { id, quantity } = action.payload;
+            const { id, quantity, idx } = action.payload;
             const item = state.cartItems.find(
-                (cartItem) => cartItem._id === id
+                (cartItem, index) => cartItem._id === id && index === idx
             );
 
             if (item && quantity > 0) {

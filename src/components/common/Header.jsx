@@ -8,10 +8,11 @@ import { useSelector } from "react-redux";
 import slugify from "slugify";
 import LOGO from "../../assets/images/logo/SRIJAN FABS PNG VERTICAL.png";
 function Header() {
-    const headerRef = useRef(null); // 👈 Create ref for header
+    const headerRef = useRef(null);
     const categories = useSelector(
         (state) => state?.category?.categories || []
     );
+    const { cartItems } = useSelector((state) => state?.cart || 0);
     const [optimisedCategoriesList, setOptimisedCategoriesList] = useState([]);
     useEffect(() => {
         const navLinks = categories.map((item) => {
@@ -216,7 +217,7 @@ function Header() {
                         {/* Cart icon */}
                         <button
                             onClick={() => setIsCartOpen(true)}
-                            className="p-1.5"
+                            className="p-1.5 relative"
                             aria-label="Open cart"
                         >
                             <svg
@@ -234,6 +235,9 @@ function Header() {
                                     d="M9 10V6a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v4m3-2 .917 11.923A1 1 0 0 1 17.92 21H6.08a1 1 0 0 1-.997-1.077L6 8h12Z"
                                 />
                             </svg>
+                            <div className="h-4 w-4 rounded-full bg-primary text-xs text-white absolute top-1 right-0">
+                                {cartItems?.length}
+                            </div>
                         </button>
 
                         {/* Hamburger menu button (visible on mobile) */}

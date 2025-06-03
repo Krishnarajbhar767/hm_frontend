@@ -45,7 +45,7 @@ select:-webkit-autofill {
     width: 0%;
     height: 1px;
     border-radius: 10px;
-    background-color: black;
+    background-color: #f17f21;
     transition: all ease 0.5s;
 }
 

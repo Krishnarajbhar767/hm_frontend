@@ -1,13 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
 
 const OrderSummary = ({ cartItems }) => {
-    const subtotal = cartItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-    );
-    const shipping = 0;
-    const total = subtotal + shipping;
+    const subtotal = useSelector((state) => state?.cart?.subtotal);
 
     return (
         <motion.div

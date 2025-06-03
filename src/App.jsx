@@ -14,6 +14,7 @@ import {
     setIsCategoriesLoaded,
 } from "./redux/slices/categorySlice";
 import { setCart } from "./redux/slices/cartSlice";
+import axiosInstance from "./utils/apiConnector";
 
 function App() {
     const dispatch = useDispatch();
@@ -67,7 +68,10 @@ function App() {
 
     useEffect(() => {
         if (user) {
-            dispatch(setCart(user.cartItems));
+            (async () => {
+                const res = await axiosInstance.get(`/user/cart/${user._id}`);
+                dispatch(setCart(res.data));
+            })();
         } else {
             dispatch(setCart(JSON.parse(localStorage.getItem("cart")) || []));
         }

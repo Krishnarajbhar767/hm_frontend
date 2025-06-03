@@ -10,6 +10,8 @@ import { setToken, setUser } from "../../redux/slices/userSlice";
 import toast from "react-hot-toast";
 import { handleAxiosError } from "../../utils/handleAxiosError";
 import { useDispatch } from "react-redux";
+import axiosInstance from "../../utils/apiConnector";
+import { setCart } from "../../redux/slices/cartSlice";
 
 const LoginSidebar = ({ isOpen, closeHandler }) => {
     const {
@@ -50,7 +52,23 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
             dispatch(setUser(userData?.user));
             localStorage.setItem("token", userData.token);
             dispatch(setToken(userData.token));
+
+            const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+            if (localCart.length > 0) {
+                await axiosInstance.post("/user/cart/merge", {
+                    userId: userData.user._id,
+                    localCartItems: localCart,
+                });
+
+                // Clear local cart after merge
+                localStorage.removeItem("cart");
+                const res = await axiosInstance.get(
+                    `/user/cart/${userData?.user?._id}`
+                );
+                dispatch(setCart(res.data));
+            }
             toast.success(`Welcome ${userData?.user?.firstName}`);
+
             if (userData?.user.role === "admin") {
                 return navigate("/admin/overview");
             }
