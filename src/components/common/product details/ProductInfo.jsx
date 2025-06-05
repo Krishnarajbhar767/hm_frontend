@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../../utils/apiConnector";
+import { setWishList } from "../../../redux/slices/wishListSlice";
 
 /**
  * ProductInfo Component
@@ -22,10 +24,12 @@ function ProductInfo({
     product,
     onAddToCart,
     onBuyNow,
-    onWishlistToggle,
+
     onShare,
 }) {
     const { cartItems } = useSelector((state) => state?.cart);
+    const { user } = useSelector((state) => state?.user || null);
+    const wishlistItems = useSelector((state) => state?.wishlist);
     const [selectedSize, setSelectedSize] = useState("");
     const [quantity, setQuantity] = useState(1);
     const [isWishlisted, setIsWishlisted] = useState(false);
@@ -56,12 +60,12 @@ function ProductInfo({
     };
 
     // Handle add to cart
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
         if (isAlreadyInCart) {
             navigate("/cart");
             return;
         }
-        onAddToCart?.({
+        await onAddToCart?.({
             ...product,
             quantity,
             withCustomization,
@@ -83,9 +87,35 @@ function ProductInfo({
     };
 
     // Handle wishlist toggle
-    const handleWishlistToggle = () => {
-        setIsWishlisted(!isWishlisted);
-        onWishlistToggle?.(product);
+    const handleWishlistToggle = async () => {
+        if (!user) {
+            navigate("/login");
+            return;
+        }
+
+        if (!isWishlisted) {
+            const res = await axiosInstance.post("user/wishlist/add", {
+                userId: user?._id,
+                productId: product._id,
+            });
+            if (!res.data) {
+                return;
+            }
+
+            dispatch(setWishList(res.data));
+            setIsWishlisted(true);
+        } else {
+            const res = await axiosInstance.post("user/wishlist/remove", {
+                userId: user?._id,
+                productId: product._id,
+            });
+            if (!res.data) {
+                return;
+            }
+
+            dispatch(setWishList(res.data));
+            setIsWishlisted(false);
+        }
     };
 
     useEffect(() => {
@@ -99,8 +129,13 @@ function ProductInfo({
                 setIsAlreadyInCart(true);
             }
         });
-    }, [localStorage, dispatch]);
+    }, [localStorage, dispatch, product, cartItems]);
+    useEffect(() => {
+        const isWished =
+            wishlistItems?.some((item) => item?._id === product?._id) ?? false;
 
+        setIsWishlisted(isWished);
+    }, [wishlistItems, product, cartItems]);
     return (
         <div className="space-y-6">
             {/* Product Header */}

@@ -42,12 +42,12 @@ const OrderSummary = ({ cartItems }) => {
                     <div className="flex justify-between text-lg font-semibold text-foreground">
                         <span>Total</span>
                         <motion.span
-                            key={total}
+                            key={subtotal}
                             initial={{ scale: 1.2, color: "#533e2d" }}
                             animate={{ scale: 1, color: "#533e2d" }}
                             transition={{ duration: 0.3 }}
                         >
-                            ₹ {total.toFixed(2)}
+                            ₹ {subtotal.toFixed(2)}
                         </motion.span>
                     </div>
                 </div>

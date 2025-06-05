@@ -17,10 +17,10 @@ const Footer = () => {
             style={{ color: primaryColor }}
         >
             <div className="container mx-auto px-4">
-                {/* Main Footer Content */}
-                <div className="grid grid-cols-3 content-center md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
-                    {/* Logo and Contact Info */}
-                    <div className="lg:col-span-1">
+                {/* ─── Main Footer Content ─── */}
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+                    {/* ─ Logo and Contact Info ─ */}
+                    <div>
                         <div className="flex items-center mb-6">
                             <div
                                 className="text-2xl font-bold"
@@ -57,7 +57,7 @@ const Footer = () => {
                             +1 246-345-0695
                         </p>
 
-                        <div className="flex space-x-4">
+                        <div className="flex space-x-2 md:space-x-4">
                             {[
                                 FaFacebookF,
                                 FaTwitter,
@@ -71,14 +71,14 @@ const Footer = () => {
                                     style={{ color: primaryColor }}
                                     className="hover:opacity-70 transition-opacity"
                                 >
-                                    <Icon />
+                                    <Icon className="md:w-5 w-4 md:h-5 h-4" />
                                 </a>
                             ))}
                         </div>
                     </div>
 
-                    {/* Company Links */}
-                    <div className="lg:col-span-1">
+                    {/* ─ Company Links ─ */}
+                    <div>
                         <h3
                             className="font-bold text-lg mb-4"
                             style={{ color: primaryColor }}
@@ -106,8 +106,8 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Shop Links */}
-                    <div className="lg:col-span-1">
+                    {/* ─ Shop Links ─ */}
+                    <div>
                         <h3
                             className="font-bold text-lg mb-4"
                             style={{ color: primaryColor }}
@@ -135,8 +135,8 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Help Links */}
-                    <div className="lg:col-span-1">
+                    {/* ─ Help Links ─ */}
+                    <div>
                         <h3
                             className="font-bold text-lg mb-4"
                             style={{ color: primaryColor }}
@@ -165,8 +165,8 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Subscribe */}
-                    <div className="lg:col-span-1">
+                    {/* ─ Subscribe Section ─ */}
+                    <div className="col-span-2 md:col-span-1">
                         <h3
                             className="font-bold text-lg mb-4"
                             style={{ color: primaryColor }}
@@ -181,18 +181,18 @@ const Footer = () => {
                             promotions, and much more!
                         </p>
 
-                        <div className="flex mb-6">
+                        <div className="flex flex-col sm:flex-row mb-6 gap-2">
                             <input
                                 type="email"
                                 placeholder="Your email address"
-                                className="flex-grow p-2 border"
+                                className="w-full p-2 border"
                                 style={{
                                     borderColor: primaryColor,
                                     color: primaryColor,
                                 }}
                             />
                             <button
-                                className="px-4 py-2 font-medium"
+                                className="w-full sm:w-auto px-4 py-2 font-medium"
                                 style={{
                                     backgroundColor: primaryColor,
                                     color: "#fff",
@@ -211,14 +211,14 @@ const Footer = () => {
                         <div className="flex space-x-2">
                             <img
                                 src="https://uomo-html.flexkitux.com/images/payment-options.png"
-                                alt="Discover"
-                                className="h-6"
+                                alt="Payment Options"
+                                className="h-6 object-contain"
                             />
                         </div>
                     </div>
                 </div>
 
-                {/* Footer Bottom */}
+                {/* ─── Footer Bottom ─── */}
                 <div
                     className="border-t pt-4"
                     style={{ borderColor: primaryColor }}
@@ -279,7 +279,7 @@ const Footer = () => {
                 </div>
             </div>
 
-            {/* Mobile Back to Top */}
+            {/* ─── Mobile Back to Top ─── */}
             <div className="flex justify-center md:hidden mt-6">
                 <a
                     href="#top"

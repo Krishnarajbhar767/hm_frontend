@@ -1,71 +1,91 @@
+// axiosInstance.js
 import axios from "axios";
-import getCookieByName from "./getCookie"; // Utility function to get a cookie by its name.
 import { store } from "../redux/store";
 import { clearUser, setToken } from "../redux/slices/userSlice";
 import authApis from "../services/api/auth/auth.apis";
-// Create an axios instance with custom configuration
+
+// 1) Create a “main” axios instance that we’ll export.
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL, // Base URL for the API calls (can be configured later).
-    timeout: 60000 * 2, // Set timeout for the requests to 2 minutes (120,000 ms).
+    baseURL: import.meta.env.VITE_BACKEND_URL,
+    timeout: 120_000, // 2 minutes
     withCredentials: true,
 });
 
-// Set up a request interceptor to add the Authorization header before each request
+// 2) Request interceptor: always attach Authorization header if token exists
 axiosInstance.interceptors.request.use(
     (config) => {
-        // Retrieve the token from cookies using the utility function
         const token = localStorage.getItem("token");
-
         if (token) {
-            // If the token exists, add it as a Bearer token to the Authorization header
+            config.headers = config.headers || {};
             config.headers.Authorization = `Bearer ${token}`;
         }
-        return config; // Return the updated config for the request
+        return config;
     },
-    (err) => Promise.reject(err) // Reject if there's an error in the request setup
+    (err) => Promise.reject(err)
 );
 
+// 3) Response interceptor: handle 401 (token expired)
 axiosInstance.interceptors.response.use(
     (response) => response,
-
     async (error) => {
         const originalRequest = error.config;
 
-        const is401 = error.response?.status === 401;
-        const isLoginPage = window.location.pathname === "/login";
-        const isRefreshRequest = originalRequest?.url?.includes(
-            "/auth/regenerate-token"
-        );
-
-        // Skip if already retried, or if on login page or trying to refresh token
-        if (
-            is401 &&
-            !originalRequest._hasRetried &&
-            !isLoginPage &&
-            !isRefreshRequest
-        ) {
-            originalRequest._hasRetried = true;
-
-            try {
-                const res = await axiosInstance.post("/auth/regenerate-token");
-                const newToken = res.data?.data;
-                localStorage.setItem("token", newToken);
-                store.dispatch(setToken(newToken));
-                originalRequest.headers.Authorization = `Bearer ${newToken}`;
-                return axiosInstance(originalRequest);
-            } catch (refreshError) {
-                await authApis.logOut();
-                store.dispatch(clearUser()); // user is logged out here
-                const customError = new Error(
-                    "Session expired. Please log in again."
-                );
-                return Promise.reject(customError);
-            }
+        // If no response or not a 401, just reject immediately
+        if (!error.response || error.response.status !== 401) {
+            return Promise.reject(error);
         }
 
-        return Promise.reject(error);
+        // If we've already retried this request, don’t try again
+        if (originalRequest._hasRetried) {
+            return Promise.reject(error);
+        }
+
+        // Mark this request as “already retried”
+        originalRequest._hasRetried = true;
+
+        // Attempt to refresh token using a plain axios call (so we skip this interceptor)
+        try {
+            const refreshResponse = await axios.post(
+                `${import.meta.env.VITE_BACKEND_URL}/auth/regenerate-token`,
+                {},
+                {
+                    withCredentials: true, // if your refresh endpoint requires cookies, etc.
+                }
+            );
+
+            // Suppose new token comes back as { data: { token: "NEW_TOKEN_STRING" } }
+            const newToken = refreshResponse.data?.data;
+            if (newToken) {
+                // 1. Update localStorage + Redux
+                localStorage.setItem("token", newToken);
+                store.dispatch(setToken(newToken));
+
+                // 2. Patch the original request's Authorization header
+                originalRequest.headers = originalRequest.headers || {};
+                originalRequest.headers.Authorization = `Bearer ${newToken}`;
+
+                // 3. Retry the original request
+                return axiosInstance(originalRequest);
+            }
+            // If refresh did not return a new token, we’ll fall through to “logout”
+            throw new Error("No token in refresh response");
+        } catch (refreshError) {
+            // Refresh has failed entirely (expired refresh token, server error, etc.)
+            try {
+                // Optional: call your logOut() API so backend can clear cookies, etc.
+                await authApis.logOut();
+            } catch (logoutErr) {
+                /* ignore */
+            }
+            // Clear Redux & localStorage
+            store.dispatch(clearUser());
+            localStorage.removeItem("token");
+            // Reject with a custom error so your UI can redirect to login
+            return Promise.reject(
+                new Error("Session expired. Please log in again.")
+            );
+        }
     }
 );
 
-// Export the customized axios instance so it can be used elsewhere in the application
 export default axiosInstance;

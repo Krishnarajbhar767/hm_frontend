@@ -4,8 +4,9 @@ const cartItems = localStorage.getItem("cart")
     : [];
 // Helper function to recalculate total items and subtotal
 const recalculateTotals = (state) => {
+    console.log(state.cartItems);
     state.totalItems = state?.cartItems?.reduce(
-        (sum, item) => sum + item.quantity,
+        (sum, item) => sum + item?.quantity,
         0
     );
     state.subtotal = state?.cartItems?.reduce(

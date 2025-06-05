@@ -8,6 +8,7 @@ import Orders from "../pages/user/orders/Orders";
 import Addresses from "../pages/user/addresses/Addresses";
 
 import OrderDetails from "../pages/user/orders/components/OrderDetails";
+import Wishlist from "../pages/public/wishlist/Wishlist";
 
 const UserRoutes = (
     <Route path="/account" element={<UserLayout />}>

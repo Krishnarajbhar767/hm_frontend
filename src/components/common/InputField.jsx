@@ -58,8 +58,8 @@ const InputField = ({
                 htmlFor={name}
                 className={`absolute capitalize px-2 z-10 bg-white left-3 transition-all duration-200 ${
                     isFocused || hasValue
-                        ? "top-0 text-xs text-black"
-                        : "top-1/2 text-base text-gray-600"
+                        ? "top-0 text-xs text-foreground"
+                        : "top-1/2 text-base text-foreground/80"
                 } transform ${
                     errors?.[name] ? "-translate-y-1/2" : "-translate-y-1/2"
                 }`}

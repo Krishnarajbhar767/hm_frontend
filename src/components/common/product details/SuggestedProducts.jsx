@@ -26,7 +26,7 @@ function SuggestedProducts({ products = [] }) {
                                             "/placeholder.svg?height=300&width=300"
                                         }
                                         alt={product.name}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 object-top"
                                         onError={(e) =>
                                             (e.target.src =
                                                 "/placeholder.svg?height=300&width=300")

@@ -3,7 +3,8 @@ import { RxCross2 } from "react-icons/rx";
 import InputField from "./InputField";
 import Button from "./Button";
 import { useForm } from "react-hook-form";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
+
 export default function JoinNewsLetter() {
     const {
         register,
@@ -13,78 +14,98 @@ export default function JoinNewsLetter() {
     } = useForm();
     const [showPopup, setShowPopup] = useState(false);
     const emailValue = watch("email");
+
     useEffect(() => {
         const hasSeenPopup = localStorage.getItem("newsletterShown");
         if (!hasSeenPopup) {
             setTimeout(() => {
                 setShowPopup(true);
                 localStorage.setItem("newsletterShown", "true");
-            }, 5000); // Delay showing by 5 seconds
+            }, 5000);
         }
     }, []);
 
-    if (!showPopup) return null;
-
     return (
-        <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ ease: "easeOut", duration: 0.4 }}
-            className="fixed inset-0 bg-gray-900/50 bg-opacity-50 flex items-center justify-center z-50 overflow-hidden"
-        >
-            <div className="bg-white  rounded-md  w-full  max-w-4xl  h-[85%] grid grid-cols-2">
-                <div className="h-full w-full overflow-hidden rounded-l-md">
-                    <img
-                        src="https://uomo-html.flexkitux.com/images/newsletter-popup.jpg"
-                        alt="shreejan fabrics JoinNewsLetter image"
-                        className="w-full  h-full object-cover"
-                    />
-                </div>
-                <div className="flex flex-col p-8 w-full relative justify-center">
-                    <span
-                        className="absolute top-4 right-4 cursor-pointer text-2xl"
-                        onClick={() => setShowPopup(false)}
+        <AnimatePresence>
+            {showPopup && (
+                // Backdrop
+                <motion.div
+                    key="backdrop"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="fixed inset-0 bg-gray-900/50 flex items-center justify-center z-[500000] overflow-auto p-4"
+                >
+                    {/* Popup Container */}
+                    <motion.div
+                        key="modal"
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.9, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="bg-white rounded-md w-full max-w-md md:max-w-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]"
                     >
-                        <RxCross2 />
-                    </span>
-
-                    <div className="space-y-4  flex flex-col">
-                        <h1 className="text-2xl font-medium capitalize">
-                            Sign Up to Our Newsletter
-                        </h1>
-                        <h2 className="leading-relaxed text-gray-600 text-sm max-w-md">
-                            Be the first to get the latest news about trends,
-                            promotions, and much more!
-                        </h2>
-
-                        <form
-                            onSubmit={handleSubmit((data) => alert(data))}
-                            className="w-full max-w-sm"
-                        >
-                            <InputField
-                                value={emailValue}
-                                register={register}
-                                name={"email"}
-                                type="email"
-                                label={"Your Email*"}
-                                errors={errors}
-                                rules={{
-                                    required: "Email is required.",
-                                    pattern: {
-                                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                                        message:
-                                            "Please enter a valid email address",
-                                    },
-                                }}
+                        {/* Image Section */}
+                        <div className="w-full md:w-1/2 h-auto hidden md:block">
+                            <img
+                                src="https://demoapus-wp.com/uomo/wp-content/uploads/2020/12/banner-mail.jpg"
+                                alt="Join Newsletter"
+                                className="w-full h-full object-cover"
                             />
-                            <div className="w-fit mx-auto mt-4">
-                                <Button text="Join" type="submit" />
+                        </div>
+
+                        {/* Form Section */}
+                        <div className="w-full md:w-1/2 overflow-y-auto p-4 md:p-6 flex flex-col">
+                            {/* Close Button */}
+                            <button
+                                onClick={() => setShowPopup(false)}
+                                className="self-end text-2xl text-gray-600 hover:text-gray-800 transition-colors"
+                                aria-label="Close newsletter popup"
+                            >
+                                <RxCross2 />
+                            </button>
+
+                            <div className="mt-2 flex-1 flex flex-col justify-center space-y-4">
+                                <h1 className="text-2xl font-medium capitalize text-foreground">
+                                    Sign Up to Our Newsletter
+                                </h1>
+                                <p className="text-gray-600 text-sm leading-relaxed max-w-full">
+                                    Be the first to get the latest news about
+                                    trends, promotions, and much more!
+                                </p>
+
+                                <form
+                                    onSubmit={handleSubmit((data) =>
+                                        alert(JSON.stringify(data))
+                                    )}
+                                    className="w-full"
+                                >
+                                    <InputField
+                                        value={emailValue}
+                                        register={register}
+                                        name="email"
+                                        type="email"
+                                        label="Your Email*"
+                                        errors={errors}
+                                        rules={{
+                                            required: "Email is required.",
+                                            pattern: {
+                                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                                                message:
+                                                    "Please enter a valid email address",
+                                            },
+                                        }}
+                                    />
+                                    <div className="mt-4">
+                                        <Button text="Join" type="submit" />
+                                    </div>
+                                </form>
                             </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </motion.div>
+                        </div>
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

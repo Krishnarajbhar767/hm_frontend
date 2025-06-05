@@ -38,15 +38,15 @@ function Orders() {
             transition={{ duration: 0.3 }}
             className="space-y-6 sm:space-y-8"
         >
-            <h2 className="flex items-center gap-2 text-xl sm:text-2xl font-semibold uppercase text-gray-800 tracking-wide">
+            <h2 className="flex items-center gap-2 text-xl sm:text-2xl font-semibold uppercase text-foreground tracking-wide">
                 <FiShoppingBag size={24} /> Order History
             </h2>
             {orders.length === 0 ? (
                 <div className="text-center py-12 sm:py-16">
-                    <p className="text-gray-600 text-base sm:text-lg mb-2">
+                    <p className="text-foreground text-base sm:text-lg mb-2">
                         No orders found
                     </p>
-                    <p className="text-gray-500 text-sm sm:text-base">
+                    <p className="text-foreground/90 text-sm sm:text-base">
                         Start shopping to see your orders here
                     </p>
                 </div>
@@ -62,35 +62,39 @@ function Orders() {
                             {/* Order Details Header */}
                             <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 sm:gap-6">
                                 <div className="sm:col-span-2">
-                                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium">
+                                    <p className="text-xs sm:text-sm text-foreground uppercase font-medium">
                                         Order ID
                                     </p>
-                                    <p className="text-sm sm:text-base font-semibold text-gray-800 mt-1">
+                                    <p className="text-sm sm:text-base font-semibold text-foreground mt-1">
                                         {order?._id?.slice(-6) || "N/A"}
                                     </p>
                                 </div>
                                 <div className="sm:col-span-2">
-                                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium">
+                                    <p className="text-xs sm:text-sm text-foreground uppercase font-medium">
                                         Date
                                     </p>
-                                    <p className="text-sm sm:text-base font-semibold text-gray-800 mt-1">
+                                    <p className="text-sm sm:text-base font-semibold text-foreground mt-1">
                                         {order?.createdAt
                                             ? new Date(
-                                                  order.createdAt
-                                              ).toLocaleDateString()
+                                                  order?.createdAt
+                                              ).toLocaleDateString("en-IN", {
+                                                  day: "2-digit",
+                                                  month: "short",
+                                                  year: "numeric",
+                                              })
                                             : "N/A"}
                                     </p>
                                 </div>
                                 <div className="sm:col-span-2">
-                                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium">
+                                    <p className="text-xs sm:text-sm text-foreground uppercase font-medium">
                                         Total
                                     </p>
-                                    <p className="text-sm sm:text-base font-semibold text-gray-800 mt-1">
+                                    <p className="text-sm sm:text-base font-semibold text-foreground mt-1">
                                         ₹{formatINR(order?.totalAmount)}
                                     </p>
                                 </div>
                                 <div className="sm:col-span-2">
-                                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium">
+                                    <p className="text-xs sm:text-sm text-foreground uppercase font-medium">
                                         Delivery Status
                                     </p>
                                     <span
@@ -102,7 +106,7 @@ function Orders() {
                                     </span>
                                 </div>
                                 <div className="sm:col-span-2">
-                                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium">
+                                    <p className="text-xs sm:text-sm text-foreground uppercase font-medium">
                                         Payment Status
                                     </p>
                                     <span
@@ -143,18 +147,18 @@ function Orders() {
                                                 className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-md border border-gray-200"
                                             />
                                             <div className="flex-1">
-                                                <p className="text-sm sm:text-base font-medium text-gray-800">
+                                                <p className="text-sm sm:text-base font-medium text-foreground">
                                                     {item?.name || "N/A"}
                                                 </p>
-                                                <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                                                <p className="text-xs sm:text-sm text-foreground mt-1">
                                                     Quantity:{" "}
                                                     {item?.quantity || 0}
                                                 </p>
-                                                <p className="text-xs sm:text-sm text-gray-600">
+                                                <p className="text-xs sm:text-sm text-foreground">
                                                     Price: ₹
                                                     {formatINR(item?.price)}
                                                 </p>
-                                                <p className="text-sm sm:text-base font-semibold text-gray-800 mt-1">
+                                                <p className="text-sm sm:text-base font-semibold text-foreground mt-1">
                                                     Total: ₹
                                                     {formatINR(
                                                         (item?.quantity || 0) *
@@ -165,7 +169,7 @@ function Orders() {
                                         </div>
                                     ))
                                 ) : (
-                                    <p className="text-gray-600">
+                                    <p className="text-foreground">
                                         No items found in this order.
                                     </p>
                                 )}
@@ -175,10 +179,10 @@ function Orders() {
                             <div className="border-t border-gray-200 my-4 sm:my-6"></div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium">
+                                    <p className="text-xs sm:text-sm text-foreground uppercase font-medium">
                                         Shipping Address
                                     </p>
-                                    <p className="text-sm sm:text-base text-gray-800 mt-1">
+                                    <p className="text-sm sm:text-base text-foreground mt-1">
                                         {order?.shippingAddress?.street ||
                                             "N/A"}
                                         ,{" "}
@@ -191,20 +195,20 @@ function Orders() {
                                         {order?.shippingAddress?.country ||
                                             "N/A"}
                                     </p>
-                                    <p className="text-sm sm:text-base text-gray-800">
+                                    <p className="text-sm sm:text-base text-foreground">
                                         Phone:{" "}
                                         {order?.shippingAddress?.phone || "N/A"}
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium">
+                                    <p className="text-xs sm:text-sm text-foreground uppercase font-medium">
                                         Payment Method
                                     </p>
-                                    <p className="text-sm sm:text-base text-gray-800 mt-1">
+                                    <p className="text-sm sm:text-base text-foreground mt-1">
                                         {order?.paymentMethod || "N/A"}
                                     </p>
                                     {order?.paidAt && (
-                                        <p className="text-sm sm:text-base text-gray-800">
+                                        <p className="text-sm sm:text-base text-foreground">
                                             Paid At:{" "}
                                             {new Date(
                                                 order.paidAt
@@ -212,7 +216,7 @@ function Orders() {
                                         </p>
                                     )}
                                     {order?.deliveredAt && (
-                                        <p className="text-sm sm:text-base text-gray-800">
+                                        <p className="text-sm sm:text-base text-foreground">
                                             Delivered At:{" "}
                                             {new Date(
                                                 order.deliveredAt

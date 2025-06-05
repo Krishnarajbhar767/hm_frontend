@@ -68,15 +68,15 @@ function UserAccountDashboard() {
                             to={`/account/${item.path}`}
                             className={`relative flex items-center gap-2 px-4 py-3 text-sm font-medium uppercase transition-colors duration-300 whitespace-nowrap ${
                                 location.pathname === `/account/${item.path}`
-                                    ? "text-gray-800"
-                                    : "text-gray-600 hover:text-gray-800"
+                                    ? "text-foreground"
+                                    : "text-foreground/70 hovertext-foreground"
                             }`}
                         >
                             {item.icon}
                             {item.label}
                             {location.pathname === `/account/${item.path}` && (
                                 <motion.div
-                                    className="absolute bottom-0 left-0 w-full h-1 bg-gray-800"
+                                    className="absolute bottom-0 left-0 w-full h-1 bg-foreground"
                                     layoutId="underline"
                                     transition={{
                                         type: "spring",
@@ -107,7 +107,7 @@ function UserAccountDashboard() {
                                     className={`flex items-center gap-3 px-4 py-3 text-base font-medium uppercase rounded-md transition-all duration-300 ${
                                         location.pathname ===
                                         `/account/${item.path}`
-                                            ? "bg-gray-800 text-white shadow-sm"
+                                            ? "bg-foreground text-white shadow-sm"
                                             : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
                                     }`}
                                 >

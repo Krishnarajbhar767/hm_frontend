@@ -15,6 +15,7 @@ import {
 } from "./redux/slices/categorySlice";
 import { setCart } from "./redux/slices/cartSlice";
 import axiosInstance from "./utils/apiConnector";
+import { setWishList } from "./redux/slices/wishListSlice";
 
 function App() {
     const dispatch = useDispatch();
@@ -71,6 +72,14 @@ function App() {
             (async () => {
                 const res = await axiosInstance.get(`/user/cart/${user._id}`);
                 dispatch(setCart(res.data));
+            })();
+
+            (async () => {
+                const res = await axiosInstance.get(
+                    `/user/wishlist/${user?._id}`
+                );
+                console.log(res.data);
+                dispatch(setWishList(res.data));
             })();
         } else {
             dispatch(setCart(JSON.parse(localStorage.getItem("cart")) || []));

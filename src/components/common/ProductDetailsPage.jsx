@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Package } from "lucide-react";
 
 // Import modular components
@@ -13,7 +13,10 @@ import DeliveryTimeline from "./product details/DeliveryTimeline";
 import SuggestedProducts from "./product details/SuggestedProducts";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, setCart } from "../../redux/slices/cartSlice";
-
+import axiosInstance from "../../utils/apiConnector";
+import toast from "react-hot-toast";
+import { setWishList } from "../../redux/slices/wishListSlice";
+import slugify from "slugify";
 /**
  * Enhanced ProductDetailsPage Component
  * Main component that orchestrates all product detail sections
@@ -30,6 +33,9 @@ function ProductDetailsPage() {
     const [zoomedImage, setZoomedImage] = useState("");
     const { user } = useSelector((state) => state.user);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const wishlistItems = useSelector((state) => state.wishlist);
+
     // Mock reviews data
     const mockReviews = [
         {
@@ -77,7 +83,7 @@ function ProductDetailsPage() {
                 if (product?.category) {
                     const relatedResponse = await fetch(
                         `${import.meta.env.VITE_BACKEND_URL}/categories/${
-                            product.category
+                            product.category?._id
                         }`
                     );
                     if (!relatedResponse.ok)
@@ -99,28 +105,40 @@ function ProductDetailsPage() {
     }, [id]);
 
     // Event handlers
-    const handleAddToCart = (data) => {
-        if (!user) {
-            const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-            const isExist = existingCart.some((item) => item._id === data._id);
+    const handleAddToCart = async (data) => {
+        const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+        const isExist = existingCart.some((item) => item._id === data._id);
+        if (!isExist) {
+            const updatedCart = [...existingCart, { ...data }];
+            localStorage.setItem("cart", JSON.stringify(updatedCart));
+            console.log("Added to localStorage cart");
+            // In this offline cenario totalPirce Will Be Colculated Automaticlly
 
-            if (!isExist) {
-                const updatedCart = [...existingCart, { ...data }];
-                localStorage.setItem("cart", JSON.stringify(updatedCart));
-                console.log("Added to localStorage cart");
-                dispatch(setCart(updatedCart));
-            } else {
-                console.log("Item Already In Cart");
+            if (user) {
+                try {
+                    const res = await axiosInstance.post("/user/cart/add", {
+                        product: data?._id,
+                        quantity: data?.quantity,
+                        finalPrice: data?.finalPrice,
+                        withCustomization: data.withCustomization,
+                        totalPrice: data.finalPrice * data?.quantity,
+                        userId: user?._id,
+                    });
+                    if (!res) {
+                        return;
+                    }
+                } catch (error) {
+                    toast.error("Something went wrong");
+                    console.log(error);
+                    return;
+                }
             }
+            dispatch(setCart(updatedCart));
         }
     };
 
     const handleBuyNow = (data) => {
         console.log("Buy now:", data);
-    };
-
-    const handleWishlistToggle = (product) => {
-        console.log("Wishlist toggle:", product);
     };
 
     const handleShare = () => {
@@ -237,7 +255,10 @@ function ProductDetailsPage() {
                         </Link>
                         <span>/</span>
                         <Link
-                            to={`/category/${product.category?.id}`}
+                            to={`/products/${slugify(product.category?.name, {
+                                lower: true,
+                                strict: true,
+                            })}/${product.category?._id}`}
                             className="hover:text-gray-900 text-foreground"
                         >
                             {product.category?.name || "Category"}
@@ -264,7 +285,6 @@ function ProductDetailsPage() {
                             product={product}
                             onAddToCart={handleAddToCart}
                             onBuyNow={handleBuyNow}
-                            onWishlistToggle={handleWishlistToggle}
                             onShare={handleShare}
                         />
                     </div>

@@ -59,7 +59,7 @@ function OrderDetails() {
                 transition={{ duration: 0.3 }}
                 className="text-center py-12 sm:py-16"
             >
-                <p className="text-gray-600 text-base sm:text-lg mb-2">
+                <p className="text-foreground text-base sm:text-lg mb-2">
                     Order not found
                 </p>
                 <motion.div
@@ -68,7 +68,7 @@ function OrderDetails() {
                 >
                     <Link
                         to="/account/orders"
-                        className="flex items-center gap-2 justify-center text-gray-950 hover:text-blue-700 text-sm sm:text-base font-medium"
+                        className="flex items-center gap-2 justify-center text-foreground hover:text-blue-700 text-sm sm:text-base font-medium"
                     >
                         <FiArrowLeft size={16} /> Back to Orders
                     </Link>
@@ -92,7 +92,7 @@ function OrderDetails() {
                 variants={sectionVariants}
                 className="flex justify-between items-center"
             >
-                <h2 className="flex items-center gap-2 text-xl sm:text-2xl md:text-3xl font-semibold uppercase text-gray-800 tracking-wide">
+                <h2 className="flex items-center gap-2 text-xl sm:text-2xl md:text-3xl font-semibold uppercase text-foreground tracking-wide">
                     <FiPackage size={24} /> Order Details -{" "}
                     {order?._id?.slice(-6) || "N/A"}
                 </h2>
@@ -102,7 +102,7 @@ function OrderDetails() {
                 >
                     <Link
                         to="/account/orders"
-                        className="flex items-center gap-2 text-gray-950 hover:text-blue-700 text-sm sm:text-base font-medium"
+                        className="flex items-center gap-2 text-foreground hover:text-blue-700 text-sm sm:text-base font-medium"
                     >
                         <FiArrowLeft size={16} /> Back to Orders
                     </Link>
@@ -119,25 +119,25 @@ function OrderDetails() {
             >
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                     <div>
-                        <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium">
+                        <p className="text-xs sm:text-sm text-foreground uppercase font-medium">
                             Order Date
                         </p>
-                        <p className="text-sm sm:text-base font-semibold text-gray-800 mt-1">
+                        <p className="text-sm sm:text-base font-semibold text-foreground mt-1">
                             {order?.createdAt
                                 ? new Date(order.createdAt).toLocaleString()
                                 : "N/A"}
                         </p>
                     </div>
                     <div>
-                        <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium">
+                        <p className="text-xs sm:text-sm text-foreground uppercase font-medium">
                             Total
                         </p>
-                        <p className="text-sm sm:text-base font-semibold text-gray-800 mt-1">
+                        <p className="text-sm sm:text-base font-semibold text-foreground mt-1">
                             ₹{formatINR(order?.totalAmount)}
                         </p>
                     </div>
                     <div>
-                        <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium">
+                        <p className="text-xs sm:text-sm text-foreground uppercase font-medium">
                             Delivery Status
                         </p>
                         <span
@@ -159,7 +159,7 @@ function OrderDetails() {
                 variants={sectionVariants}
                 className="space-y-4"
             >
-                <h3 className="flex items-center gap-2 text-lg sm:text-xl font-semibold uppercase text-gray-800 tracking-wide">
+                <h3 className="flex items-center gap-2 text-lg sm:text-xl font-semibold uppercase text-foreground tracking-wide">
                     <FiPackage size={20} /> Products
                 </h3>
                 {order?.items?.length > 0 ? (
@@ -178,14 +178,14 @@ function OrderDetails() {
                                 className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-md border border-gray-200"
                             />
                             <div className="flex-1">
-                                <p className="text-sm sm:text-base font-medium text-gray-800">
+                                <p className="text-sm sm:text-base font-medium text-foreground">
                                     {item?.name || "N/A"}
                                 </p>
-                                <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                                <p className="text-xs sm:text-sm text-foreground mt-1">
                                     Quantity: {item?.quantity || 0} @ ₹
                                     {formatINR(item?.price)} each
                                 </p>
-                                <p className="text-sm sm:text-base font-semibold text-gray-800 mt-1">
+                                <p className="text-sm sm:text-base font-semibold text-foreground mt-1">
                                     Total: ₹
                                     {formatINR(
                                         (item?.quantity || 0) *
@@ -197,7 +197,7 @@ function OrderDetails() {
                     ))
                 ) : (
                     <div className="border border-gray-200 bg-white rounded-lg shadow-sm p-4 sm:p-6">
-                        <p className="text-gray-600">
+                        <p className="text-foreground">
                             No items found in this order.
                         </p>
                     </div>
@@ -212,35 +212,35 @@ function OrderDetails() {
                 variants={sectionVariants}
                 className="space-y-4"
             >
-                <h3 className="flex items-center gap-2 text-lg sm:text-xl font-semibold uppercase text-gray-800 tracking-wide">
+                <h3 className="flex items-center gap-2 text-lg sm:text-xl font-semibold uppercase text-foreground tracking-wide">
                     <FiTruck size={20} /> Shipping Information
                 </h3>
                 <div className="border border-gray-200 bg-white rounded-lg shadow-sm p-4 sm:p-6">
-                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium">
+                    <p className="text-xs sm:text-sm text-foreground uppercase font-medium">
                         Shipping Address
                     </p>
-                    <p className="text-sm sm:text-base font-semibold text-gray-800 mt-1">
+                    <p className="text-sm sm:text-base font-semibold text-foreground mt-1">
                         {order?.shippingAddress?.street || "N/A"},{" "}
                         {order?.shippingAddress?.city || "N/A"},{" "}
                         {order?.shippingAddress?.state || "N/A"},{" "}
                         {order?.shippingAddress?.postalCode || "N/A"},{" "}
                         {order?.shippingAddress?.country || "N/A"}
                     </p>
-                    <p className="text-sm sm:text-base font-semibold text-gray-800 mt-1">
+                    <p className="text-sm sm:text-base font-semibold text-foreground mt-1">
                         Phone: {order?.shippingAddress?.phone || "N/A"}
                     </p>
-                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium mt-4">
+                    <p className="text-xs sm:text-sm text-foreground uppercase font-medium mt-4">
                         Tracking Number
                     </p>
-                    <p className="text-sm sm:text-base font-semibold text-gray-800 mt-1">
+                    <p className="text-sm sm:text-base font-semibold text-foreground mt-1">
                         N/A
                     </p>
                     {order?.deliveredAt && (
                         <>
-                            <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium mt-4">
+                            <p className="text-xs sm:text-sm text-foreground uppercase font-medium mt-4">
                                 Delivery Date
                             </p>
-                            <p className="text-sm sm:text-base font-semibold text-gray-800 mt-1">
+                            <p className="text-sm sm:text-base font-semibold text-foreground mt-1">
                                 {new Date(order.deliveredAt).toLocaleString()}
                             </p>
                         </>
@@ -256,17 +256,17 @@ function OrderDetails() {
                 variants={sectionVariants}
                 className="space-y-4"
             >
-                <h3 className="flex items-center gap-2 text-lg sm:text-xl font-semibold uppercase text-gray-800 tracking-wide">
+                <h3 className="flex items-center gap-2 text-lg sm:text-xl font-semibold uppercase text-foreground tracking-wide">
                     <FiCreditCard size={20} /> Payment Information
                 </h3>
                 <div className="border border-gray-200 bg-white rounded-lg shadow-sm p-4 sm:p-6">
-                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium">
+                    <p className="text-xs sm:text-sm text-foreground uppercase font-medium">
                         Payment Method
                     </p>
-                    <p className="text-sm sm:text-base font-semibold text-gray-800 mt-1">
+                    <p className="text-sm sm:text-base font-semibold text-foreground mt-1">
                         {order?.paymentMethod || "N/A"}
                     </p>
-                    <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium mt-4">
+                    <p className="text-xs sm:text-sm text-foreground uppercase font-medium mt-4">
                         Payment Status
                     </p>
                     <span
@@ -278,10 +278,10 @@ function OrderDetails() {
                     </span>
                     {order?.paidAt && (
                         <>
-                            <p className="text-xs sm:text-sm text-gray-500 uppercase font-medium mt-4">
+                            <p className="text-xs sm:text-sm text-foreground uppercase font-medium mt-4">
                                 Paid At
                             </p>
-                            <p className="text-sm sm:text-base font-semibold text-gray-800 mt-1">
+                            <p className="text-sm sm:text-base font-semibold text-foreground mt-1">
                                 {new Date(order.paidAt).toLocaleString()}
                             </p>
                         </>

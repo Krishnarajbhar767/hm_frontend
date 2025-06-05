@@ -178,22 +178,22 @@ function Addresses() {
             className="space-y-4 sm:space-y-6 px-4 sm:px-6 lg:px-8"
         >
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                <h2 className="flex items-center gap-2 text-lg sm:text-xl md:text-2xl font-semibold uppercase text-gray-800 tracking-wide">
+                <h2 className="flex items-center gap-2 text-lg sm:text-xl md:text-2xl font-semibold uppercase text-foreground tracking-wide">
                     <FiMapPin size={20} /> Saved Addresses
                 </h2>
                 <button
                     onClick={() => setIsAddressFormOpen(true)}
-                    className="bg-gray-800 text-white px-4 py-2 text-xs sm:text-sm uppercase hover:bg-gray-700 transition-colors duration-200 shadow-md w-full sm:w-auto"
+                    className="bg-foreground text-white px-4 py-2 text-xs sm:text-sm uppercase hover:bg-foreground/90 transition-colors duration-200 shadow-md w-full sm:w-auto"
                 >
                     Add Address
                 </button>
             </div>
             {addresses.length === 0 ? (
                 <div className="text-center py-8 sm:py-12">
-                    <p className="text-gray-600 text-sm sm:text-base mb-2">
+                    <p className="text-foreground text-sm sm:text-base mb-2">
                         No addresses saved
                     </p>
-                    <p className="text-gray-500 text-xs sm:text-sm">
+                    <p className="text-foreground text-xs sm:text-sm">
                         Add an address to see it here
                     </p>
                 </div>
@@ -206,7 +206,7 @@ function Addresses() {
                             className="relative h-48 p-4 sm:p-5 border border-gray-200 bg-white rounded-md shadow-sm space-y-2 overflow-hidden"
                         >
                             <div className="flex justify-between items-center">
-                                <p className="text-sm sm:text-base font-medium text-gray-800">
+                                <p className="text-sm sm:text-base font-medium text-foreground">
                                     {address.label}
                                 </p>
                                 {address.isDefault && (
@@ -215,13 +215,13 @@ function Addresses() {
                                     </span>
                                 )}
                             </div>
-                            <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
+                            <p className="text-xs sm:text-sm text-foreground line-clamp-2">
                                 {address.address.street}, {address.address.city}
                                 , {address.address.state}{" "}
                                 {address.address.postalCode},{" "}
                                 {address.address.country}
                             </p>
-                            <p className="text-xs sm:text-sm text-gray-600">
+                            <p className="text-xs sm:text-sm text-foreground">
                                 Phone: {address.phone}
                             </p>
                             <div className="absolute bottom-4 left-4 right-4 flex gap-2">
@@ -244,7 +244,7 @@ function Addresses() {
                                         onClick={() =>
                                             handleSetDefault(address.id)
                                         }
-                                        className="flex items-center gap-1 text-gray-600 hover:text-gray-800 text-xs sm:text-sm"
+                                        className="flex items-center gap-1 text-foreground hover:text-foreground text-xs sm:text-sm"
                                     >
                                         Set Default
                                     </button>
@@ -264,11 +264,11 @@ function Addresses() {
                     >
                         <button
                             onClick={closeModal}
-                            className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+                            className="absolute top-4 right-4 text-foreground hover:text-foreground"
                         >
                             <FiX size={20} />
                         </button>
-                        <h3 className="text-lg sm:text-xl font-semibold uppercase text-gray-800 mb-4 tracking-wide">
+                        <h3 className="text-lg sm:text-xl font-semibold uppercase text-foreground mb-4 tracking-wide">
                             {editAddress ? "Edit Address" : "Add Address"}
                         </h3>
                         <form
@@ -351,8 +351,8 @@ function Addresses() {
                                     disabled={!hasFormChanged}
                                     className={`px-4 py-2 text-xs sm:text-sm uppercase transition-colors duration-200 shadow-md w-full sm:w-auto ${
                                         hasFormChanged
-                                            ? "bg-gray-800 text-white hover:bg-gray-700"
-                                            : "bg-gray-400 text-gray-200 cursor-not-allowed"
+                                            ? "bg-foreground text-white hover:bg-foreground/90"
+                                            : "bg-foreground/90 text-gray-200 cursor-not-allowed"
                                     }`}
                                 >
                                     Save
@@ -360,7 +360,7 @@ function Addresses() {
                                 <button
                                     type="button"
                                     onClick={closeModal}
-                                    className="bg-gray-200 text-gray-800 px-4 py-2 text-xs sm:text-sm uppercase hover:bg-gray-300 transition-colors duration-200 shadow-md w-full sm:w-auto"
+                                    className="bg-gray-200 text-foreground px-4 py-2 text-xs sm:text-sm uppercase hover:bg-gray-300 transition-colors duration-200 shadow-md w-full sm:w-auto border border-foreground/50"
                                 >
                                     Cancel
                                 </button>
@@ -377,10 +377,10 @@ function Addresses() {
                         transition={{ duration: 0.3 }}
                         className="bg-white bg-opacity-50 backdrop-blur-md p-4 sm:p-6 w-full max-w-sm shadow-lg border border-gray-300 border-opacity-20 rounded-lg"
                     >
-                        <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+                        <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-4">
                             Confirm Deletion
                         </h3>
-                        <p className="text-gray-600 text-sm sm:text-base mb-6">
+                        <p className="text-foreground text-sm sm:text-base mb-6">
                             Are you sure you want to delete this address? This
                             action cannot be undone.
                         </p>
@@ -393,7 +393,7 @@ function Addresses() {
                             </button>
                             <button
                                 onClick={cancelDelete}
-                                className="bg-gray-200 text-gray-800 px-4 py-2 text-xs sm:text-sm uppercase hover:bg-gray-300 transition-colors duration-200 shadow-md w-full sm:w-auto"
+                                className="bg-gray-200 text-foreground px-4 py-2 text-xs sm:text-sm uppercase hover:bg-gray-300 transition-colors duration-200 shadow-md w-full sm:w-auto"
                             >
                                 Cancel
                             </button>

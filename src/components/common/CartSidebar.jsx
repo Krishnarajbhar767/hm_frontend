@@ -95,15 +95,23 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                                 exit={{ opacity: 0 }}
                                 className="flex gap-3 mb-4 pb-4 border-b border-foreground/50"
                             >
-                                <img
-                                    src={
-                                        Array.isArray(item.images)
-                                            ? item.images[0]
-                                            : item.image
-                                    }
-                                    alt={item.name}
-                                    className="w-16 h-full sm:w-20  object-cover "
-                                />
+                                <div
+                                    className="w-20 sm:w-24 aspect-square  overflow-hidden  border-gray-100 flex-shrink-0 cursor-pointer"
+                                    onClick={() => {
+                                        navigate(`/product/${item?._id}`);
+                                        closeHandler();
+                                    }}
+                                >
+                                    <img
+                                        src={
+                                            Array.isArray(item.images)
+                                                ? item.images[0]
+                                                : item.image
+                                        }
+                                        alt={item.name}
+                                        className="w-full h-full object-cover object-top"
+                                    />
+                                </div>
                                 <div className="flex-1">
                                     <div className="flex justify-between items-start mb-1">
                                         <h3 className="font-light text-sm sm:text-base text-foreground line-clamp-1">
@@ -159,7 +167,8 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                                             </button>
                                         </div>
                                         <p className="font-medium text-xs sm:text-sm">
-                                            &#x20B9;{item.price}
+                                            &#x20B9;
+                                            {item.finalPrice * item?.quantity}
                                         </p>
                                     </div>
                                 </div>

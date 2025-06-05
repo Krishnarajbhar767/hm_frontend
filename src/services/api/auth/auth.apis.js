@@ -3,6 +3,8 @@ import { handleAxiosError } from "../../../utils/handleAxiosError";
 import authEndpoints from "../../endpoints/auth/auth.endpoints";
 import { store } from "../../../redux/store";
 import { clearUser } from "../../../redux/slices/userSlice";
+import { setWishList } from "../../../redux/slices/wishListSlice";
+import { clearCart } from "../../../redux/slices/cartSlice";
 const authApis = {
     register: async (data) => {
         const res = await axiosInstance.post(authEndpoints.register, data);
@@ -20,6 +22,9 @@ const authApis = {
     logOut: async (data) => {
         const res = await axiosInstance.post(authEndpoints.logout, data);
         store.dispatch(clearUser());
+        store.dispatch(setWishList([]));
+        store.dispatch(clearCart());
+        localStorage.clear();
         return res;
     },
     changePassword: async (data) => {

@@ -10,6 +10,7 @@ import VerifyOtp from "../pages/public/verify otp/VerifyOtp";
 import NotFound from "../components/common/NotFound";
 import CategoryPage from "../pages/public/category/CategoryPage";
 import ProductDetailsPage from "../components/common/ProductDetailsPage";
+import Wishlist from "../pages/public/wishlist/Wishlist";
 
 const PublicRoutes = (
     <Route element={<MainLayout />}>
@@ -23,6 +24,7 @@ const PublicRoutes = (
         <Route path="/product/:id" element={<ProductDetailsPage />} />
         <Route path="/contact" element={<h1>Contact</h1>} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/wishlist" element={<Wishlist />} />
         <Route path="*" element={<NotFound />} />
     </Route>
 );
