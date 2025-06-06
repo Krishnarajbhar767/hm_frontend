@@ -1,8 +1,8 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import PublicRoutes from "./publicRoutes";
-import UserRoutes from "./userRoutes";
-import AdminRoutes from "./adminRoutes";
+import PublicRoutes from "./PublicRoutes";
+import UserRoutes from "./UserRoutes";
+import AdminRoutes from "./AdminRoutes";
 
 function AppRoutes() {
     return (
