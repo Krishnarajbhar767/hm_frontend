@@ -4,10 +4,7 @@
     --color-primary: #f17f21;
     --color-foreground: rgb(83, 62, 45);
 }
-#testing {
-    color: "";
-    something: "";
-}
+
 html,
 body {
     /* font-family: "AvertaStd-Regular"; */
