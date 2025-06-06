@@ -7,14 +7,15 @@ import ShippingForm from "./ShippingForm";
 import PaymentMethodSelector from "./PaymentMethodSelector";
 import OrderSummary from "./OrderSummary";
 
-function ShippingAndCheckout({ onBack, onProceed }) {
+function ShippingAndCheckout({ onBack }) {
     const cartItems = useSelector((state) => state?.cart?.cartItems);
     const methods = useForm();
 
     const onSubmit = async (data) => {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        alert(JSON.stringify(data, null, 2));
-        onProceed();
+        // await new Promise((resolve) => setTimeout(resolve, 2000));
+        // alert(JSON.stringify(data, null, 2));
+        // onProceed();
+        console.log(data);
     };
 
     return (
