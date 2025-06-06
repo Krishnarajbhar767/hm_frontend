@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Footer from "./components/common/Footer";
 import Header from "./components/common/Header";
-import AppRoutes from "./routes/appRoutes";
+import AppRoutes from "./routes/AppRoutes.jsx";
 import { handleAxiosError } from "./utils/handleAxiosError";
 import authApis from "./services/api/auth/auth.apis";
 import { useDispatch, useSelector } from "react-redux";
