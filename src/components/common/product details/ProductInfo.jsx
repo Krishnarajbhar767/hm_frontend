@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../utils/apiConnector";
 import { setWishList } from "../../../redux/slices/wishListSlice";
+import slugify from "slugify";
 
 /**
  * ProductInfo Component
@@ -23,7 +24,6 @@ import { setWishList } from "../../../redux/slices/wishListSlice";
 function ProductInfo({
     product,
     onAddToCart,
-    onBuyNow,
 
     onShare,
 }) {
@@ -75,15 +75,56 @@ function ProductInfo({
     };
 
     // Handle buy now
-    const handleBuyNow = () => {
-        onBuyNow?.({
-            product,
-            size: selectedSize,
-            quantity,
-            withCustomization,
-            finalPrice,
-            totalPrice: finalPrice * quantity,
+
+    const handleBuyNow = async () => {
+        const {
+            data: { key },
+        } = await axiosInstance.get("/payment/get-razorpay-key");
+
+        const {
+            data: { order },
+        } = await axiosInstance.post("/payment/checkout", {
+            amount: finalPrice,
         });
+
+        var options = {
+            key, // Enter the Key ID generated from the Dashboard
+            amount: order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            currency: "INR",
+            name: "Srijan Fabrics",
+            description: "Test Transaction",
+            image: "https://www.tshirtfactory.co.in/_next/static/media/logo%20t%20sirt.05e4aa5e.png",
+            order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            callback_url: `${
+                import.meta.env.VITE_BACKEND_URL
+            }/payment/verify-payment`,
+            prefill: {
+                name: "KRISHNA",
+                email: "krishnarajbhar767@gmail.com",
+                contact: "9000090000",
+            },
+            notes: {
+                address: "Razorpay Corporate Office",
+            },
+            theme: {
+                color: "#3399cc",
+            },
+        };
+        const razorpay = new window.Razorpay(options);
+        // Listen for payment failure event and redirect
+        razorpay.on("payment.failed", function (response) {
+            const reason = response?.error?.reason || "payment_failed"; // short & clean
+            const slug = slugify(reason, {
+                lower: true,
+                strict: true,
+            });
+            window.location.href = `/paymentFailed?reason=${slug}`;
+        });
+        razorpay.open();
+        // document.getElementById("rzp-button1").onclick = function (e) {
+        //     rzp1.open();
+        //     e.preventDefault();
+        // };
     };
 
     // Handle wishlist toggle
@@ -381,7 +422,7 @@ function ProductInfo({
             {/* Action Buttons */}
             <div className="space-y-3">
                 <button
-                    onClick={handleBuyNow}
+                    onClick={() => handleBuyNow(product?.finaPrice)}
                     disabled={!product?.stock}
                     className="w-full bg-foreground text-white py-3 px-6 rounded-lg font-medium hover:bg-foreground/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
                 >

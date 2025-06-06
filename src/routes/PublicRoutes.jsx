@@ -11,6 +11,8 @@ import NotFound from "../components/common/NotFound";
 import CategoryPage from "../pages/public/category/CategoryPage";
 import ProductDetailsPage from "../components/common/ProductDetailsPage";
 import Wishlist from "../pages/public/wishlist/Wishlist";
+import PaymentSuccess from "../components/common/PaymentSuccess";
+import PaymentFailed from "../components/common/PaymentFailed";
 
 const PublicRoutes = (
     <Route element={<MainLayout />}>
@@ -25,6 +27,8 @@ const PublicRoutes = (
         <Route path="/contact" element={<h1>Contact</h1>} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/paymentSuccess" element={<PaymentSuccess />} />
+        <Route path="/paymentFailed" element={<PaymentFailed />} />
         <Route path="*" element={<NotFound />} />
     </Route>
 );
