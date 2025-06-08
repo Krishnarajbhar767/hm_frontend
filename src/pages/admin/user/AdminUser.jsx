@@ -140,13 +140,13 @@ function AdminUsers() {
                                         .split("T")[0]
                                 }
                             </p>
-                            <p className="text-sm text-gray-600">
+                            {/* <p className="text-sm text-gray-600">
                                 Cart Items:{" "}
-                                {user.cart.reduce(
+                                {user?.cart?.item?.reduce(
                                     (sum, c) => sum + c.items.length,
                                     0
                                 )}
-                            </p>
+                            </p> */}
                             <div className="flex justify-between mt-2">
                                 <button
                                     onClick={() => onEditUser(user)}
