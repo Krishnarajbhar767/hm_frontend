@@ -47,6 +47,7 @@ function Header() {
         { title: "Home", path: "/" },
         { title: "Product", path: "#", subLinks: optimisedCategoriesList },
         { title: "About Us", path: "/about" },
+        { title: "Contact Us", path: "/contact" },
     ];
 
     // Sidebar + menu state

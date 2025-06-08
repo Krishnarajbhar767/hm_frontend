@@ -13,6 +13,8 @@ import ProductDetailsPage from "../components/common/ProductDetailsPage";
 import Wishlist from "../pages/public/wishlist/Wishlist";
 import PaymentSuccess from "../components/common/PaymentSuccess";
 import PaymentFailed from "../components/common/PaymentFailed";
+import AboutUs from "../pages/public/about/About";
+import ContactUs from "../pages/public/contact/ContactUs";
 
 const PublicRoutes = (
     <Route element={<MainLayout />}>
@@ -21,10 +23,10 @@ const PublicRoutes = (
         <Route path="/Sign-up" element={<SignUp />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
-        <Route path="/About" element={<h1>About</h1>} />
+        <Route path="/About" element={<AboutUs />} />
         <Route path="/products/:category/:id" element={<CategoryPage />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
-        <Route path="/contact" element={<h1>Contact</h1>} />
+        <Route path="/contact" element={<ContactUs />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/paymentSuccess" element={<PaymentSuccess />} />
