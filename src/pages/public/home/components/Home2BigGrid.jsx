@@ -37,11 +37,11 @@ function Home2BigGrid() {
                             key={index}
                             src={item.image}
                             alt="Sarees"
-                            className="w-full h-[50vh] md:h-[100vh] object-cover object-top  hover:scale-[101%] transition-all ease-linear duration-200 shadow-sm  border border-gray-200 hover:grayscale-75"
+                            className="w-full h-[50vh] md:h-[100vh] object-cover object-top  hover:scale-[101%] transition-all ease-linear duration-200 shadow-sm  border border-gray-200 "
                         />
-                        <h1 className="absolute top-[85%] md:top-[90%]  left-[5%] text-xl font-medium text-white uppercase">
+                        {/* <h1 className="absolute top-[85%] md:top-[90%]  left-[5%] text-xl font-medium text-white uppercase">
                             {item.text}
-                        </h1>
+                        </h1> */}
                     </div>
                 ))}
             </div>

@@ -6,12 +6,16 @@ import { useForm } from "react-hook-form";
 import Button from "./Button";
 import { Link, useNavigate } from "react-router-dom";
 import authApis from "../../services/api/auth/auth.apis";
-import { setToken, setUser } from "../../redux/slices/userSlice";
+import { clearUser, setToken, setUser } from "../../redux/slices/userSlice";
 import toast from "react-hot-toast";
 import { handleAxiosError } from "../../utils/handleAxiosError";
 import { useDispatch } from "react-redux";
 import axiosInstance from "../../utils/apiConnector";
-import { setCart } from "../../redux/slices/cartSlice";
+import { clearCart, setCart } from "../../redux/slices/cartSlice";
+import { clearOrders } from "../../redux/slices/orderSlice";
+import { clearCategory } from "../../redux/slices/categorySlice";
+import { clearProducts } from "../../redux/slices/productSlice";
+import { clearWishlist } from "../../redux/slices/wishListSlice";
 
 const LoginSidebar = ({ isOpen, closeHandler }) => {
     const {
@@ -48,6 +52,12 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
     async function loginHandler(loginCredentials) {
         setIsLoading(true);
         try {
+            dispatch(clearUser());
+            dispatch(clearCart());
+            dispatch(clearOrders());
+            dispatch(clearCategory());
+            dispatch(clearProducts());
+            dispatch(clearWishlist());
             const userData = await authApis.login(loginCredentials);
             dispatch(setUser(userData?.user));
             localStorage.setItem("token", userData.token);

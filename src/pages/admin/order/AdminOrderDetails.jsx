@@ -7,7 +7,6 @@ import {
     FiCreditCard,
     FiUser,
 } from "react-icons/fi";
-import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../utils/apiConnector";
 
@@ -16,16 +15,23 @@ const sectionVariants = {
     visible: (i) => ({
         opacity: 1,
         y: 0,
-        transition: {
-            delay: i * 0.2,
-            duration: 0.4,
-        },
+        transition: { delay: i * 0.2, duration: 0.4 },
     }),
 };
 
 function AdminOrderDetails() {
     const { id } = useParams();
-    const [order, setOrder] = useState([]);
+    const [order, setOrder] = useState(null);
+
+    useEffect(() => {
+        axiosInstance
+            .get(`/admin/orders/order/${id}`)
+            .then((res) => setOrder(res.data.data))
+            .catch((err) => {
+                console.error("Error fetching order:", err);
+                setOrder(null);
+            });
+    }, [id]);
 
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
@@ -50,21 +56,8 @@ function AdminOrderDetails() {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
         });
-    useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const response = await axiosInstance.get(
-                    `/admin/orders/order/${id}`
-                );
-                setOrder(response.data?.data || []);
-            } catch (error) {
-                console.error("Error fetching orders:", error);
-            }
-        };
-        fetchOrders();
-    }, []);
 
-    if (!order) {
+    if (order === null) {
         return (
             <motion.div
                 initial={{ opacity: 0 }}
@@ -72,7 +65,7 @@ function AdminOrderDetails() {
                 transition={{ duration: 0.3 }}
                 className="text-center py-12 sm:py-16"
             >
-                <p className="text-gray-600 text-base sm:text-lg mb-2">
+                <p className="text-gray-800 text-base sm:text-lg mb-2">
                     Order not found
                 </p>
                 <motion.div
@@ -81,7 +74,7 @@ function AdminOrderDetails() {
                 >
                     <Link
                         to="/admin/orders"
-                        className="flex items-center gap-2 justify-center text-gray-950 hover:text-blue-700 text-sm font-medium"
+                        className="flex items-center gap-2 justify-center text-gray-800 hover:text-blue-700 text-sm font-medium"
                     >
                         <FiArrowLeft size={16} /> Back to Orders
                     </Link>
@@ -107,11 +100,11 @@ function AdminOrderDetails() {
             >
                 <h2 className="flex items-center gap-2 text-xl sm:text-2xl font-semibold uppercase text-gray-800">
                     <FiPackage size={24} /> Order Details -{" "}
-                    {order?._id?.slice(-6) || "N/A"}
+                    {order?.razorpay_order_id || "N/A"}
                 </h2>
                 <Link
                     to="/admin/orders"
-                    className="flex items-center gap-2 text-gray-950 hover:text-blue-700 text-sm font-medium"
+                    className="flex items-center gap-2 text-gray-800 hover:text-blue-700 text-sm font-medium"
                 >
                     <FiArrowLeft size={16} /> Back to Orders
                 </Link>
@@ -130,17 +123,17 @@ function AdminOrderDetails() {
                 </h3>
                 <div className="mt-2 space-y-1 text-sm sm:text-base text-gray-800 capitalize">
                     <p>
-                        <strong>Name:</strong> {order.user?.firstName}{" "}
-                        {order.user?.lastName}
+                        <strong>Name:</strong> {order.user.firstName}{" "}
+                        {order.user.lastName}
                     </p>
                     <p className="uppercase">
-                        <strong>Email:</strong> {order.user?.email}
+                        <strong>Email:</strong> {order.user.email}
                     </p>
                     <p>
-                        <strong>Phone:</strong> {order.user?.phone}
+                        <strong>Phone:</strong> {order.user.phone}
                     </p>
                     <p>
-                        <strong>User ID:</strong> {order.user?._id}
+                        <strong>User ID:</strong> {order.user._id}
                     </p>
                 </div>
             </motion.div>
@@ -154,7 +147,7 @@ function AdminOrderDetails() {
                 className="border border-gray-200 bg-white rounded-lg shadow-sm p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-3 gap-4"
             >
                 <div>
-                    <p className="text-xs text-gray-500 uppercase font-medium">
+                    <p className="text-xs text-gray-800 uppercase font-medium">
                         Order Date
                     </p>
                     <p className="text-sm font-semibold text-gray-800 mt-1">
@@ -162,7 +155,7 @@ function AdminOrderDetails() {
                     </p>
                 </div>
                 <div>
-                    <p className="text-xs text-gray-500 uppercase font-medium">
+                    <p className="text-xs text-gray-800 uppercase font-medium">
                         Total
                     </p>
                     <p className="text-sm font-semibold text-gray-800 mt-1">
@@ -170,7 +163,7 @@ function AdminOrderDetails() {
                     </p>
                 </div>
                 <div>
-                    <p className="text-xs text-gray-500 uppercase font-medium ">
+                    <p className="text-xs text-gray-800 uppercase font-medium">
                         Delivery Status
                     </p>
                     <span
@@ -194,37 +187,31 @@ function AdminOrderDetails() {
                 <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                     <FiPackage size={20} /> Products
                 </h3>
-                {order.items?.map((item, idx) => {
-                    const product = item?.product || {};
-                    return (
-                        <div
-                            key={idx}
-                            className="flex items-start gap-4 border border-gray-200 bg-white rounded-lg shadow-sm p-4"
-                        >
-                            <img
-                                src={
-                                    product?.images?.[0] ||
-                                    "https://via.placeholder.com/80"
-                                }
-                                alt={product?.name || "Product"}
-                                className="w-20 h-20 object-cover rounded-md border"
-                            />
-                            <div className="flex-1">
-                                <p className="font-medium text-gray-800">
-                                    {product.name}
-                                </p>
-                                <p className="text-sm text-gray-600 mt-1">
-                                    Qty: {item.quantity} × ₹
-                                    {formatINR(product.price)} each
-                                </p>
-                                <p className="text-sm text-gray-800 font-semibold mt-1">
-                                    Total: ₹
-                                    {formatINR(item.quantity * product.price)}
-                                </p>
-                            </div>
+                {order.items.map((item) => (
+                    <div
+                        key={item._id}
+                        className="flex items-start gap-4 border border-gray-200 bg-white rounded-lg shadow-sm p-4"
+                    >
+                        <img
+                            src={item.product.images[0]}
+                            alt={item.product.name}
+                            className="w-20 h-20 object-cover rounded-md border"
+                        />
+                        <div className="flex-1">
+                            <p className="font-medium text-gray-800">
+                                {item.product.name}
+                            </p>
+                            <p className="text-sm text-gray-800 mt-1">
+                                Qty: {item.quantity} × ₹
+                                {formatINR(item.product.price)} each
+                            </p>
+                            <p className="text-sm text-gray-800 font-semibold mt-1">
+                                Total: ₹
+                                {formatINR(item.quantity * item.product.price)}
+                            </p>
                         </div>
-                    );
-                })}
+                    </div>
+                ))}
             </motion.div>
 
             {/* Shipping Info */}
@@ -238,19 +225,19 @@ function AdminOrderDetails() {
                 <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                     <FiTruck size={20} /> Shipping Information
                 </h3>
-                <div className="border border-gray-200 bg-white rounded-lg shadow-sm p-4">
-                    <p className="text-xs text-gray-500 uppercase font-medium">
+                <div className="border border-gray-200 bg-white rounded-lg shadow-sm p-4 sm:p-6">
+                    <p className="text-xs text-gray-800 uppercase font-medium">
                         Shipping Address
                     </p>
                     <p className="text-sm font-semibold text-gray-800 mt-1">
-                        {order.shippingAddress?.street},{" "}
-                        {order.shippingAddress?.city},{" "}
-                        {order.shippingAddress?.state} -{" "}
-                        {order.shippingAddress?.postalCode},{" "}
-                        {order.shippingAddress?.country}
+                        {order.shippingAddress.street},{" "}
+                        {order.shippingAddress.city},{" "}
+                        {order.shippingAddress.state} -{" "}
+                        {order.shippingAddress.postalCode},{" "}
+                        {order.shippingAddress.country}
                     </p>
                     <p className="text-sm text-gray-800 font-medium mt-1">
-                        Phone: {order.shippingAddress?.phone}
+                        Phone: {order.shippingAddress.phone}
                     </p>
                     {order.deliveredAt && (
                         <p className="text-sm text-gray-800 font-medium mt-2">
@@ -272,14 +259,14 @@ function AdminOrderDetails() {
                 <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                     <FiCreditCard size={20} /> Payment Information
                 </h3>
-                <div className="border border-gray-200 bg-white rounded-lg shadow-sm p-4">
-                    <p className="text-xs text-gray-500 uppercase font-medium">
+                <div className="border border-gray-200 bg-white rounded-lg shadow-sm p-4 sm:p-6">
+                    <p className="text-xs text-gray-800 uppercase font-medium">
                         Payment Method
                     </p>
                     <p className="text-sm font-semibold text-gray-800 mt-1">
                         {order.paymentMethod}
                     </p>
-                    <p className="text-xs text-gray-500 uppercase font-medium mt-4">
+                    <p className="text-xs text-gray-800 uppercase font-medium mt-4">
                         Payment Status
                     </p>
                     <span
@@ -290,7 +277,7 @@ function AdminOrderDetails() {
                         {order.paymentStatus}
                     </span>
                     {order.paidAt && (
-                        <p className="text-sm font-semibold text-gray-800 mt-2">
+                        <p className="text-sm text-gray-800 font-semibold mt-2">
                             Paid At: {new Date(order.paidAt).toLocaleString()}
                         </p>
                     )}

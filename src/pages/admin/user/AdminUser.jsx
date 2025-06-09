@@ -168,7 +168,7 @@ function AdminUsers() {
 
             {/* Add/Edit Modal */}
             <div
-                className={`glass h-screen fixed inset-0 bg-opacity-30 flex items-center justify-center z-50 p-4 sm:p-6 overflow-y-auto ${
+                className={`glass h-screen  fixed inset-0 bg-opacity-30 flex items-center justify-center z-50 p-4 sm:p-6 overflow-y-hidden ${
                     isModalOpen ? "" : "hidden"
                 }`}
             >
@@ -176,7 +176,7 @@ function AdminUsers() {
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-white bg-opacity-50 backdrop-blur-md p-4 sm:p-6 w-full max-w-md sm:max-w-lg my-4 sm:my-0 shadow-lg border border-gray-300 border-opacity-20 rounded-lg relative"
+                    className="bg-white bg-opacity-50 backdrop-blur-md p-4 sm:p-6 w-full max-w-md sm:max-w-lg my-4 sm:my-0 shadow-lg border border-gray-300 border-opacity-20 rounded-lg relative  overflow-y-scroll h-[90%]"
                 >
                     <button
                         onClick={() => {

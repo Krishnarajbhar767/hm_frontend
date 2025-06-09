@@ -42,7 +42,7 @@ function ResetPassword() {
                             },
                         }}
                     />
-                    <Button text="Register" type={"submit"} />
+                    <Button text="Send Link" type={"submit"} />
                 </form>
                 <h1 className="text-sm text-center mt-3">
                     Back to{" "}

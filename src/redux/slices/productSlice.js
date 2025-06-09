@@ -16,11 +16,16 @@ const productSlice = createSlice({
         setIsProductLoaded: (state, value) => {
             state.isLoaded = value.payload;
         },
+        clearProducts: (state, value) => {
+            state.products = [];
+            state.isLoaded = false;
+        },
     },
 });
 
 // Export actions
-export const { setProducts, setIsProductLoaded } = productSlice.actions;
+export const { setProducts, setIsProductLoaded, clearProducts } =
+    productSlice.actions;
 
 // Export reducer
 export default productSlice.reducer;

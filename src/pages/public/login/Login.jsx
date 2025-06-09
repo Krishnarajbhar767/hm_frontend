@@ -8,9 +8,14 @@ import Heading from "../home/components/Heading";
 import authApis from "../../../services/api/auth/auth.apis";
 import { useDispatch, useSelector } from "react-redux";
 import { handleAxiosError } from "../../../utils/handleAxiosError";
-import { setToken, setUser } from "../../../redux/slices/userSlice";
+import { clearUser, setToken, setUser } from "../../../redux/slices/userSlice";
 import toast from "react-hot-toast";
 import getCookieByName from "../../../utils/getCookie";
+import { clearCart } from "../../../redux/slices/cartSlice";
+import { clearOrders } from "../../../redux/slices/orderSlice";
+import { clearCategory } from "../../../redux/slices/categorySlice";
+import { clearProducts } from "../../../redux/slices/productSlice";
+import { clearWishlist } from "../../../redux/slices/wishListSlice";
 
 function Login() {
     const token =
@@ -41,6 +46,13 @@ function Login() {
     async function loginHandler(loginCredentials) {
         setIsLoading(true);
         try {
+            dispatch(clearUser());
+            dispatch(clearCart());
+            dispatch(clearOrders());
+            dispatch(clearCategory());
+            dispatch(clearProducts());
+            dispatch(clearWishlist());
+
             console.log("Login loginCredentials", loginCredentials);
             const userData = await authApis.login(loginCredentials);
             dispatch(setUser(userData?.user));

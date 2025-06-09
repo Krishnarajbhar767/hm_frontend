@@ -23,6 +23,7 @@ function App() {
     const isCategoryLoaded = useSelector((state) => state.category?.isLoaded);
     const token = useSelector((state) => state?.user?.token);
     const user = useSelector((state) => state?.user?.user);
+
     const fetchUser = async () => {
         if (token && !user) {
             try {

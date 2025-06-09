@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "motion/react";
 import Heading from "./Heading";
 import SubHeading from "./SubHeading";
+import VIDEO from "../../../../assets/SB_1920x854_vdo.mp4";
 function HomeVideo() {
     return (
         <div className="boxedContainer w-full py-4  h-auto  overflow-x-hidden ">
@@ -27,7 +28,7 @@ function HomeVideo() {
                     muted
                     controls
                     autoPlay
-                    src="https://cdn.shopify.com/videos/c/o/v/77457a960ecd419db3fd292e34f0f7c2.mov"
+                    src={VIDEO}
                 ></video>
             </div>
         </div>

@@ -1,11 +1,40 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { FiShoppingBag, FiMapPin, FiCreditCard } from "react-icons/fi";
+import { useEffect } from "react";
+import { setOrders } from "../../../redux/slices/orderSlice";
+import axiosInstance from "../../../utils/apiConnector";
 
-function Dashboard() {
-    const user = useSelector((state) => state?.user?.user);
-    const orders = useSelector((state) => state?.order?.orders);
-    const addresses = user?.shippingAddress;
+export default function Dashboard() {
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user.user) || {};
+    const orders = useSelector((state) => state.order.orders) || [];
+
+    // fetch user's orders once
+    useEffect(() => {
+        if (!user._id) return;
+        axiosInstance
+            .get(`/user/orders/${user._id}`)
+            .then((res) => dispatch(setOrders(res.data)))
+            .catch((err) => console.error(err));
+    }, [user._id, dispatch]);
+
+    // derive dashboard stats from orders
+    const totalOrders = orders.length;
+    const totalSpent = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+    const savedAddresses = (user.shippingAddress || []).length;
+
+    // get two most recent by createdAt
+    const recent = [...orders]
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 2);
+
+    const formatDate = (iso) =>
+        new Date(iso).toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        });
 
     return (
         <motion.div
@@ -14,118 +43,115 @@ function Dashboard() {
             transition={{ duration: 0.3 }}
             className="space-y-6 sm:space-y-8"
         >
-            {/* Welcome Section */}
+            {/* Welcome */}
             <div className="bg-foreground text-white p-6 shadow-lg rounded-md">
-                <h2 className="text-lg sm:text-xl md:text-2xl font-semibold uppercase tracking-wide">
-                    Welcome, {user?.firstName} {user?.lastName}!
+                <h2 className="text-2xl font-semibold uppercase tracking-wide">
+                    Welcome, {user.firstName} {user.lastName}!
                 </h2>
-                <p className="text-sm sm:text-base text-gray-200 mt-2">
-                    Member since{" "}
-                    {new Date(user?.createdAt).toLocaleDateString("en-IN", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                    })}
+                <p className="text-gray-200 mt-2">
+                    Member since {formatDate(user.createdAt)}
                 </p>
             </div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="p-4 border border-gray-200 bg-white rounded-md shadow-sm">
-                    <p className="text-sm sm:text-base text-foreground uppercase tracking-wide">
+                    <p className="text-sm uppercase text-foreground tracking-wide">
                         Total Orders
                     </p>
-                    <p className="text-xl sm:text-2xl font-bold text-foreground">
-                        {orders?.length - 1 || 0}
+                    <p className="text-2xl font-bold text-foreground">
+                        {totalOrders}
                     </p>
                 </div>
                 <div className="p-4 border border-gray-200 bg-white rounded-md shadow-sm">
-                    <p className="text-sm sm:text-base text-foreground uppercase tracking-wide">
+                    <p className="text-sm uppercase text-foreground tracking-wide">
                         Total Spent
                     </p>
-                    <p className="text-xl sm:text-2xl font-bold text-foreground">
-                        &#8377;
-                        {user?.totalSpent
-                            ? user?.totalSpent?.toFixed(2)
-                            : "0.00"}
+                    <p className="text-2xl font-bold text-foreground">
+                        ₹
+                        {totalSpent.toLocaleString("en-IN", {
+                            minimumFractionDigits: 2,
+                        })}
                     </p>
                 </div>
                 <div className="p-4 border border-gray-200 bg-white rounded-md shadow-sm">
-                    <p className="text-sm sm:text-base text-foreground uppercase tracking-wide">
+                    <p className="text-sm uppercase text-foreground tracking-wide">
                         Saved Addresses
                     </p>
-                    <p className="text-xl sm:text-2xl font-bold text-foreground">
-                        {addresses?.length}
+                    <p className="text-2xl font-bold text-foreground">
+                        {savedAddresses}
                     </p>
                 </div>
             </div>
 
             {/* Recent Orders */}
             <div className="space-y-4">
-                <h3 className="flex items-center gap-2 text-base sm:text-lg md:text-xl font-semibold uppercase text-foreground tracking-wide">
+                <h3 className="flex items-center gap-2 text-xl font-semibold uppercase text-foreground tracking-wide">
                     <FiShoppingBag size={20} /> Recent Orders
                 </h3>
-                {orders.length === 0 ? (
-                    <p className="text-foreground text-sm sm:text-base">
-                        No recent orders found.
-                    </p>
+                {recent.length === 0 ? (
+                    <p className="text-foreground text-sm">No recent orders.</p>
                 ) : (
                     <div className="space-y-3">
-                        {orders?.slice(0, 2)?.map((order) => (
+                        {recent.map((o) => (
                             <motion.div
-                                key={order._id}
+                                key={o._id}
                                 whileHover={{ scale: 1.02 }}
-                                className=" p-4 border border-foreground/20 bg-white rounded-md shadow-sm"
+                                className="p-4 border border-foreground/20 bg-white rounded-md shadow-sm"
                             >
                                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4">
                                     <div>
-                                        <p className="sm:hidden text-xs text-foreground uppercase">
-                                            Order ID:
+                                        <p className="text-xs uppercase text-foreground/70">
+                                            Order ID
                                         </p>
-                                        <p className="text-sm sm:text-base text-foreground">
-                                            {order?._id}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <p className="sm:hidden text-xs text-foreground uppercase">
-                                            Date:
-                                        </p>
-                                        <p className="text-sm sm:text-base text-foreground">
-                                            {order?.createdAt}
+                                        <p className="text-sm text-foreground mt-1">
+                                            {o.razorpay_order_id ||
+                                                o._id.slice(-6)}
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="sm:hidden text-xs text-foreground uppercase">
-                                            Total:
+                                        <p className="text-xs uppercase text-foreground/70">
+                                            Date
                                         </p>
-                                        <p className="text-sm sm:text-base text-foreground">
-                                            &#8377;{order?.totalAmount}
+                                        <p className="text-sm text-foreground mt-1">
+                                            {formatDate(o.createdAt)}
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="sm:hidden text-xs text-foreground uppercase">
-                                            Status:
+                                        <p className="text-xs uppercase text-foreground/70">
+                                            Total
+                                        </p>
+                                        <p className="text-sm text-foreground mt-1">
+                                            ₹
+                                            {o.totalAmount.toLocaleString(
+                                                "en-IN"
+                                            )}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs uppercase text-foreground/70">
+                                            Status
                                         </p>
                                         <p
-                                            className={`text-sm sm:text-base capitalize ${
-                                                order?.deliveryStatus ===
-                                                "Delivered"
+                                            className={`text-sm mt-1 capitalize ${
+                                                o.deliveryStatus === "Delivered"
                                                     ? "text-green-600"
-                                                    : order?.deliveryStatus ===
+                                                    : o.deliveryStatus ===
                                                       "Shipped"
                                                     ? "text-blue-600"
                                                     : "text-yellow-600"
                                             }`}
                                         >
-                                            {order?.deliveryStatus}
+                                            {o.deliveryStatus}
                                         </p>
                                     </div>
                                 </div>
-                                <p className="text-xs sm:text-sm text-foreground mt-2">
+                                <p className="text-xs text-foreground mt-2">
                                     Items:{" "}
-                                    {order?.items
-                                        ?.map((item) => item?.name)
-                                        ?.join(", ")}
+                                    {o.items
+                                        .map((it) => it.product?.name)
+                                        .filter(Boolean)
+                                        .join(", ")}
                                 </p>
                             </motion.div>
                         ))}
@@ -135,5 +161,3 @@ function Dashboard() {
         </motion.div>
     );
 }
-
-export default Dashboard;
