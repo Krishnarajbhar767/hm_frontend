@@ -2,7 +2,9 @@ import axios from "axios";
 import axiosInstance from "./apiConnector";
 
 const uploadMedia = async (files) => {
+
     const formData = new FormData();
+    
     files.forEach((file) => {
         formData.append("files", file);
     });

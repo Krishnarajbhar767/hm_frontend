@@ -8,7 +8,8 @@ const ShippingForm = () => {
     const shippingAddress = useSelector(
         (state) => state?.user?.user?.shippingAddress
     );
-    console.log("Shipping Address", shippingAddress);
+    // console.log("Shipping Address", shippingAddress);
+
     return (
         <div className="mb-8">
             <h2 className="text-lg font-semibold uppercase text-foreground mb-4">

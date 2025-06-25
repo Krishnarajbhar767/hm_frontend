@@ -1,3 +1,5 @@
+
+
 const authEndpoints = {
     register: "/auth/register",
     sendOtp: "/auth/send-otp",

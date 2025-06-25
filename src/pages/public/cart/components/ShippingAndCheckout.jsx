@@ -1,5 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
+import axiosInstance from "../../../../utils/apiConnector";
+import toast from "react-hot-toast";
+
+
 import { useForm, FormProvider } from "react-hook-form";
 import { FaArrowLeft } from "react-icons/fa";
 import { useSelector } from "react-redux";
@@ -9,13 +13,99 @@ import OrderSummary from "./OrderSummary";
 
 function ShippingAndCheckout({ onBack }) {
     const cartItems = useSelector((state) => state?.cart?.cartItems);
+    const user = useSelector((state) => state?.user?.user);
     const methods = useForm();
 
+
+
     const onSubmit = async (data) => {
-        // await new Promise((resolve) => setTimeout(resolve, 2000));
-        // alert(JSON.stringify(data, null, 2));
-        // onProceed();
-        console.log(data);
+        alert("Payment modal Open");
+
+
+        console.log("user", user)
+        console.log("body data", {
+            userId: user?._id,
+            amount: user.cart.totalPrice,
+            items: user.cart.items,
+            paymentMethod: data.paymentMethod,
+            addressId: data.address,
+        })
+
+        try {
+            const res = await axiosInstance.post("/payment/checkout", {
+                userId: user?._id,
+                amount: user.cart.totalPrice,
+                items: user.cart.items,
+                paymentMethod: data.paymentMethod,
+                addressId: user?._id,
+            });
+
+            console.log(res.data)
+
+            if (!res?.data?.razorpayOrder) {
+                toast.error("Failed to initiate order");
+                return;
+            }
+
+            const { razorpayOrder } = res.data;
+
+            const options = {
+                key: import.meta.env.VITE_RAZORPAY_ID,
+                amount: razorpayOrder.amount,
+                currency: razorpayOrder.currency,
+                name: "Shrijanfabs",
+                description: "Test Transaction",
+                image: "/your-logo.png",
+                order_id: razorpayOrder.id,
+                // handler: function (response) {
+                //     console.log("Payment Success:", response);
+                //     alert("Payment Successful!");
+                // },
+
+                handler: async function (response) {
+                    // response contains razorpay_payment_id, razorpay_order_id, razorpay_signature
+                    console.log("Payment Success:", response);
+                    console.log("userid", user._id);
+
+                    try {
+                        const verifyRes = await axiosInstance.post("/payment/verify-payment", {
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature,
+                            userId: user._id
+
+                        });
+                        console.log("verifyRes", verifyRes)
+
+                        if (verifyRes.data.success) {
+                            alert(" Payment verified and order placed!");
+                        } else {
+                            alert(" Payment verified failed");
+                        }
+                    } catch (error) {
+                        console.error("Verify Payment Error:", error);
+                        alert(" Something went wrong verifying payment");
+                    }
+                },
+
+                prefill: {
+                    name: user?.firstName,
+                    email: user?.email,
+                    contact: user?.phone,
+                },
+
+                theme: {
+                    color: "#3399cc",
+                },
+            };
+
+            const razor = new window.Razorpay(options);
+            razor.open();
+
+        } catch (error) {
+            console.error("❌ Payment Error:", error?.response?.data || error.message);
+            toast.error(error?.response?.data?.message || "Something went wrong");
+        }
     };
 
     return (

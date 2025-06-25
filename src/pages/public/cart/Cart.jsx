@@ -45,11 +45,10 @@ function Cart() {
                         >
                             <div
                                 className={`w-6 h-6 flex items-center justify-center text-xs font-medium
-                  ${
-                      stepCount >= item.id
-                          ? "bg-foreground text-white"
-                          : "bg-white  border border-foreground text-foreground"
-                  }`}
+                                    ${stepCount >= item.id
+                                        ? "bg-foreground text-white"
+                                        : "bg-white  border border-foreground text-foreground"
+                                    }`}
                             >
                                 {item.id}
                             </div>
@@ -64,11 +63,10 @@ function Cart() {
                 <div className="hidden md:grid w-full grid-cols-3 gap-4">
                     {Data.map((item) => (
                         <div
-                            className={`flex gap-4 py-2 ${
-                                stepCount >= item.id
-                                    ? "border-b-2 border-foreground"
-                                    : "border-b border-foreground/50"
-                            }`}
+                            className={`flex gap-4 py-2 ${stepCount >= item.id
+                                ? "border-b-2 border-foreground"
+                                : "border-b border-foreground/50"
+                                }`}
                             key={item.id}
                         >
                             <h1 className="text-sm md:text-base lg:text-[18px] uppercase font-medium">

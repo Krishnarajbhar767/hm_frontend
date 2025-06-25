@@ -20,17 +20,17 @@ const PublicRoutes = (
     <Route element={<MainLayout />}>
         <Route index element={<Home />}></Route>
         <Route path="/login" element={<Login />} />
-        <Route path="/Sign-up" element={<SignUp />} />
+        <Route path="/sign-up" element={<SignUp />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
-        <Route path="/About" element={<AboutUs />} />
+        <Route path="/about" element={<AboutUs />} />
         <Route path="/products/:category/:id" element={<CategoryPage />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/paymentSuccess" element={<PaymentSuccess />} />
-        <Route path="/paymentFailed" element={<PaymentFailed />} />
+        <Route path="paymentSuccess" element={<PaymentSuccess />} />
+        <Route path="paymentFailed" element={<PaymentFailed />} />
         <Route path="*" element={<NotFound />} />
     </Route>
 );

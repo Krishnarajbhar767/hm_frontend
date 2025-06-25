@@ -23,6 +23,7 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
         handleSubmit,
         formState: { errors },
         watch,
+
     } = useForm();
 
     useEffect(() => {
@@ -198,7 +199,7 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
                                 onClick={closeHandler}
                                 className="text-xs sm:text-sm underline hover:text-gray-600"
                             >
-                                Create Account
+                                Create Account..
                             </Link>
                         </p>
                     </div>

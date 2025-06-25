@@ -24,6 +24,7 @@ const Search = ({ isOpen, closeHandler }) => {
             document.body.style.paddingRight = "";
         };
     }, []);
+    
     const categories = useSelector(
         (state) => state?.category?.categories || []
     );

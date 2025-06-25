@@ -30,6 +30,7 @@ function SignUp() {
     const onSubmit = async (userdata) => {
         console.log(userdata);
         const toastId = toast.loading("Please wait...");
+        
         setIsCreatingAccount(true);
         try {
             const res = await authApis.sendOtp(userdata);
@@ -234,7 +235,7 @@ function SignUp() {
                             to={"/login"}
                             className="text-right underline text-sm cursor-pointer"
                         >
-                            Already have an account?
+                            Already have an account?...
                         </Link>
                     </motion.div>
 

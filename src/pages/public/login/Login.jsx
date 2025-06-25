@@ -29,11 +29,13 @@ function Login() {
         handleSubmit,
         formState: { errors },
     } = useForm();
+    
     const dispatch = useDispatch();
     const emailValue = watch("email");
     const passwordValue = watch("password");
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+
     // Animation variants for staggered input fields
     const inputVariants = {
         hidden: { opacity: 0, y: 10 },
@@ -43,6 +45,7 @@ function Login() {
             transition: { duration: 0.3, delay: i * 0.1 },
         }),
     };
+
     async function loginHandler(loginCredentials) {
         setIsLoading(true);
         try {
@@ -178,7 +181,7 @@ function Login() {
                     transition={{ duration: 0.5, delay: 0.6 }}
                 >
                     <h1 className="mx-auto text-center text-foreground text-[16px]">
-                        No account yet?{" "}
+                        No account yet?..{" "}
                         <Link
                             to={"/sign-up"}
                             className="text-sm capitalize underline cursor-pointer"

@@ -10,13 +10,13 @@ import Addresses from "../pages/user/addresses/Addresses";
 import OrderDetails from "../pages/user/orders/components/OrderDetails";
 
 const UserRoutes = (
-    <Route path="/account" element={<UserLayout />}>
+    <Route path="/account" element={<UserLayout />} >
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="profile" element={<Profile />} />
         <Route path="orders" element={<Orders />} />
         <Route path="orders/:orderId" element={<OrderDetails />} />
         <Route path="addresses" element={<Addresses />} />
-    </Route>
+    </Route>    
 );
 
 export default UserRoutes;

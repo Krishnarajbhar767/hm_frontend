@@ -23,9 +23,13 @@ const AddProduct = () => {
     const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
     const dispatch = useDispatch();
+
+
     // Handle file input and generate preview
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
+        console.log("file");
+
         setImageFiles(files);
         const previews = files.map((file) => URL.createObjectURL(file));
         setImagePreviews(previews);
@@ -40,6 +44,9 @@ const AddProduct = () => {
         const toastId = toast.loading("Please wait...");
         try {
             const imagesUrls = await uploadMedia(imageFiles);
+
+            console.log("imagesUrls - ",imagesUrls)
+            
             if (!imagesUrls) return;
             data.images = imagesUrls; // inserting images url into  formData;
             const products = await productApis.createProduct(data);

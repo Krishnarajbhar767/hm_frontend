@@ -35,6 +35,7 @@ function App() {
             }
         }
     };
+
     const fetchProducts = async () => {
         try {
             const products = await productApis.getAllProduct();
@@ -44,6 +45,7 @@ function App() {
             handleAxiosError(error);
         }
     };
+    
     const fetchCategories = async () => {
         try {
             const categories = await categoriesApi.getAllCategories();
@@ -59,11 +61,13 @@ function App() {
             fetchProducts();
         }
     }, [isProductLoaded]);
+
     useEffect(() => {
         if (!isCategoryLoaded) {
             fetchCategories();
         }
     }, [isCategoryLoaded]);
+    
     useEffect(() => {
         fetchUser();
     });

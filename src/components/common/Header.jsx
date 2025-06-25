@@ -3,12 +3,10 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import slugify from "slugify";
-
 import Search from "./Search";
 import LoginSidebar from "./LoginSidebar";
 import CartSidebar from "./CartSidebar";
 import { setStepCount } from "../../redux/slices/cartSlice";
-
 import LOGO from "../../assets/images/logo/SRIJAN FABS PNG VERTICAL.png";
 
 function Header() {
@@ -16,9 +14,11 @@ function Header() {
     const categories = useSelector(
         (state) => state?.category?.categories || []
     );
+
     const { cartItems } = useSelector(
         (state) => state?.cart || { cartItems: [] }
     );
+
     const wishlistItems = useSelector((state) => state.wishlist || []);
     const token =
         useSelector((state) => state?.user?.token) ||
@@ -30,6 +30,7 @@ function Header() {
 
     // Build category-based sublinks
     const [optimisedCategoriesList, setOptimisedCategoriesList] = useState([]);
+
     useEffect(() => {
         const navLinks = categories.map((item) => {
             const slug = slugify(item.name, { lower: true, strict: true });
@@ -39,15 +40,16 @@ function Header() {
                 path: `/products/${slug}/${item._id}`,
             };
         });
+
         setOptimisedCategoriesList(navLinks);
-    }, [categories]);
+    }, [categories]); ////------------
 
     // Top‐level navigation items
     const Links = [
         { title: "Home", path: "/" },
-        { title: "Product", path: "#", subLinks: optimisedCategoriesList },
+        { title: "Product", path: "/product", subLinks: optimisedCategoriesList },
         { title: "About Us", path: "/about" },
-        { title: "Contact Us", path: "/contact" },
+        { title: "Contact", path: "/contact" },
     ];
 
     // Sidebar + menu state
