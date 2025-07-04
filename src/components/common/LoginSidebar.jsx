@@ -23,7 +23,6 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
         handleSubmit,
         formState: { errors },
         watch,
-
     } = useForm();
 
     useEffect(() => {
@@ -53,18 +52,19 @@ const LoginSidebar = ({ isOpen, closeHandler }) => {
     async function loginHandler(loginCredentials) {
         setIsLoading(true);
         try {
-            dispatch(clearUser());
-            dispatch(clearCart());
-            dispatch(clearOrders());
-            dispatch(clearCategory());
-            dispatch(clearProducts());
-            dispatch(clearWishlist());
+            // dispatch(clearUser());
+            // dispatch(clearCart());
+            // dispatch(clearOrders());
+            // dispatch(clearCategory());
+            // dispatch(clearProducts());
+            // dispatch(clearWishlist());
             const userData = await authApis.login(loginCredentials);
             dispatch(setUser(userData?.user));
             localStorage.setItem("token", userData.token);
             dispatch(setToken(userData.token));
 
             const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+            console.log("Local Cart -> ", localCart);
             if (localCart.length > 0) {
                 await axiosInstance.post("/user/cart/merge", {
                     userId: userData.user._id,

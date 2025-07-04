@@ -1,111 +1,78 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import axiosInstance from "../../../../utils/apiConnector";
 import toast from "react-hot-toast";
-
 
 import { useForm, FormProvider } from "react-hook-form";
 import { FaArrowLeft } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import ShippingForm from "./ShippingForm";
-import PaymentMethodSelector from "./PaymentMethodSelector";
+
 import OrderSummary from "./OrderSummary";
 
-function ShippingAndCheckout({ onBack }) {
-    const cartItems = useSelector((state) => state?.cart?.cartItems);
+function ShippingAndCheckout({ cartItems, setStepCount }) {
+    const [addresses, setAddresses] = useState([]); // this will be  shared  to shippingForm
+    // const cartItems = useSelector((state) => state?.cart?.cartItems);
     const user = useSelector((state) => state?.user?.user);
     const methods = useForm();
 
-
+    // Compute subtotal, gst and total
+    const subtotal = cartItems.reduce(
+        (sum, item) => sum + item.finalPrice * item.quantity,
+        0
+    );
+    const gst = +(subtotal * 0.05).toFixed(2); // 5% GST
+    const total = subtotal;
 
     const onSubmit = async (data) => {
-        alert("Payment modal Open");
-
-
-        console.log("user", user)
-        console.log("body data", {
-            userId: user?._id,
-            amount: user.cart.totalPrice,
-            items: user.cart.items,
-            paymentMethod: data.paymentMethod,
-            addressId: data.address,
-        })
-
-        try {
-            const res = await axiosInstance.post("/payment/checkout", {
-                userId: user?._id,
-                amount: user.cart.totalPrice,
-                items: user.cart.items,
-                paymentMethod: data.paymentMethod,
-                addressId: user?._id,
-            });
-
-            console.log(res.data)
-
-            if (!res?.data?.razorpayOrder) {
-                toast.error("Failed to initiate order");
-                return;
-            }
-
-            const { razorpayOrder } = res.data;
-
-            const options = {
-                key: import.meta.env.VITE_RAZORPAY_ID,
-                amount: razorpayOrder.amount,
-                currency: razorpayOrder.currency,
-                name: "Shrijanfabs",
-                description: "Test Transaction",
-                image: "/your-logo.png",
-                order_id: razorpayOrder.id,
-                // handler: function (response) {
-                //     console.log("Payment Success:", response);
-                //     alert("Payment Successful!");
-                // },
-
-                handler: async function (response) {
-                    // response contains razorpay_payment_id, razorpay_order_id, razorpay_signature
-                    console.log("Payment Success:", response);
-                    console.log("userid", user._id);
-
-                    try {
-                        const verifyRes = await axiosInstance.post("/payment/verify-payment", {
-                            razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_order_id: response.razorpay_order_id,
-                            razorpay_signature: response.razorpay_signature,
-                            userId: user._id
-
-                        });
-                        console.log("verifyRes", verifyRes)
-
-                        if (verifyRes.data.success) {
-                            alert(" Payment verified and order placed!");
-                        } else {
-                            alert(" Payment verified failed");
-                        }
-                    } catch (error) {
-                        console.error("Verify Payment Error:", error);
-                        alert(" Something went wrong verifying payment");
-                    }
-                },
-
-                prefill: {
-                    name: user?.firstName,
-                    email: user?.email,
-                    contact: user?.phone,
-                },
-
-                theme: {
-                    color: "#3399cc",
-                },
-            };
-
-            const razor = new window.Razorpay(options);
-            razor.open();
-
-        } catch (error) {
-            console.error("❌ Payment Error:", error?.response?.data || error.message);
-            toast.error(error?.response?.data?.message || "Something went wrong");
+        let isNewAddress = false;
+        if (data.addressId === "new") {
+            const {
+                data: { address: newAddress },
+            } = await axiosInstance.post("/user/address/add", data);
+            setAddresses((prev) => [...prev, newAddress]);
+            isNewAddress = newAddress._id;
         }
+
+        const {
+            data: { key },
+        } = await axiosInstance.get("/payment/get-razorpay-key");
+        const { data: order } = await axiosInstance.post("/payment/checkout", {
+            amount: total,
+            userId: user?._id,
+            items: cartItems,
+            addressId: isNewAddress ? isNewAddress : data.addressId,
+        });
+        console.log("Razor Pay Order ->", order);
+        const razorpay = new window.Razorpay({
+            key,
+            amount: order.amount,
+            currency: "INR",
+            name: "Srijan Fabs",
+            description: "",
+            image: "LOGO.avif",
+            order_id: order.id,
+            callback_url: `${
+                import.meta.env.VITE_BACKEND_URL
+            }/payment/verify-payment`,
+            prefill: {
+                name: user?.name || "",
+                email: user?.email || "",
+                contact: user?.phone || "",
+            },
+            notes: { address: "Razorpay Corporate Office" },
+            theme: { color: "#3399cc" },
+        });
+
+        razorpay.on("payment.failed", (resp) => {
+            const slug = slugify(resp.error?.reason || "payment_failed", {
+                lower: true,
+                strict: true,
+            });
+            window.location.href = `/paymentFailed?reason=${slug}`;
+        });
+
+        razorpay.open();
     };
 
     return (
@@ -119,8 +86,18 @@ function ShippingAndCheckout({ onBack }) {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
                     <div className="col-span-1 md:col-span-2">
                         <form onSubmit={methods.handleSubmit(onSubmit)}>
-                            <ShippingForm />
-                            <PaymentMethodSelector />
+                            <ShippingForm
+                                addresses={addresses}
+                                setAddresses={setAddresses}
+                            />
+                            <div className="block md:hidden">
+                                <OrderSummary
+                                    cartItems={cartItems}
+                                    subtotal={subtotal}
+                                    gst={gst}
+                                    total={total}
+                                />
+                            </div>
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -131,7 +108,7 @@ function ShippingAndCheckout({ onBack }) {
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     type="button"
-                                    onClick={onBack}
+                                    onClick={() => setStepCount(1)}
                                     className="flex items-center justify-center gap-2 border-[2px] border-foreground/50 text-foreground h-12 px-4 md:px-6 w-full uppercase hover:border-foreground hover:bg-foreground/5 transition-all duration-200"
                                 >
                                     <FaArrowLeft className="text-foreground" />
@@ -165,7 +142,16 @@ function ShippingAndCheckout({ onBack }) {
                             </motion.div>
                         </form>
                     </div>
-                    <OrderSummary cartItems={cartItems} />
+
+                    {/* Pass subtotal, gst, total into your summary */}
+                    <div className="hidden md:block ">
+                        <OrderSummary
+                            cartItems={cartItems}
+                            subtotal={subtotal}
+                            gst={gst}
+                            total={total}
+                        />
+                    </div>
                 </div>
             </FormProvider>
         </motion.div>

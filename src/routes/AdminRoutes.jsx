@@ -12,9 +12,11 @@ import AddProduct from "../pages/admin/product/AddProduct";
 import EditCategory from "../pages/admin/category/EditCategory";
 import AddCategory from "../pages/admin/category/AddCategory";
 import AdminOrderDetails from "../pages/admin/order/AdminOrderDetails";
+import AdminHomeManagement from "../pages/admin/home/AdminHomeManagement";
 
 const AdminRoutes = (
     <Route path="/admin" element={<AdminLayout />}>
+        <Route path="home-ui" element={<AdminHomeManagement />} />
         <Route path="overview" element={<AdminOverview />} />
         <Route path="products" element={<AdminProducts />} />
         <Route path="products/edit/:id" element={<EditProduct />} />

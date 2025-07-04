@@ -298,15 +298,10 @@ function CategoryPage() {
                                             <img
                                                 src={
                                                     product.images[0] ||
-                                                    "/placeholder.svg?height=400&width=400" ||
-                                                    "/placeholder.svg"
+                                                    "/Product_Placeholder.webp"
                                                 }
                                                 alt={product.name}
                                                 className="w-full h-full object-cover object-top group-hover:scale-102 transition-transform duration-300"
-                                                onError={(e) =>
-                                                    (e.target.src =
-                                                        "/placeholder.svg?height=400&width=400")
-                                                }
                                             />
                                             {product.stock < 10 &&
                                                 product.stock > 0 && (
@@ -337,7 +332,7 @@ function CategoryPage() {
                                             </p>
 
                                             {/* Rating and Reviews */}
-                                            {product.rating && (
+                                            {/* {product.rating && (
                                                 <div className="flex items-center gap-2">
                                                     <div className="flex items-center">
                                                         {renderStars(
@@ -351,7 +346,7 @@ function CategoryPage() {
                                                         reviews)
                                                     </span>
                                                 </div>
-                                            )}
+                                            )} */}
 
                                             {/* Price and Stock */}
                                             <div className="flex justify-between items-center">

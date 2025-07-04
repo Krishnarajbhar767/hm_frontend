@@ -15,6 +15,10 @@ import PaymentSuccess from "../components/common/PaymentSuccess";
 import PaymentFailed from "../components/common/PaymentFailed";
 import AboutUs from "../pages/public/about/About";
 import ContactUs from "../pages/public/contact/ContactUs";
+import RefundPolicy from "../pages/public/legal pages/RefundPolicy";
+import TermsOfService from "../pages/public/legal pages/TermsOfService";
+import ShippingPolicy from "../pages/public/legal pages/ShippingPolicy";
+import PrivacyPolicy from "../pages/public/legal pages/PrivacyPolicy";
 
 const PublicRoutes = (
     <Route element={<MainLayout />}>
@@ -27,6 +31,13 @@ const PublicRoutes = (
         <Route path="/products/:category/:id" element={<CategoryPage />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
         <Route path="/contact" element={<ContactUs />} />
+        {/* Legal Pages */}
+        <Route path="/refund-policy" element={<RefundPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
+        <Route path="/shipping-policy" element={<ShippingPolicy />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
+        {/* Cart And Wishlist */}
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="paymentSuccess" element={<PaymentSuccess />} />

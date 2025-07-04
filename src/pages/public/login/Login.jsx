@@ -29,7 +29,7 @@ function Login() {
         handleSubmit,
         formState: { errors },
     } = useForm();
-    
+
     const dispatch = useDispatch();
     const emailValue = watch("email");
     const passwordValue = watch("password");
@@ -49,12 +49,12 @@ function Login() {
     async function loginHandler(loginCredentials) {
         setIsLoading(true);
         try {
-            dispatch(clearUser());
-            dispatch(clearCart());
-            dispatch(clearOrders());
-            dispatch(clearCategory());
-            dispatch(clearProducts());
-            dispatch(clearWishlist());
+            // dispatch(clearUser());
+            // dispatch(clearCart());
+            // dispatch(clearOrders());
+            // dispatch(clearCategory());
+            // dispatch(clearProducts());
+            // dispatch(clearWishlist());
 
             console.log("Login loginCredentials", loginCredentials);
             const userData = await authApis.login(loginCredentials);

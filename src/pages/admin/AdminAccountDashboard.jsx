@@ -39,6 +39,7 @@ function AdminAccountDashboard() {
     const location = useLocation();
 
     const navItems = [
+        { path: "home-ui", label: "Home Ui", icon: <FiHome size={20} /> },
         { path: "overview", label: "Overview", icon: <FiHome size={20} /> },
         { path: "products", label: "Products", icon: <FiBox size={20} /> },
         { path: "categories", label: "Categories", icon: <FiGrid size={20} /> },

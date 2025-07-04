@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { FiImage } from "react-icons/fi";
+import { FiImage, FiX } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import InputField from "../../../components/common/InputField";
@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import uploadMedia from "../../../utils/uploadMedia";
 import productApis from "../../../services/api/admin/product/product.api";
 import { setProducts } from "../../../redux/slices/productSlice";
+import { handleAxiosError } from "../../../utils/handleAxiosError";
 
 const EditProduct = () => {
     const navigate = useNavigate();
@@ -18,7 +19,7 @@ const EditProduct = () => {
     const { products } = useSelector((state) => state.product);
     const categories = useSelector((state) => state.category.categories || []);
     const product = products?.find((p) => p._id === id);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const {
         register,
         handleSubmit,
@@ -27,12 +28,16 @@ const EditProduct = () => {
         watch,
     } = useForm();
 
+    const [originalImages, setOriginalImages] = useState([]);
     const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
     const [initialData, setInitialData] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const watchedFields = watch();
     const dispatch = useDispatch();
+
+    // Initialize form and previews
     useEffect(() => {
         if (product) {
             const init = {
@@ -50,17 +55,36 @@ const EditProduct = () => {
             };
             reset(init);
             setInitialData(init);
-            setImagePreviews(product.images || []);
+            const orig = Array.isArray(product.images) ? product.images : [];
+            setOriginalImages(orig);
+            setImagePreviews(orig);
         }
     }, [product, reset]);
 
+    // Handle new file uploads
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
-        setImageFiles(files);
+        setImageFiles((prev) => [...prev, ...files]);
         const previews = files.map((file) => URL.createObjectURL(file));
         setImagePreviews((prev) => [...prev, ...previews]);
     };
 
+    // Remove image (existing or new)
+    const handleRemoveImage = (index) => {
+        // Always remove preview
+        setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+
+        if (index < originalImages.length) {
+            // Removing an original URL
+            setOriginalImages((prev) => prev.filter((_, i) => i !== index));
+        } else {
+            // Removing a newly added file
+            const fileIndex = index - originalImages.length;
+            setImageFiles((prev) => prev.filter((_, i) => i !== fileIndex));
+        }
+    };
+
+    // Detect changes
     const isFormChanged = () => {
         if (!initialData) return false;
         for (let key in initialData) {
@@ -69,54 +93,42 @@ const EditProduct = () => {
             }
         }
         if (imageFiles.length > 0) return true;
+        if (originalImages.length !== (product.images?.length || 0))
+            return true;
         return false;
     };
 
+    // Submit handler
     const onSubmit = async (data) => {
         if (!isFormChanged()) {
             toast.error("No changes detected.");
             return;
         }
-        setIsSubmitting((prev) => true);
+        setIsSubmitting(true);
         const toastId = toast.loading("Please wait...");
-        let uploadedImageUrls = [];
-        if (imageFiles.length > 0) {
-            const formData = new FormData();
-            imageFiles.forEach((file) => formData.append("files", file));
-
-            try {
-                const response = await uploadMedia(formData);
-
-                uploadedImageUrls = Array.isArray(response)
-                    ? response
-                    : [response];
-            } catch (error) {
-                toast.error("Failed to upload images");
-                return;
-            }
-        }
-
-        const finalImages = [...(product.images || []), ...uploadedImageUrls];
-
-        const updatedData = {
-            ...data,
-            images: finalImages,
-        };
-
         try {
-            console.log("Updated product data:", updatedData);
+            let uploadedUrls = [];
+            if (imageFiles.length > 0) {
+                uploadedUrls = await uploadMedia(imageFiles);
+            }
+            const newUrls = Array.isArray(uploadedUrls)
+                ? uploadedUrls
+                : [uploadedUrls];
+            const finalImages = [...originalImages, ...newUrls];
+            const updatedData = { ...data, images: finalImages };
+
             const updatedProducts = await productApis.updateProduct(
                 updatedData,
                 id
             );
             dispatch(setProducts(updatedProducts));
-            toast.success("Product updated");
+            toast.success("Product updated successfully");
             navigate(-1);
         } catch (error) {
-            toast.error("Failed to update product");
+            handleAxiosError(error);
         } finally {
             toast.dismiss(toastId);
-            setIsSubmitting((prev) => false);
+            setIsSubmitting(false);
         }
     };
 
@@ -142,10 +154,10 @@ const EditProduct = () => {
             </h3>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                {/* Core Fields */}
                 <InputField
                     label="Name"
                     name="name"
-                    value={product?.name}
                     register={register}
                     errors={errors}
                     rules={{ required: "Product name is required" }}
@@ -153,7 +165,6 @@ const EditProduct = () => {
                 <InputField
                     label="Description"
                     name="description"
-                    value={product?.description}
                     register={register}
                     errors={errors}
                     rules={{ required: "Description is required" }}
@@ -163,7 +174,6 @@ const EditProduct = () => {
                     <InputField
                         label="Price"
                         name="price"
-                        value={product?.price}
                         type="number"
                         register={register}
                         errors={errors}
@@ -175,7 +185,6 @@ const EditProduct = () => {
                     <InputField
                         label="Stock"
                         name="stock"
-                        value={product?.stock}
                         type="number"
                         register={register}
                         errors={errors}
@@ -189,7 +198,6 @@ const EditProduct = () => {
                 <SelectField
                     label="Category"
                     name="category"
-                    value={product?.category}
                     register={register}
                     errors={errors}
                     rules={{ required: "Category is required" }}
@@ -199,6 +207,7 @@ const EditProduct = () => {
                     }))}
                 />
 
+                {/* Image Upload with Remove */}
                 <div>
                     <label className="block text-sm text-gray-600 mb-1 flex items-center gap-2">
                         <FiImage size={16} /> Images
@@ -213,22 +222,30 @@ const EditProduct = () => {
                     {imagePreviews.length > 0 && (
                         <div className="mt-2 flex flex-wrap gap-2">
                             {imagePreviews.map((src, i) => (
-                                <img
-                                    key={i}
-                                    src={src}
-                                    alt={`Preview ${i}`}
-                                    className="w-16 h-16 object-cover rounded-md"
-                                />
+                                <div key={i} className="relative w-16 h-16">
+                                    <img
+                                        src={src}
+                                        alt={`Preview ${i}`}
+                                        className="w-full h-full object-cover rounded-md"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveImage(i)}
+                                        className="absolute top-0 right-0 bg-white rounded-full p-0.5 shadow-md"
+                                    >
+                                        <FiX size={12} />
+                                    </button>
+                                </div>
                             ))}
                         </div>
                     )}
                 </div>
 
+                {/* Additional Fields */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                         label="Fabric"
                         name="fabric"
-                        value={product?.fabric}
                         register={register}
                         errors={errors}
                         rules={{ required: "Fabric is required" }}
@@ -236,18 +253,15 @@ const EditProduct = () => {
                     <InputField
                         label="Technique"
                         name="technique"
-                        value={product?.technique}
                         register={register}
                         errors={errors}
                         rules={{ required: "Technique is required" }}
                     />
                 </div>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                         label="Color"
                         name="color"
-                        value={product?.color}
                         register={register}
                         errors={errors}
                         rules={{ required: "Color is required" }}
@@ -255,17 +269,14 @@ const EditProduct = () => {
                     <InputField
                         label="Weight"
                         name="weight"
-                        value={product?.weight}
                         register={register}
                         errors={errors}
                         rules={{ required: "Weight is required" }}
                     />
                 </div>
-
                 <InputField
                     label="Assurance"
                     name="assurance"
-                    value={product?.assurance}
                     register={register}
                     errors={errors}
                     rules={{ required: "Assurance is required" }}
@@ -273,24 +284,28 @@ const EditProduct = () => {
                 <InputField
                     label="HSN Code"
                     name="hsnCode"
-                    value={product?.hsnCode}
                     register={register}
                     errors={errors}
-                    rules={{ required: "HSN Code is required" }}
+                    rules={{
+                        required: "HSN Code is required",
+                        pattern: {
+                            value: /^[0-9]+$/,
+                            message: "HSN Code must contain only numbers",
+                        },
+                    }}
                 />
 
+                {/* Actions */}
                 <div className="flex flex-col sm:flex-row gap-3">
                     <button
                         type="submit"
-                        style={{
-                            cursor: `${
-                                isSubmitting ? "not-allowed" : "pointer"
-                            }`,
-                        }}
                         disabled={isSubmitting}
-                        className="bg-neutral-950 text-white px-4 py-2 h-12 text-sm uppercase hover:bg-gray-700 transition-colors duration-200 shadow-md w-full "
+                        style={{
+                            cursor: isSubmitting ? "not-allowed" : "pointer",
+                        }}
+                        className="bg-neutral-950 text-white px-4 py-2 h-12 text-sm uppercase hover:bg-gray-700 transition-colors duration-200 shadow-md w-full"
                     >
-                        Save
+                        {isSubmitting ? "Saving..." : "Save"}
                     </button>
                     <button
                         type="button"

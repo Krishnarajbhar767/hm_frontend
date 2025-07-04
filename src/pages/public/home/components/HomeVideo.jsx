@@ -1,35 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import Heading from "./Heading";
 import SubHeading from "./SubHeading";
 import VIDEO from "../../../../assets/SB_1920x854_vdo.mp4";
+import POSTER from "../../../../assets/POSTER.png"; // optional, if you have a poster
+
 function HomeVideo() {
+    const [showVideo, setShowVideo] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowVideo(true);
+        }, 1500); // Load video 1.5s after page render
+
+        return () => clearTimeout(timer);
+    }, []);
+
     return (
-        <div className="boxedContainer w-full py-4  h-auto  overflow-x-hidden ">
+        <div className="boxedContainer w-full py-4 h-auto overflow-x-hidden">
             <div className="md:mb-14 mb-10 mt-4">
                 <div>
-                    <Heading
-                        text={" Lorem ipsum dolor sit amet consectetur."}
-                    />
+                    <Heading text="Lorem ipsum dolor sit amet consectetur." />
                 </div>
                 <div className="mt-2">
-                    <SubHeading
-                        text={
-                            " Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem, quis!"
-                        }
-                    />
+                    <SubHeading text="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem, quis!" />
                 </div>
             </div>
-            <div className=" ">
-                <video
-                    playsInline
-                    loop
-                    className="h-[100vh] object-cover w-full"
-                    muted
-                    controls
-                    autoPlay
-                    src={VIDEO}
-                ></video>
+
+            <div className="relative w-full h-[100vh] bg-black">
+                {showVideo ? (
+                    <video
+                        className="h-full w-full object-cover"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="none"
+                        poster={POSTER}
+                    >
+                        <source src={VIDEO} type="video/mp4" />
+                        Your browser does not support HTML5 video.
+                    </video>
+                ) : (
+                    <div
+                        className="w-full h-full bg-cover bg-center"
+                        style={{ backgroundImage: `url(${POSTER})` }}
+                    >
+                        {/* Optional fallback poster if user disables autoplay */}
+                    </div>
+                )}
             </div>
         </div>
     );

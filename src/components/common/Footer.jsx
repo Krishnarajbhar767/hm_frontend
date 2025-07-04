@@ -1,9 +1,15 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import slugify from "slugify";
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import axiosInstance from "../../utils/apiConnector";
+import { handleAxiosError } from "../../utils/handleAxiosError";
+
 import {
     FaFacebookF,
-    FaTwitter,
-    FaInstagram,
-    FaYoutube,
+    FaLinkedin,
     FaPinterest,
     FaChevronUp,
 } from "react-icons/fa";
@@ -11,286 +17,173 @@ import {
 const primaryColor = "rgb(83, 62, 45)";
 
 const Footer = () => {
+    const categories = useSelector((state) => state.category.categories) || [];
+
+    const { register, handleSubmit, reset } = useForm();
+
+    const subscribeNewsHandler = async (data) => {
+        const toastId = toast.loading("Please wait...");
+        try {
+            await axiosInstance.post("/newsletter", data);
+            toast.success("Thanks for subscribing!");
+            reset();
+        } catch (error) {
+            handleAxiosError(error);
+        } finally {
+            toast.dismiss(toastId);
+        }
+    };
+
+    const socials = [
+        {
+            icon: FaFacebookF,
+            link: "https://www.facebook.com/share/16oA9AL3Bn/",
+        },
+        {
+            icon: FaLinkedin,
+            link: "https://www.linkedin.com/company/srijan-fabs/",
+        },
+        { icon: FaPinterest, link: "https://pin.it/4Y8ChoBph" },
+    ];
+
     return (
         <footer
             className="bg-[#E4E4E4] pt-12 pb-4"
             style={{ color: primaryColor }}
         >
             <div className="container mx-auto px-4">
-                {/* ─── Main Footer Content ─── */}
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
-                    {/* ─ Logo and Contact Info ─ */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
+                    {/* Company Info */}
                     <div>
-                        <div className="flex items-center mb-6">
-                            <div
-                                className="text-2xl font-bold"
-                                style={{ color: primaryColor }}
-                            >
-                                Sr
-                                <span className="relative">
-                                    Ij
-                                    <span className="absolute -right-1 -top-1 w-3 h-3 bg-red-500 rounded-full"></span>
-                                </span>
-                                A<span className="relative">N</span>
-                            </div>
-                        </div>
-
-                        <p
-                            className="text-sm mb-2"
-                            style={{ color: primaryColor }}
-                        >
-                            1418 River Drive, Suite 35 Cottonhall,
+                        <h2 className="text-2xl font-bold mb-4">SRIJAN</h2>
+                        <p className="text-sm mb-2">
+                            2nd Floor, C.K 20/9 Shittla Katra Thatheri Bazar
                             <br />
-                            CA 9622 United States
+                            Varanasi, Uttar Pradesh 221010
                         </p>
-
-                        <p
-                            className="text-sm mb-2"
-                            style={{ color: primaryColor }}
-                        >
-                            sale@uomo.com
-                        </p>
-                        <p
-                            className="text-sm mb-6"
-                            style={{ color: primaryColor }}
-                        >
-                            +1 246-345-0695
-                        </p>
-
-                        <div className="flex space-x-2 md:space-x-4">
-                            {[
-                                FaFacebookF,
-                                FaTwitter,
-                                FaInstagram,
-                                FaYoutube,
-                                FaPinterest,
-                            ].map((Icon, idx) => (
+                        <p className="text-sm mb-2">srijanfabs@gmail.com</p>
+                        <p className="text-sm">+91 89605 00991</p>
+                        <p className="text-sm mb-6">+91 63071 16564</p>
+                        <div className="flex space-x-3">
+                            {socials.map((item, idx) => (
                                 <a
-                                    href="#"
+                                    href={item.link}
                                     key={idx}
-                                    style={{ color: primaryColor }}
+                                    target="_blank"
+                                    rel="noreferrer"
                                     className="hover:opacity-70 transition-opacity"
+                                    style={{ color: primaryColor }}
                                 >
-                                    <Icon className="md:w-5 w-4 md:h-5 h-4" />
+                                    <item.icon className="w-5 h-5" />
                                 </a>
                             ))}
                         </div>
                     </div>
 
-                    {/* ─ Company Links ─ */}
+                    {/* Company Links */}
                     <div>
-                        <h3
-                            className="font-bold text-lg mb-4"
-                            style={{ color: primaryColor }}
-                        >
-                            COMPANY
-                        </h3>
-                        <ul className="space-y-3">
-                            {[
-                                "About Us",
-                                "Careers",
-                                "Affiliates",
-                                "Blog",
-                                "Contact Us",
-                            ].map((text, idx) => (
-                                <li key={idx}>
-                                    <a
-                                        href="#"
-                                        className="text-sm"
-                                        style={{ color: primaryColor }}
-                                    >
-                                        {text}
-                                    </a>
-                                </li>
-                            ))}
+                        <h3 className="font-bold text-lg mb-4">Company</h3>
+                        <ul className="space-y-2 text-sm">
+                            <li>
+                                <Link to="/">Home</Link>
+                            </li>
+                            <li>
+                                <Link to="/about">About Us</Link>
+                            </li>
+                            <li>
+                                <Link to="/contact">Contact Us</Link>
+                            </li>
                         </ul>
                     </div>
 
-                    {/* ─ Shop Links ─ */}
+                    {/* Legal Links */}
                     <div>
-                        <h3
-                            className="font-bold text-lg mb-4"
-                            style={{ color: primaryColor }}
-                        >
-                            SHOP
-                        </h3>
-                        <ul className="space-y-3">
-                            {[
-                                "New Arrivals",
-                                "Accessories",
-                                "Men",
-                                "Women",
-                                "Shop All",
-                            ].map((text, idx) => (
-                                <li key={idx}>
-                                    <a
-                                        href="#"
-                                        className="text-sm"
-                                        style={{ color: primaryColor }}
-                                    >
-                                        {text}
-                                    </a>
-                                </li>
-                            ))}
+                        <h3 className="font-bold text-lg mb-4">Legal</h3>
+                        <ul className="space-y-2 text-sm">
+                            <li>
+                                <Link to="/privacy-policy">Privacy Policy</Link>
+                            </li>
+                            <li>
+                                <Link to="/refund-policy">Refund Policy</Link>
+                            </li>
+                            <li>
+                                <Link to="/shipping-policy">
+                                    Shipping Policy
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/terms-of-service">
+                                    Terms of Service
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 
-                    {/* ─ Help Links ─ */}
+                    {/* Our Products - Dynamic */}
                     <div>
-                        <h3
-                            className="font-bold text-lg mb-4"
-                            style={{ color: primaryColor }}
-                        >
-                            HELP
-                        </h3>
-                        <ul className="space-y-3">
-                            {[
-                                "Customer Service",
-                                "My Account",
-                                "Find a Store",
-                                "Legal & Privacy",
-                                "Contact",
-                                "Gift Card",
-                            ].map((text, idx) => (
-                                <li key={idx}>
-                                    <a
-                                        href="#"
-                                        className="text-sm"
-                                        style={{ color: primaryColor }}
-                                    >
-                                        {text}
-                                    </a>
-                                </li>
-                            ))}
+                        <h3 className="font-bold text-lg mb-4">Our Products</h3>
+                        <ul className="space-y-2 text-sm">
+                            {categories.map((cat) => {
+                                const slug = slugify(cat.name, { lower: true });
+                                return (
+                                    <li key={cat._id}>
+                                        <Link
+                                            className="capitalize"
+                                            to={`/products/${slug}/${cat._id}`}
+                                        >
+                                            {cat.name}
+                                        </Link>
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </div>
 
-                    {/* ─ Subscribe Section ─ */}
+                    {/* Newsletter */}
                     <div className="col-span-2 md:col-span-1">
-                        <h3
-                            className="font-bold text-lg mb-4"
-                            style={{ color: primaryColor }}
-                        >
-                            SUBSCRIBE
-                        </h3>
-                        <p
-                            className="text-sm mb-4"
-                            style={{ color: primaryColor }}
-                        >
-                            Be the first to get the latest news about trends,
-                            promotions, and much more!
+                        <h3 className="font-bold text-lg mb-4">Subscribe</h3>
+                        <p className="text-sm mb-4">
+                            Get updates on new designs, promotions & interior
+                            tips.
                         </p>
-
-                        <div className="flex flex-col sm:flex-row mb-6 gap-2">
+                        <form
+                            onSubmit={handleSubmit(subscribeNewsHandler)}
+                            className="flex flex-col sm:flex-row gap-2 mb-4"
+                        >
                             <input
+                                {...register("email")}
                                 type="email"
+                                required
                                 placeholder="Your email address"
-                                className="w-full p-2 border"
-                                style={{
-                                    borderColor: primaryColor,
-                                    color: primaryColor,
-                                }}
+                                className="w-full p-2 border outline-foreground focus:ring-2 focus:ring-foreground focus:rounded-none"
                             />
                             <button
-                                className="w-full sm:w-auto px-4 py-2 font-medium"
-                                style={{
-                                    backgroundColor: primaryColor,
-                                    color: "#fff",
-                                }}
+                                type="submit"
+                                className="w-full sm:w-auto px-4 py-2 bg-[rgb(83,62,45)] text-white font-medium"
                             >
                                 JOIN
                             </button>
-                        </div>
-
-                        <p
-                            className="text-sm font-medium mb-3"
-                            style={{ color: primaryColor }}
-                        >
+                        </form>
+                        <p className="text-sm font-medium mb-2">
                             Secure payments
                         </p>
-                        <div className="flex space-x-2">
-                            <img
-                                src="https://uomo-html.flexkitux.com/images/payment-options.png"
-                                alt="Payment Options"
-                                className="h-6 object-contain"
-                            />
-                        </div>
+                        <img
+                            src="https://uomo-html.flexkitux.com/images/payment-options.png"
+                            alt="Payment Methods"
+                            className="h-6 object-contain"
+                        />
                     </div>
                 </div>
 
-                {/* ─── Footer Bottom ─── */}
-                <div
-                    className="border-t pt-4"
-                    style={{ borderColor: primaryColor }}
-                >
-                    <div className="flex flex-col md:flex-row justify-between items-center">
-                        <div className="mb-4 md:mb-0">
-                            <p
-                                style={{ color: primaryColor }}
-                                className="text-sm"
-                            >
-                                ©2025 Srijan Fabrics
-                            </p>
-                        </div>
-
-                        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6">
-                            <div className="flex items-center">
-                                <span
-                                    className="text-sm mr-2"
-                                    style={{ color: primaryColor }}
-                                >
-                                    Language
-                                </span>
-                                <button
-                                    className="flex items-center text-sm"
-                                    style={{ color: primaryColor }}
-                                >
-                                    United Kingdom | English
-                                </button>
-                            </div>
-
-                            <div className="flex items-center">
-                                <span
-                                    className="text-sm mr-2"
-                                    style={{ color: primaryColor }}
-                                >
-                                    Currency
-                                </span>
-                                <button
-                                    className="flex items-center text-sm"
-                                    style={{ color: primaryColor }}
-                                >
-                                    ₹ INR
-                                </button>
-                            </div>
-                        </div>
-
-                        <a
-                            href="#top"
-                            className="hidden md:flex items-center justify-center w-8 h-8 rounded-full mt-4 md:mt-0"
-                            style={{
-                                border: `1px solid ${primaryColor}`,
-                                color: primaryColor,
-                            }}
-                        >
-                            <FaChevronUp />
-                        </a>
-                    </div>
+                <div className="border-t pt-4 text-sm flex flex-col sm:flex-row justify-between items-center">
+                    <p>© 2025 Srijan Fabrics. All rights reserved.</p>
+                    <a
+                        href="#top"
+                        className="mt-4 sm:mt-0 flex items-center gap-1 hover:underline"
+                    >
+                        Back to Top <FaChevronUp />
+                    </a>
                 </div>
-            </div>
-
-            {/* ─── Mobile Back to Top ─── */}
-            <div className="flex justify-center md:hidden mt-6">
-                <a
-                    href="#top"
-                    className="flex items-center justify-center w-10 h-10 rounded-full"
-                    style={{
-                        border: `1px solid ${primaryColor}`,
-                        color: primaryColor,
-                    }}
-                >
-                    <FaChevronUp />
-                </a>
             </div>
         </footer>
     );

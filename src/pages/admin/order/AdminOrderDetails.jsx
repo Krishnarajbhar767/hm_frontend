@@ -6,10 +6,15 @@ import {
     FiTruck,
     FiCreditCard,
     FiUser,
+    FiPlus,
+    FiMail,
+    FiPhone,
+    FiHash,
 } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../utils/apiConnector";
 
+// Animation variants
 const sectionVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: (i) => ({
@@ -19,37 +24,502 @@ const sectionVariants = {
     }),
 };
 
+// Status Badge Component
+const StatusBadge = ({ status, type = "default" }) => {
+    const getStatusColor = (status, type) => {
+        const statusLower = status?.toLowerCase();
+
+        if (type === "payment") {
+            switch (statusLower) {
+                case "paid":
+                    return "bg-emerald-50 text-emerald-700 border-emerald-200";
+                case "failed":
+                case "pending":
+                    return "bg-red-50 text-red-700 border-red-200";
+                default:
+                    return "bg-gray-50 text-gray-700 border-gray-200";
+            }
+        }
+
+        switch (statusLower) {
+            case "delivered":
+                return "bg-emerald-50 text-emerald-700 border-emerald-200";
+            case "shipped":
+            case "out for delivery":
+                return "bg-blue-50 text-blue-700 border-blue-200";
+            case "pending":
+                return "bg-amber-50 text-amber-700 border-amber-200";
+            case "canceled":
+                return "bg-red-50 text-red-700 border-red-200";
+            default:
+                return "bg-gray-50 text-gray-700 border-gray-200";
+        }
+    };
+
+    return (
+        <span
+            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
+                status,
+                type
+            )}`}
+        >
+            {status}
+        </span>
+    );
+};
+
+// Admin Order Header Component
+const AdminOrderHeader = ({ order }) => (
+    <motion.div
+        custom={0}
+        initial="hidden"
+        animate="visible"
+        variants={sectionVariants}
+        className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
+    >
+        <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+                Admin Order Management
+            </h1>
+            <p className="text-sm text-gray-600">
+                Order ID:{" "}
+                <span className="font-mono font-medium">
+                    {order?.razorpay_order_id || "N/A"}
+                </span>
+            </p>
+        </div>
+        <motion.div whileHover={{ x: -5 }} transition={{ duration: 0.2 }}>
+            <Link
+                to="/admin/orders"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-800 hover:text-blue-600 transition-colors"
+            >
+                <FiArrowLeft size={16} />
+                Back to Orders
+            </Link>
+        </motion.div>
+    </motion.div>
+);
+
+// Customer Info Component
+const CustomerInfo = ({ user }) => (
+    <motion.div
+        custom={1}
+        initial="hidden"
+        animate="visible"
+        variants={sectionVariants}
+        className="space-y-4"
+    >
+        <h3 className="flex items-center gap-2 text-xl font-semibold text-gray-800">
+            <FiUser size={20} />
+            Customer Information
+        </h3>
+
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-100 rounded-xl p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                            <FiUser size={20} className="text-purple-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-600">
+                                Customer Name
+                            </p>
+                            <p className="font-semibold text-gray-800 capitalize">
+                                {user.firstName} {user.lastName}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                            <FiMail size={20} className="text-blue-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-600">
+                                Email Address
+                            </p>
+                            <p className="font-medium text-gray-800 lowercase">
+                                {user.email}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                            <FiPhone size={20} className="text-green-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-600">
+                                Phone Number
+                            </p>
+                            <p className="font-semibold text-gray-800">
+                                {user.phone}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                            <FiHash size={20} className="text-orange-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-600">Customer ID</p>
+                            <p className="font-mono text-sm text-gray-800">
+                                {user._id}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </motion.div>
+);
+
+// Admin Order Overview Component
+const AdminOrderOverview = ({ order, formatINR }) => (
+    <motion.div
+        custom={2}
+        initial="hidden"
+        animate="visible"
+        variants={sectionVariants}
+        className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-6"
+    >
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="space-y-1">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    Order Date
+                </p>
+                <p className="text-sm font-medium text-gray-800">
+                    {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                    })}
+                </p>
+                <p className="text-xs text-gray-500">
+                    {new Date(order.createdAt).toLocaleTimeString("en-IN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                    })}
+                </p>
+            </div>
+
+            <div className="space-y-1">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    Total Amount
+                </p>
+                <p className="text-xl font-bold text-gray-800">
+                    ₹{formatINR(order.totalAmount)}
+                </p>
+            </div>
+
+            <div className="space-y-1">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    Payment Status
+                </p>
+                <StatusBadge status={order.paymentStatus} type="payment" />
+            </div>
+
+            <div className="space-y-1">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    Delivery Status
+                </p>
+                <StatusBadge status={order.deliveryStatus} />
+            </div>
+        </div>
+    </motion.div>
+);
+
+// Admin Product Item Component
+const AdminProductItem = ({ item, index, formatINR }) => {
+    const basePrice = item.product.price;
+    const fallPicoPrice = item.withFallPico ? 300 : 0;
+    const tasselsPrice = item.withTassels ? 200 : 0;
+    const addonPrice = fallPicoPrice + tasselsPrice;
+    const itemTotal = (basePrice + addonPrice) * item.quantity;
+
+    return (
+        <motion.div
+            key={index}
+            whileHover={{ scale: 1.01 }}
+            transition={{ duration: 0.2 }}
+            className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
+        >
+            <div className="flex flex-col sm:flex-row gap-6">
+                {/* Product Image */}
+                <div className="flex-shrink-0">
+                    <img
+                        src={item.product.images[0] || "/placeholder.svg"}
+                        alt={item.product.name}
+                        className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-lg border border-gray-200"
+                    />
+                </div>
+
+                {/* Product Details */}
+                <div className="flex-1 space-y-4">
+                    <div>
+                        <h4 className="text-lg font-semibold text-gray-800 mb-1">
+                            {item.product.name}
+                        </h4>
+                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                            <span>
+                                Product ID:{" "}
+                                <span className="font-mono">
+                                    {item.product._id}
+                                </span>
+                            </span>
+                            <span>
+                                Quantity:{" "}
+                                <span className="font-medium">
+                                    {item.quantity}
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Admin Pricing Breakdown */}
+                    <div className="space-y-3">
+                        <div className="bg-gray-50 rounded-lg p-4">
+                            <h5 className="text-sm font-semibold text-gray-800 mb-3">
+                                Pricing Analysis
+                            </h5>
+
+                            <div className="space-y-2 text-sm">
+                                <div className="flex justify-between">
+                                    <span className="text-gray-600">
+                                        Base Price
+                                    </span>
+                                    <span className="font-medium">
+                                        ₹{formatINR(basePrice)}
+                                    </span>
+                                </div>
+
+                                {/* Addons */}
+                                {(item.withFallPico || item.withTassels) && (
+                                    <div className="space-y-1">
+                                        <div className="flex items-center gap-1 text-xs text-gray-500 font-medium">
+                                            <FiPlus size={12} />
+                                            <span>Customer Add-ons</span>
+                                        </div>
+
+                                        {item.withFallPico && (
+                                            <div className="flex justify-between pl-4">
+                                                <span className="text-gray-600">
+                                                    Fall Pico
+                                                </span>
+                                                <span className="font-medium text-blue-600">
+                                                    +₹300
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        {item.withTassels && (
+                                            <div className="flex justify-between pl-4">
+                                                <span className="text-gray-600">
+                                                    Tassels
+                                                </span>
+                                                <span className="font-medium text-blue-600">
+                                                    +₹200
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                <div className="border-t pt-2 flex justify-between font-semibold">
+                                    <span>Per Unit Price</span>
+                                    <span>
+                                        ₹{formatINR(basePrice + addonPrice)}
+                                    </span>
+                                </div>
+
+                                <div className="flex justify-between text-lg font-bold text-gray-800">
+                                    <span>
+                                        Total Revenue ({item.quantity} units)
+                                    </span>
+                                    <span>₹{formatINR(itemTotal)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </motion.div>
+    );
+};
+
+// Admin Shipping Info Component
+const AdminShippingInfo = ({ order }) => (
+    <motion.div
+        custom={4}
+        initial="hidden"
+        animate="visible"
+        variants={sectionVariants}
+        className="space-y-4"
+    >
+        <h3 className="flex items-center gap-2 text-xl font-semibold text-gray-800">
+            <FiTruck size={20} />
+            Shipping & Delivery
+        </h3>
+
+        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+            <div className="space-y-4">
+                <div>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                        Delivery Address
+                    </p>
+                    <div className="text-sm text-gray-800 space-y-1">
+                        <p className="font-medium">
+                            {order.shippingAddress.street}
+                        </p>
+                        <p>
+                            {order.shippingAddress.city},{" "}
+                            {order.shippingAddress.state}
+                        </p>
+                        <p>
+                            {order.shippingAddress.postalCode},{" "}
+                            {order.shippingAddress.country}
+                        </p>
+                        <p className="font-medium">
+                            Contact: {order.shippingAddress.phone}
+                        </p>
+                    </div>
+                </div>
+
+                {order.deliveredAt && (
+                    <div className="pt-4 border-t">
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                            Delivery Completed
+                        </p>
+                        <p className="text-sm font-medium text-gray-800">
+                            {new Date(order.deliveredAt).toLocaleString(
+                                "en-IN"
+                            )}
+                        </p>
+                    </div>
+                )}
+
+                {/* Admin Actions Section */}
+                {/* <div className="pt-4 border-t">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                        Admin Actions
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                        <button className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-medium hover:bg-blue-200 transition-colors">
+                            Update Status
+                        </button>
+                        <button className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-medium hover:bg-green-200 transition-colors">
+                            Mark Delivered
+                        </button>
+                        <button className="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-xs font-medium hover:bg-orange-200 transition-colors">
+                            Generate Label
+                        </button>
+                    </div>
+                </div> */}
+            </div>
+        </div>
+    </motion.div>
+);
+
+// Admin Payment Info Component
+const AdminPaymentInfo = ({ order }) => (
+    <motion.div
+        custom={5}
+        initial="hidden"
+        animate="visible"
+        variants={sectionVariants}
+        className="space-y-4"
+    >
+        <h3 className="flex items-center gap-2 text-xl font-semibold text-gray-800">
+            <FiCreditCard size={20} />
+            Payment Details
+        </h3>
+
+        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                        Payment Method
+                    </p>
+                    <p className="text-sm font-medium text-gray-800 capitalize">
+                        {order.paymentMethod}
+                    </p>
+                </div>
+
+                <div>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                        Payment Status
+                    </p>
+                    <StatusBadge status={order.paymentStatus} type="payment" />
+                </div>
+
+                {order.razorpay_order_id && (
+                    <div>
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                            Razorpay Order ID
+                        </p>
+                        <p className="text-sm font-mono text-gray-800">
+                            {order.razorpay_order_id}
+                        </p>
+                    </div>
+                )}
+
+                {order.paidAt && (
+                    <div>
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                            Payment Date
+                        </p>
+                        <p className="text-sm font-medium text-gray-800">
+                            {new Date(order.paidAt).toLocaleString("en-IN")}
+                        </p>
+                    </div>
+                )}
+            </div>
+
+            {/* Admin Payment Actions */}
+            {/* <div className="pt-4 border-t mt-4">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                    Payment Actions
+                </p>
+                <div className="flex flex-wrap gap-2">
+                    <button className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-medium hover:bg-green-200 transition-colors">
+                        Verify Payment
+                    </button>
+                    <button className="px-3 py-1 bg-red-100 text-red-700 rounded-lg text-xs font-medium hover:bg-red-200 transition-colors">
+                        Initiate Refund
+                    </button>
+                    <button className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-medium hover:bg-blue-200 transition-colors">
+                        View Transaction
+                    </button>
+                </div>
+            </div> */}
+        </div>
+    </motion.div>
+);
+
+// Main Admin Component
 function AdminOrderDetails() {
     const { id } = useParams();
     const [order, setOrder] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setLoading(true);
         axiosInstance
             .get(`/admin/orders/order/${id}`)
-            .then((res) => setOrder(res.data.data))
+            .then((res) => {
+                setOrder(res.data.data);
+                setLoading(false);
+            })
             .catch((err) => {
                 console.error("Error fetching order:", err);
                 setOrder(null);
+                setLoading(false);
             });
     }, [id]);
-
-    const getStatusColor = (status) => {
-        switch (status?.toLowerCase()) {
-            case "delivered":
-            case "paid":
-                return "bg-green-100 text-green-700";
-            case "shipped":
-            case "out for delivery":
-                return "bg-blue-100 text-blue-700";
-            case "pending":
-                return "bg-yellow-100 text-yellow-700";
-            case "canceled":
-            case "failed":
-                return "bg-red-100 text-red-700";
-            default:
-                return "bg-gray-100 text-gray-700";
-        }
-    };
 
     const formatINR = (amount) =>
         (amount || 0).toLocaleString("en-IN", {
@@ -57,233 +527,100 @@ function AdminOrderDetails() {
             maximumFractionDigits: 2,
         });
 
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 py-8">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="animate-pulse space-y-8">
+                        <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+                        <div className="h-32 bg-gray-200 rounded"></div>
+                        <div className="h-48 bg-gray-200 rounded"></div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     if (order === null) {
         return (
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
-                className="text-center py-12 sm:py-16"
+                className="text-center py-16"
             >
-                <p className="text-gray-800 text-base sm:text-lg mb-2">
-                    Order not found
-                </p>
-                <motion.div
-                    whileHover={{ x: -5 }}
-                    transition={{ duration: 0.2 }}
-                >
-                    <Link
-                        to="/admin/orders"
-                        className="flex items-center gap-2 justify-center text-gray-800 hover:text-blue-700 text-sm font-medium"
+                <div className="max-w-md mx-auto">
+                    <FiPackage
+                        size={48}
+                        className="mx-auto text-gray-400 mb-4"
+                    />
+                    <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                        Order Not Found
+                    </h2>
+                    <p className="text-gray-600 mb-6">
+                        The order you're looking for doesn't exist or may have
+                        been removed.
+                    </p>
+                    <motion.div
+                        whileHover={{ x: -5 }}
+                        transition={{ duration: 0.2 }}
                     >
-                        <FiArrowLeft size={16} /> Back to Orders
-                    </Link>
-                </motion.div>
+                        <Link
+                            to="/admin/orders"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                        >
+                            <FiArrowLeft size={16} />
+                            Back to Orders
+                        </Link>
+                    </motion.div>
+                </div>
             </motion.div>
         );
     }
 
     return (
-        <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-6 sm:space-y-8"
-        >
-            {/* Header */}
-            <motion.div
-                custom={0}
-                initial="hidden"
-                animate="visible"
-                variants={sectionVariants}
-                className="flex justify-between items-center"
-            >
-                <h2 className="flex items-center gap-2 text-xl sm:text-2xl font-semibold uppercase text-gray-800">
-                    <FiPackage size={24} /> Order Details -{" "}
-                    {order?.razorpay_order_id || "N/A"}
-                </h2>
-                <Link
-                    to="/admin/orders"
-                    className="flex items-center gap-2 text-gray-800 hover:text-blue-700 text-sm font-medium"
+        <div className="min-h-screen bg-gray-50 py-8">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-8"
                 >
-                    <FiArrowLeft size={16} /> Back to Orders
-                </Link>
-            </motion.div>
+                    <AdminOrderHeader order={order} />
+                    <CustomerInfo user={order.user} />
+                    <AdminOrderOverview order={order} formatINR={formatINR} />
 
-            {/* User Info */}
-            <motion.div
-                custom={1}
-                initial="hidden"
-                animate="visible"
-                variants={sectionVariants}
-                className="border border-gray-200 bg-white rounded-lg shadow-sm p-4 sm:p-6"
-            >
-                <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
-                    <FiUser size={20} /> Customer Information
-                </h3>
-                <div className="mt-2 space-y-1 text-sm sm:text-base text-gray-800 capitalize">
-                    <p>
-                        <strong>Name:</strong> {order.user.firstName}{" "}
-                        {order.user.lastName}
-                    </p>
-                    <p className="uppercase">
-                        <strong>Email:</strong> {order.user.email}
-                    </p>
-                    <p>
-                        <strong>Phone:</strong> {order.user.phone}
-                    </p>
-                    <p>
-                        <strong>User ID:</strong> {order.user._id}
-                    </p>
-                </div>
-            </motion.div>
-
-            {/* Order Overview */}
-            <motion.div
-                custom={2}
-                initial="hidden"
-                animate="visible"
-                variants={sectionVariants}
-                className="border border-gray-200 bg-white rounded-lg shadow-sm p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-3 gap-4"
-            >
-                <div>
-                    <p className="text-xs text-gray-800 uppercase font-medium">
-                        Order Date
-                    </p>
-                    <p className="text-sm font-semibold text-gray-800 mt-1">
-                        {new Date(order.createdAt).toLocaleString()}
-                    </p>
-                </div>
-                <div>
-                    <p className="text-xs text-gray-800 uppercase font-medium">
-                        Total
-                    </p>
-                    <p className="text-sm font-semibold text-gray-800 mt-1">
-                        ₹{formatINR(order.totalAmount)}
-                    </p>
-                </div>
-                <div>
-                    <p className="text-xs text-gray-800 uppercase font-medium">
-                        Delivery Status
-                    </p>
-                    <span
-                        className={`inline-block capitalize px-2 py-1 rounded-full text-xs font-medium mt-1 ${getStatusColor(
-                            order.deliveryStatus
-                        )}`}
+                    {/* Products Section */}
+                    <motion.div
+                        custom={3}
+                        initial="hidden"
+                        animate="visible"
+                        variants={sectionVariants}
+                        className="space-y-4"
                     >
-                        {order.deliveryStatus}
-                    </span>
-                </div>
-            </motion.div>
+                        <h3 className="flex items-center gap-2 text-xl font-semibold text-gray-800">
+                            <FiPackage size={20} />
+                            Order Items ({order.items.length})
+                        </h3>
 
-            {/* Product Details */}
-            <motion.div
-                custom={3}
-                initial="hidden"
-                animate="visible"
-                variants={sectionVariants}
-                className="space-y-4"
-            >
-                <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                    <FiPackage size={20} /> Products
-                </h3>
-                {order.items.map((item) => (
-                    <div
-                        key={item._id}
-                        className="flex items-start gap-4 border border-gray-200 bg-white rounded-lg shadow-sm p-4"
-                    >
-                        <img
-                            src={item.product.images[0]}
-                            alt={item.product.name}
-                            className="w-20 h-20 object-cover rounded-md border"
-                        />
-                        <div className="flex-1">
-                            <p className="font-medium text-gray-800">
-                                {item.product.name}
-                            </p>
-                            <p className="text-sm text-gray-800 mt-1">
-                                Qty: {item.quantity} × ₹
-                                {formatINR(item.product.price)} each
-                            </p>
-                            <p className="text-sm text-gray-800 font-semibold mt-1">
-                                Total: ₹
-                                {formatINR(item.quantity * item.product.price)}
-                            </p>
+                        <div className="space-y-4">
+                            {order.items.map((item, idx) => (
+                                <AdminProductItem
+                                    key={item._id}
+                                    item={item}
+                                    index={idx}
+                                    formatINR={formatINR}
+                                />
+                            ))}
                         </div>
-                    </div>
-                ))}
-            </motion.div>
+                    </motion.div>
 
-            {/* Shipping Info */}
-            <motion.div
-                custom={4}
-                initial="hidden"
-                animate="visible"
-                variants={sectionVariants}
-                className="space-y-4"
-            >
-                <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                    <FiTruck size={20} /> Shipping Information
-                </h3>
-                <div className="border border-gray-200 bg-white rounded-lg shadow-sm p-4 sm:p-6">
-                    <p className="text-xs text-gray-800 uppercase font-medium">
-                        Shipping Address
-                    </p>
-                    <p className="text-sm font-semibold text-gray-800 mt-1">
-                        {order.shippingAddress.street},{" "}
-                        {order.shippingAddress.city},{" "}
-                        {order.shippingAddress.state} -{" "}
-                        {order.shippingAddress.postalCode},{" "}
-                        {order.shippingAddress.country}
-                    </p>
-                    <p className="text-sm text-gray-800 font-medium mt-1">
-                        Phone: {order.shippingAddress.phone}
-                    </p>
-                    {order.deliveredAt && (
-                        <p className="text-sm text-gray-800 font-medium mt-2">
-                            Delivered At:{" "}
-                            {new Date(order.deliveredAt).toLocaleString()}
-                        </p>
-                    )}
-                </div>
-            </motion.div>
-
-            {/* Payment Info */}
-            <motion.div
-                custom={5}
-                initial="hidden"
-                animate="visible"
-                variants={sectionVariants}
-                className="space-y-4"
-            >
-                <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                    <FiCreditCard size={20} /> Payment Information
-                </h3>
-                <div className="border border-gray-200 bg-white rounded-lg shadow-sm p-4 sm:p-6">
-                    <p className="text-xs text-gray-800 uppercase font-medium">
-                        Payment Method
-                    </p>
-                    <p className="text-sm font-semibold text-gray-800 mt-1">
-                        {order.paymentMethod}
-                    </p>
-                    <p className="text-xs text-gray-800 uppercase font-medium mt-4">
-                        Payment Status
-                    </p>
-                    <span
-                        className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-1 ${getStatusColor(
-                            order.paymentStatus
-                        )}`}
-                    >
-                        {order.paymentStatus}
-                    </span>
-                    {order.paidAt && (
-                        <p className="text-sm text-gray-800 font-semibold mt-2">
-                            Paid At: {new Date(order.paidAt).toLocaleString()}
-                        </p>
-                    )}
-                </div>
-            </motion.div>
-        </motion.div>
+                    <AdminShippingInfo order={order} />
+                    <AdminPaymentInfo order={order} />
+                </motion.div>
+            </div>
+        </div>
     );
 }
 

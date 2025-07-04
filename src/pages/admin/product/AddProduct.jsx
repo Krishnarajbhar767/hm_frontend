@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { FiImage } from "react-icons/fi";
+import { FiImage, FiX } from "react-icons/fi";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import InputField from "../../../components/common/InputField";
@@ -11,6 +11,7 @@ import productApis from "../../../services/api/admin/product/product.api";
 import { handleAxiosError } from "../../../utils/handleAxiosError";
 import { setProducts } from "../../../redux/slices/productSlice";
 import { useNavigate } from "react-router-dom";
+
 const AddProduct = () => {
     const {
         register,
@@ -24,15 +25,22 @@ const AddProduct = () => {
     const [imagePreviews, setImagePreviews] = useState([]);
     const dispatch = useDispatch();
 
-
     // Handle file input and generate preview
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
-        console.log("file");
-
         setImageFiles(files);
         const previews = files.map((file) => URL.createObjectURL(file));
         setImagePreviews(previews);
+    };
+
+    // Remove a single image from preview & file list
+    const handleRemoveImage = (index) => {
+        const newFiles = [...imageFiles];
+        const newPreviews = [...imagePreviews];
+        newFiles.splice(index, 1);
+        newPreviews.splice(index, 1);
+        setImageFiles(newFiles);
+        setImagePreviews(newPreviews);
     };
 
     // Form submit handler
@@ -44,13 +52,12 @@ const AddProduct = () => {
         const toastId = toast.loading("Please wait...");
         try {
             const imagesUrls = await uploadMedia(imageFiles);
-
-            console.log("imagesUrls - ",imagesUrls)
-            
             if (!imagesUrls) return;
-            data.images = imagesUrls; // inserting images url into  formData;
+            data.images = imagesUrls;
+
             const products = await productApis.createProduct(data);
             dispatch(setProducts(products));
+
             reset();
             setImageFiles([]);
             setImagePreviews([]);
@@ -60,10 +67,6 @@ const AddProduct = () => {
         } finally {
             toast.dismiss(toastId);
         }
-
-        // Handle your API call here with:
-        // 1. `data` (form fields)
-        // 2. `imageFiles` (for upload API)
     };
 
     const handleCancel = () => {
@@ -85,6 +88,7 @@ const AddProduct = () => {
             </h3>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                {/* Basic Fields */}
                 <InputField
                     label="Name"
                     name="name"
@@ -99,7 +103,6 @@ const AddProduct = () => {
                     errors={errors}
                     rules={{ required: "Description is required" }}
                 />
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                         label="Price"
@@ -124,7 +127,6 @@ const AddProduct = () => {
                         }}
                     />
                 </div>
-
                 <SelectField
                     label="Category"
                     name="category"
@@ -137,7 +139,7 @@ const AddProduct = () => {
                     }))}
                 />
 
-                {/* Image Upload */}
+                {/* Image Upload with Remove/Edit */}
                 <div>
                     <label className="block text-sm text-gray-600 mb-1 flex items-center gap-2">
                         <FiImage size={16} /> Images
@@ -152,18 +154,26 @@ const AddProduct = () => {
                     {imagePreviews.length > 0 && (
                         <div className="mt-2 flex flex-wrap gap-2">
                             {imagePreviews.map((src, i) => (
-                                <img
-                                    key={i}
-                                    src={src}
-                                    alt={`Preview ${i}`}
-                                    className="w-16 h-16 object-cover rounded-md"
-                                />
+                                <div key={i} className="relative w-16 h-16">
+                                    <img
+                                        src={src}
+                                        alt={`Preview ${i}`}
+                                        className="w-full h-full object-cover rounded-md"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveImage(i)}
+                                        className="absolute top-0 right-0 bg-white rounded-full p-0.5 shadow-md"
+                                    >
+                                        <FiX size={12} />
+                                    </button>
+                                </div>
                             ))}
                         </div>
                     )}
                 </div>
 
-                {/* More Fields */}
+                {/* Additional Details */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                         label="Fabric"
@@ -180,7 +190,6 @@ const AddProduct = () => {
                         rules={{ required: "Technique is required" }}
                     />
                 </div>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InputField
                         label="Color"
@@ -197,7 +206,6 @@ const AddProduct = () => {
                         rules={{ required: "Weight is required" }}
                     />
                 </div>
-
                 <InputField
                     label="Assurance"
                     name="assurance"
@@ -219,7 +227,7 @@ const AddProduct = () => {
                     }}
                 />
 
-                {/* Submit Buttons */}
+                {/* Submit & Cancel Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
                     <button
                         type="submit"

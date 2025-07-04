@@ -3,13 +3,32 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, X, Filter, RotateCcw } from "lucide-react";
 
-// Enhanced SidebarFilter Component with premium UI and better mobile experience
-function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
+// Reusable FilterSection component for accordion-style sections
+const FilterSection = ({ title, isOpen, onToggle, children }) => (
+    <div className="border border-gray-200 rounded-lg overflow-hidden">
+        <button
+            className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+            onClick={onToggle}
+        >
+            <span className="font-medium text-foreground">{title}</span>
+            {isOpen ? (
+                <ChevronUp className="w-4 h-4 text-foreground" />
+            ) : (
+                <ChevronDown className="w-4 h-4 text-foreground" />
+            )}
+        </button>
+        {isOpen && <div className="p-4 bg-white">{children}</div>}
+    </div>
+);
+
+// Main SidebarFilter component
+const SidebarFilter = ({ onFilterChange, isOpen, toggleSidebar }) => {
+    const [minInput, setMinInput] = useState("0");
+    const [maxInput, setMaxInput] = useState("200000");
     const [priceRange, setPriceRange] = useState([0, 200000]);
     const [fabric, setFabric] = useState("");
     const [color, setColor] = useState("");
     const [technique, setTechnique] = useState("");
-
     const [openSections, setOpenSections] = useState({
         price: true,
         fabric: true,
@@ -30,14 +49,22 @@ function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
         setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
     };
 
-    // Handle applying filters
+    // Handle applying filters with validation
     const handleApplyFilters = () => {
-        onFilterChange({ priceRange, fabric, color, technique });
+        let min = Math.max(0, Number(minInput) || 0);
+        let max = Math.min(200000, Number(maxInput) || 200000);
+        if (min > max) [min, max] = [max, min]; // Swap if min > max
+        setPriceRange([min, max]);
+        setMinInput(min.toString());
+        setMaxInput(max.toString());
+        onFilterChange({ priceRange: [min, max], fabric, color, technique });
         if (isOpen && toggleSidebar) toggleSidebar();
     };
 
     // Handle clearing filters
     const handleClearFilters = () => {
+        setMinInput("0");
+        setMaxInput("200000");
         setPriceRange([0, 200000]);
         setFabric("");
         setColor("");
@@ -49,23 +76,6 @@ function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
             technique: "",
         });
     };
-
-    const FilterSection = ({ title, isOpen, onToggle, children }) => (
-        <div className="border border-gray-200 rounded-lg overflow-hidden">
-            <button
-                onClick={onToggle}
-                className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
-            >
-                <span className="font-medium text-foreground">{title}</span>
-                {isOpen ? (
-                    <ChevronUp className="w-4 h-4 text-foreground" />
-                ) : (
-                    <ChevronDown className="w-4 h-4 text-foreground" />
-                )}
-            </button>
-            {isOpen && <div className="p-4 bg-white">{children}</div>}
-        </div>
-    );
 
     return (
         <>
@@ -79,7 +89,7 @@ function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
 
             {/* Sidebar */}
             <div
-                className={`fixed inset-y-0 left-0 w-80 bg-white z-50 transform transition-transform duration-300 shadow-xl lg:relative lg:translate-x-0 lg:w-72 lg:shadow-none lg:border-r lg:border-gray-200 ${
+                className={`fixed inset-y-0 left-0 w-80 bg-white z-40 transform transition-transform duration-300 shadow-xl lg:relative lg:translate-x-0 lg:w-72 lg:shadow-none lg:border-r lg:border-gray-200 ${
                     isOpen ? "translate-x-0" : "-translate-x-full"
                 }`}
             >
@@ -119,16 +129,18 @@ function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
                                         Min Price
                                     </label>
                                     <input
-                                        type="number"
-                                        value={priceRange[0]}
+                                        type="text"
+                                        value={minInput}
                                         onChange={(e) =>
-                                            setPriceRange([
-                                                Number(e.target.value),
-                                                priceRange[1],
-                                            ])
+                                            setMinInput(
+                                                e.target.value.replace(
+                                                    /[^0-9]/g,
+                                                    ""
+                                                )
+                                            )
                                         }
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-foreground focus:border-transparent text-sm transition-all duration-200"
                                         placeholder="₹0"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-foreground focus:border-transparent text-sm transition-all duration-200"
                                     />
                                 </div>
                                 <div className="text-foreground mt-6">-</div>
@@ -137,55 +149,31 @@ function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
                                         Max Price
                                     </label>
                                     <input
-                                        type="number"
-                                        value={priceRange[1]}
+                                        type="text"
+                                        value={maxInput}
                                         onChange={(e) =>
-                                            setPriceRange([
-                                                priceRange[0],
-                                                Number(e.target.value),
-                                            ])
+                                            setMaxInput(
+                                                e.target.value.replace(
+                                                    /[^0-9]/g,
+                                                    ""
+                                                )
+                                            )
                                         }
+                                        placeholder="₹200000"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-foreground focus:border-transparent text-sm transition-all duration-200"
-                                        placeholder="₹10,000"
                                     />
                                 </div>
                             </div>
-
-                            {/* Price Range Slider */}
-                            <div className="space-y-2">
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="200000"
-                                    step="100"
-                                    value={priceRange[0]}
-                                    onChange={(e) =>
-                                        setPriceRange([
-                                            Number(e.target.value),
-                                            priceRange[1],
-                                        ])
-                                    }
-                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                                />
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="200000"
-                                    step="100"
-                                    value={priceRange[1]}
-                                    onChange={(e) =>
-                                        setPriceRange([
-                                            priceRange[0],
-                                            Number(e.target.value),
-                                        ])
-                                    }
-                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                                />
-                            </div>
-
                             <div className="flex justify-between text-sm text-foreground">
-                                <span>₹{priceRange[0].toLocaleString()}</span>
-                                <span>₹{priceRange[1].toLocaleString()}</span>
+                                <span>
+                                    ₹{Number(minInput || 0).toLocaleString()}
+                                </span>
+                                <span>
+                                    ₹
+                                    {Number(
+                                        maxInput || 200000
+                                    ).toLocaleString()}
+                                </span>
                             </div>
                         </div>
                     </FilterSection>
@@ -348,7 +336,7 @@ function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
                     <div className="space-y-3">
                         <button
                             onClick={handleApplyFilters}
-                            className="w-full bg-foreground text-white py-3 px-4 rounded-lg hover:bg-foreground transition-colors font-medium"
+                            className="w-full bg-foreground text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors font-medium"
                         >
                             Apply Filters
                         </button>
@@ -364,6 +352,6 @@ function SidebarFilter({ onFilterChange, isOpen, toggleSidebar }) {
             </div>
         </>
     );
-}
+};
 
 export default SidebarFilter;

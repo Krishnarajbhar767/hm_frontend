@@ -49,10 +49,6 @@ function ProductImageGallery({ images = [], productName = "", onZoom }) {
                                 src={image || "/placeholder.svg"}
                                 alt={`${productName} thumbnail ${index + 1}`}
                                 className="w-full h-full object-cover object-top"
-                                onError={(e) =>
-                                    (e.target.src =
-                                        "/placeholder.svg?height=80&width=80")
-                                }
                             />
                         </button>
                     ))}
@@ -66,10 +62,6 @@ function ProductImageGallery({ images = [], productName = "", onZoom }) {
                         src={selectedImage || "/placeholder.svg"}
                         alt={productName}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 object-top"
-                        onError={(e) =>
-                            (e.target.src =
-                                "/placeholder.svg?height=600&width=600")
-                        }
                     />
 
                     {/* Navigation Arrows */}

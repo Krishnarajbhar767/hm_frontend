@@ -15,7 +15,7 @@ const orderSlice = createSlice({
         // Set orders
         setOrders: (state, action) => {
             state.orders = action.payload;
-            state.loading = false;
+            state.isLoaded = true;
         },
         // Set loading state
         setIsLoaded: (state, action) => {
@@ -31,35 +31,4 @@ const orderSlice = createSlice({
 // Export the basic actions
 export const { setOrders, setIsLoaded, clearOrders } = orderSlice.actions;
 
-// Custom action creator to fetch orders
-export const fetchOrders = (userId) => async (dispatch) => {
-    try {
-        const response = await fetch(`/api/orders?user=${userId}`); // api call//
-        dispatch(setOrders(data));
-    } catch (error) {
-        handleAxiosError(error);
-    }
-};
-
-// Custom action creator to create a new order
-export const createOrder = (orderData) => async (dispatch) => {
-    dispatch(setLoading(true));
-    try {
-        const response = await fetch("/api/orders", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(orderData),
-        });
-        if (!response.ok) {
-            throw new Error("Failed to create order");
-        }
-        const data = await response.json();
-        // Fetch updated orders list or append the new order
-        dispatch(fetchOrders(orderData.user)); // Re-fetch orders to ensure the list is up-to-date
-    } catch (error) {
-        dispatch(setError(error.message));
-    }
-};
-
-// Export reducer
 export default orderSlice.reducer;

@@ -120,7 +120,7 @@ function ProductDetailsPage() {
                         product: data?._id,
                         quantity: data?.quantity,
                         finalPrice: data?.finalPrice,
-                        withCustomization: data.withCustomization,
+                        addons: data.addons,
                         totalPrice: data.finalPrice * data?.quantity,
                         userId: user?._id,
                     });
@@ -135,10 +135,6 @@ function ProductDetailsPage() {
             }
             dispatch(setCart(updatedCart));
         }
-    };
-
-    const handleBuyNow = (data) => {
-        console.log("Buy now:", data);
     };
 
     const handleShare = () => {
@@ -284,14 +280,14 @@ function ProductDetailsPage() {
                         <ProductInfo
                             product={product}
                             onAddToCart={handleAddToCart}
-                            onBuyNow={handleBuyNow}
+                            // onBuyNow={handleBuyNow}
                             onShare={handleShare}
                         />
                     </div>
                 </div>
 
                 {/* Product Information Tabs */}
-                <ProductTabs product={product} reviews={mockReviews} />
+                {/* <ProductTabs product={product} reviews={mockReviews} /> */}
                 {/* Suggested Products Section */}
                 <SuggestedProducts products={relatedProducts} />
                 {/* Product Features Section */}

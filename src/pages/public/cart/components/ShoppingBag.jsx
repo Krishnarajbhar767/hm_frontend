@@ -1,30 +1,22 @@
-// src/pages/cart/components/ShoppingBag.jsx
-
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
     removeFromCart,
     updateQuantity,
-    setStepCount,
-} from "../../../../redux/slices/cartSlice"; // adjust path if needed
-import Button from "../../../../components/common/Button";
+} from "../../../../redux/slices/cartSlice"; // Adjust path as needed
+import Button from "../../../../components/common/Button"; // Adjust path as needed
 import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../../../utils/apiConnector";
+import axiosInstance from "../../../../utils/apiConnector"; // Adjust path as needed
 
-/**
- * Renders the sticky mobile summary bar (Cart Total + Checkout)
- * Visible only on screens < lg.
- */
+/** Sticky mobile summary bar (Cart Total + Checkout) */
 function MobileCartSummary({ total, onCheckout, isCheckingOut, cartEmpty }) {
     return (
         <div className="sticky top-0 z-10 bg-white border-b border-foreground/50 pb-3 flex justify-between items-center lg:hidden mb-4">
             <div>
                 <p className="text-xs font-medium">Cart Total:</p>
-                <p className="text-base font-bold">
-                    &#x20B9;{total.toFixed(2)}
-                </p>
+                <p className="text-base font-bold">₹{total.toFixed(2)}</p>
             </div>
             <motion.button
                 whileHover={{ scale: 1.02 }}
@@ -50,10 +42,7 @@ function MobileCartSummary({ total, onCheckout, isCheckingOut, cartEmpty }) {
     );
 }
 
-/**
- * Renders the table header row ("Product / Price / Quantity / Subtotal / Action")
- * Visible on all screens; collapses into "Details" label on mobile.
- */
+/** Cart table header */
 function CartHeader() {
     return (
         <div className="grid grid-cols-2 sm:grid-cols-5 uppercase text-foreground font-medium text-xs sm:text-sm border-b border-foreground/50 pb-2 mb-3 sm:mb-4">
@@ -69,14 +58,12 @@ function CartHeader() {
     );
 }
 
-/**
- * Renders an individual cart item row.
- * Handles both mobile (stacked) and desktop (grid) layouts.
- */
+/** One line per cart item */
 function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
     const itemSubtotal = item.finalPrice * item.quantity;
     const imageUrl = Array.isArray(item.images) ? item.images[0] : item.image;
     const navigate = useNavigate();
+
     return (
         <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -86,12 +73,10 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
             whileHover={{ scale: 1.01 }}
             className="grid grid-cols-1 sm:grid-cols-5 gap-2 sm:gap-4 md:gap-6 items-start sm:items-center border-b border-foreground/50 pb-3 sm:pb-4"
         >
-            {/* --- Product Image & Name (col-span:1 on mobile, col-span:2 on desktop) --- */}
+            {/* Product + mobile details */}
             <div
                 className="flex items-start sm:items-center gap-2 sm:gap-3 md:gap-4 col-span-1 sm:col-span-2 cursor-pointer"
-                onClick={() => {
-                    navigate(`/product/${item?._id}`);
-                }}
+                onClick={() => navigate(`/product/${item._id}`)}
             >
                 <motion.img
                     src={imageUrl}
@@ -104,18 +89,27 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
                     <h2 className="text-xs sm:text-sm md:text-base font-medium text-foreground uppercase">
                         {item.name}
                     </h2>
-                    {/* Mobile‐only details block */}
+                    {(item.addons.withFallPico || item.addons.withTassels) && (
+                        <p className="text-xs text-gray-500 mt-1">
+                            Addons:
+                            {item.addons.withFallPico &&
+                                " With Fall Pico (+₹300)"}
+                            {item.addons.withFallPico &&
+                                item.addons.withTassels &&
+                                ", "}
+                            {item.addons.withTassels && " With Tassels (+₹200)"}
+                        </p>
+                    )}
+                    {/* Mobile‐only breakdown */}
                     <div className="sm:hidden flex flex-col mt-2 gap-2">
-                        {/* Price */}
                         <div className="flex justify-between items-center">
                             <span className="text-xs text-foreground">
                                 Price:
                             </span>
                             <span className="text-xs text-foreground">
-                                &#x20B9;{item.finalPrice.toFixed(2)}
+                                ₹{item.finalPrice.toFixed(2)}
                             </span>
                         </div>
-                        {/* Quantity controls */}
                         <div className="flex justify-between items-center">
                             <span className="text-xs text-foreground">
                                 Quantity:
@@ -123,7 +117,9 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
                             <div className="flex items-center justify-center border border-foreground/50 w-20 py-1">
                                 <motion.button
                                     disabled={item.quantity <= 1}
-                                    onClick={() => onDecrement(item._id, idx)}
+                                    onClick={() =>
+                                        onDecrement(item._id, -1, idx)
+                                    }
                                     whileTap={{ scale: 0.9 }}
                                     className="px-1 py-1 text-foreground hover:text-primary text-xs"
                                 >
@@ -136,7 +132,9 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
                                     className="w-8 text-center border-x border-foreground/50 text-xs text-foreground"
                                 />
                                 <motion.button
-                                    onClick={() => onIncrement(item._id, idx)}
+                                    onClick={() =>
+                                        onIncrement(item._id, 1, idx)
+                                    }
                                     whileTap={{ scale: 0.9 }}
                                     className="px-1 py-1 text-gray-600 hover:text-primary text-xs"
                                 >
@@ -144,7 +142,6 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
                                 </motion.button>
                             </div>
                         </div>
-                        {/* Subtotal */}
                         <div className="flex justify-between items-center">
                             <span className="text-xs text-foreground">
                                 Subtotal:
@@ -156,10 +153,9 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
                                 transition={{ duration: 0.3 }}
                                 className="text-xs text-foreground"
                             >
-                                &#x20B9;{itemSubtotal.toFixed(2)}
+                                ₹{itemSubtotal.toFixed(2)}
                             </motion.span>
                         </div>
-                        {/* Remove action */}
                         <div className="flex justify-between items-center">
                             <span className="text-xs text-foreground">
                                 Action:
@@ -177,18 +173,15 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
                 </div>
             </div>
 
-            {/* --- Desktop & Tablet Columns (Price / Qty / Subtotal / Remove) --- */}
+            {/* Desktop columns */}
             <div className="hidden sm:grid sm:grid-cols-4 col-span-3 items-center justify-items-center gap-2 sm:gap-4 md:gap-6">
-                {/* Price */}
                 <span className="text-xs sm:text-sm md:text-base text-foreground">
-                    &#x20B9;{item.finalPrice.toFixed(2)}
+                    ₹{item.finalPrice.toFixed(2)}
                 </span>
-
-                {/* Quantity controls */}
                 <div className="flex items-center justify-center border border-foreground/50 w-20 sm:w-24 py-2 sm:py-3">
                     <motion.button
                         disabled={item.quantity <= 1}
-                        onClick={() => onDecrement(item._id, idx)}
+                        onClick={() => onDecrement(item._id, -1, idx)}
                         whileTap={{ scale: 0.9 }}
                         className="px-1 sm:px-2 py-1 text-foreground hover:text-primary text-xs sm:text-sm"
                     >
@@ -201,15 +194,13 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
                         className="w-8 sm:w-10 text-center border-x border-foreground/50 text-xs sm:text-sm text-foreground"
                     />
                     <motion.button
-                        onClick={() => onIncrement(item._id, idx)}
+                        onClick={() => onIncrement(item._id, 1, idx)}
                         whileTap={{ scale: 0.9 }}
                         className="px-1 sm:px-2 py-1 text-foreground hover:text-primary text-xs sm:text-sm"
                     >
                         +
                     </motion.button>
                 </div>
-
-                {/* Subtotal */}
                 <motion.span
                     key={itemSubtotal}
                     initial={{ scale: 1.2, color: "#533e2d" }}
@@ -217,10 +208,8 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
                     transition={{ duration: 0.3 }}
                     className="text-sm sm:text-base md:text-lg font-normal text-foreground"
                 >
-                    &#x20B9;{itemSubtotal.toFixed(2)}
+                    ₹{itemSubtotal.toFixed(2)}
                 </motion.span>
-
-                {/* Remove */}
                 <motion.button
                     onClick={() => onRemove(item._id, idx)}
                     whileHover={{ scale: 1.1, color: "#b91c1c" }}
@@ -234,9 +223,7 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
     );
 }
 
-/**
- * Renders the “Your cart is empty” placeholder.
- */
+/** Empty cart placeholder */
 function EmptyCart() {
     return (
         <motion.div
@@ -274,19 +261,17 @@ function EmptyCart() {
     );
 }
 
-/**
- * Renders the Order Summary (Subtotal, Shipping, Coupon, Total)
- * and the desktop “Proceed to Checkout” button.
- */
+/** Order summary panel (no GST) */
 function OrderSummary({
+    cartItems,
     subtotal,
     discount,
+    total,
     coupon,
     setCoupon,
     applyCoupon,
     handleCheckout,
     isCheckingOut,
-    total,
     cartEmpty,
 }) {
     return (
@@ -299,18 +284,75 @@ function OrderSummary({
             <h2 className="text-xs sm:text-sm md:text-base font-medium uppercase text-foreground mb-3 sm:mb-4">
                 Order Summary
             </h2>
-            <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm md:text-base">
-                {/* Subtotal */}
-                <div className="flex justify-between items-center">
-                    <span>Subtotal</span>
-                    <span>&#x20B9;{subtotal.toFixed(2)}</span>
+            <div className="space-y-4 text-xs sm:text-sm md:text-base">
+                {/* Itemized */}
+                <div>
+                    <h3 className="font-medium mb-2">Your Cart</h3>
+                    {cartItems.map((item, index) => {
+                        const basePrice =
+                            item.finalPrice -
+                            (item.addons.withFallPico ? 300 : 0) -
+                            (item.addons.withTassels ? 200 : 0);
+                        const itemTotal = item.finalPrice * item.quantity;
+                        return (
+                            <div key={index} className="mb-3 border-b pb-2">
+                                <p className="font-medium">{item.name}</p>
+                                <p>
+                                    Base Price: ₹{basePrice.toFixed(2)} ×{" "}
+                                    {item.quantity} = ₹
+                                    {(basePrice * item.quantity).toFixed(2)}
+                                </p>
+                                {item.addons.withFallPico && (
+                                    <p>
+                                        With Fall Pico: +₹300 × {item.quantity}{" "}
+                                        = ₹{(300 * item.quantity).toFixed(2)}
+                                    </p>
+                                )}
+                                {item.addons.withTassels && (
+                                    <p>
+                                        With Tassels: +₹200 × {item.quantity} =
+                                        ₹{(200 * item.quantity).toFixed(2)}
+                                    </p>
+                                )}
+                                <p className="font-medium">
+                                    Item Total: ₹{itemTotal.toFixed(2)}
+                                </p>
+                            </div>
+                        );
+                    })}
                 </div>
-                {/* Shipping */}
-                <div className="flex justify-between items-center">
-                    <span>Shipping</span>
-                    <span>Free</span>
+                {/* Totals */}
+                <div className="space-y-2">
+                    <div className="flex justify-between items-center font-medium">
+                        <span>Subtotal</span>
+                        <span>₹{subtotal.toFixed(2)}</span>
+                    </div>
+                    {discount > 0 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="flex justify-between text-green-600"
+                        >
+                            <span>Discount</span>
+                            <span>-₹{discount.toFixed(2)}</span>
+                        </motion.div>
+                    )}
+                    <div className="border-t border-foreground/50 pt-2 sm:pt-3 mt-2 sm:mt-3">
+                        <div className="flex justify-between text-sm sm:text-base md:text-lg font-semibold text-foreground">
+                            <span>Total</span>
+                            <motion.span
+                                key={total}
+                                initial={{ scale: 1.2, color: "#533e2d" }}
+                                animate={{ scale: 1, color: "#533e2d" }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                ₹{total.toFixed(2)}
+                            </motion.span>
+                        </div>
+                    </div>
                 </div>
-                {/* Coupon Input */}
+                {/* Coupon */}
                 <div className="flex flex-col sm:flex-row gap-2">
                     <input
                         type="text"
@@ -330,35 +372,8 @@ function OrderSummary({
                         />
                     </motion.div>
                 </div>
-                {/* Discount if valid coupon */}
-                {discount > 0 && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="flex justify-between text-green-600"
-                    >
-                        <span>Discount</span>
-                        <span>-&#x20B9;{discount.toFixed(2)}</span>
-                    </motion.div>
-                )}
-                {/* Total */}
-                <div className="border-t border-foreground/50 pt-2 sm:pt-3 mt-2 sm:mt-3">
-                    <div className="flex justify-between text-sm sm:text-base md:text-lg font-semibold text-foreground">
-                        <span>Total</span>
-                        <motion.span
-                            key={total}
-                            initial={{ scale: 1.2, color: "#533e2d" }}
-                            animate={{ scale: 1, color: "#533e2d" }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            &#x20B9;{total.toFixed(2)}
-                        </motion.span>
-                    </div>
-                </div>
             </div>
-
-            {/* Desktop “Proceed to Checkout” */}
+            {/* Desktop checkout */}
             <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -392,76 +407,86 @@ function OrderSummary({
     );
 }
 
-function ShoppingBag() {
+/** Main ShoppingBag */
+function ShoppingBag({
+    cartItems,
+    isBuyNow,
+    setLocalQty,
+    setBuyNowItem,
+    setStepCount,
+}) {
+    console.log("is buy now from shopping Bag", isBuyNow);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    // Logged‐in user (if any)
+    // Redux state
     const user = useSelector((state) => state.user.user);
+    // const cartItems = useSelector((state) => state.cart.cartItems);
+    const subtotal = cartItems.reduce(
+        (sum, item) => sum + item.finalPrice * item.quantity,
+        0
+    );
 
-    // Cart items and subtotal from Redux state
-    const cartItems = useSelector((state) => state.cart.cartItems);
-    const subtotal = useSelector((state) => state.cart.subtotal);
-
-    // Coupon / discount state
+    // Local state
     const [coupon, setCoupon] = useState("");
     const [discount, setDiscount] = useState(0);
-
-    // Flag to show loading spinner on “Proceed to Checkout” button
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-    // Grand total after coupon
-    const total = subtotal - discount;
+    const discountedSubtotal = subtotal - discount;
+    const total = discountedSubtotal;
     const cartEmpty = cartItems.length === 0;
 
-    // Attempt to apply a coupon code
+    // Coupon handler
     const applyCoupon = () => {
         if (coupon.trim().toLowerCase() === "save10") {
             setDiscount(subtotal * 0.1);
+            toast.success("Coupon applied!");
         } else {
             setDiscount(0);
             toast.error("Invalid coupon code");
         }
     };
 
-    // Handler for “Proceed to Checkout”
+    // Checkout logger
     const handleCheckout = () => {
         if (cartEmpty) {
             toast.error("Your cart is empty");
             return;
         }
-        // If user not logged in, redirect to login
         if (!user) {
             navigate("/login");
             return;
         }
         setIsCheckingOut(true);
-        // Move to step 2 (Shipping & Checkout)
-        dispatch(setStepCount(2));
+        setStepCount((prev) => prev + 1);
     };
 
-    // Quantity handler: id of product, change = +1 or –1, index in array
+    // Quantity update
     const updateQuantityHandler = async (id, change, idx) => {
         const item = cartItems[idx];
         if (!item || item._id !== id) return;
-
+        if (isBuyNow) {
+            setLocalQty((prev) =>
+                Math.max(1, change > 0 ? prev + 1 : prev - 1)
+            );
+            return;
+        }
         if (user) {
             try {
                 const res = await axiosInstance.post(
                     "/user/cart/update-quantity",
                     {
-                        userId: user?._id,
+                        userId: user._id,
                         productId: id,
-                        withCustomization: item?.withCustomization,
-                        type: change == true ? "increment" : "decrement",
+                        withFallPico: item.addons.withFallPico,
+                        withTassels: item.addons.withTassels,
+                        type: change === 1 ? "increment" : "decrement",
                     }
                 );
-                if (!res.data) {
-                    return;
-                }
+                if (!res.data) return;
             } catch (error) {
                 toast.error("Something Went Wrong");
-                console.log(error);
+                console.error(error);
                 return;
             }
         }
@@ -469,13 +494,19 @@ function ShoppingBag() {
         dispatch(updateQuantity({ id, quantity: newQuantity, idx }));
     };
 
-    // Remove handler: id of product, index in array
-    const removeItemHandler = async (id, idx, productId, withCustomization) => {
+    // Remove item
+    const removeItemHandler = async (id, idx) => {
+        if (isBuyNow) {
+            setBuyNowItem(null);
+            return;
+        }
+        const item = cartItems[idx];
         if (user) {
-            const res = await axiosInstance.post("/user/cart/remove", {
-                userId: user?._id,
-                productId,
-                withCustomization,
+            await axiosInstance.post("/user/cart/remove", {
+                userId: user._id,
+                productId: item._id,
+                withFallPico: item.addons.withFallPico,
+                withTassels: item.addons.withTassels,
             });
         }
         dispatch(removeFromCart({ id, idx }));
@@ -488,7 +519,6 @@ function ShoppingBag() {
             transition={{ duration: 0.5 }}
             className="h-auto w-full max-w-7xl mx-auto py-4 sm:py-6 md:py-8 px-3 sm:px-6 md:px-8"
         >
-            {/* Mobile Sticky Cart Summary (only on small screens) */}
             <MobileCartSummary
                 total={total}
                 onCheckout={handleCheckout}
@@ -497,7 +527,7 @@ function ShoppingBag() {
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-12">
-                {/* --- Cart Items Section (col-span-2 on desktop) --- */}
+                {/* Cart Items */}
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -505,8 +535,6 @@ function ShoppingBag() {
                     className="col-span-1 lg:col-span-2"
                 >
                     <CartHeader />
-
-                    {/* If cart is empty */}
                     {cartEmpty ? (
                         <EmptyCart />
                     ) : (
@@ -514,26 +542,12 @@ function ShoppingBag() {
                             <AnimatePresence>
                                 {cartItems.map((item, idx) => (
                                     <CartItemRow
-                                        key={
-                                            item._id +
-                                            item.withCustomization.toString()
-                                        }
+                                        key={item._id}
                                         item={item}
                                         idx={idx}
-                                        onIncrement={(id, i) =>
-                                            updateQuantityHandler(id, +1, i)
-                                        }
-                                        onDecrement={(id, i) =>
-                                            updateQuantityHandler(id, -1, i)
-                                        }
-                                        onRemove={(id, i) =>
-                                            removeItemHandler(
-                                                id,
-                                                i,
-                                                item._id,
-                                                item?.withCustomization
-                                            )
-                                        }
+                                        onIncrement={updateQuantityHandler}
+                                        onDecrement={updateQuantityHandler}
+                                        onRemove={removeItemHandler}
                                     />
                                 ))}
                             </AnimatePresence>
@@ -541,21 +555,22 @@ function ShoppingBag() {
                     )}
                 </motion.div>
 
-                {/* --- Order Summary Section (col-span-1) --- */}
+                {/* Order Summary */}
                 <OrderSummary
+                    cartItems={cartItems}
                     subtotal={subtotal}
                     discount={discount}
+                    total={total}
                     coupon={coupon}
                     setCoupon={setCoupon}
                     applyCoupon={applyCoupon}
                     handleCheckout={handleCheckout}
                     isCheckingOut={isCheckingOut}
-                    total={total}
                     cartEmpty={cartEmpty}
                 />
             </div>
 
-            {/* Mobile “Proceed to Checkout” Bar (fixed at bottom on small screens) */}
+            {/* Mobile checkout bar */}
             <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 lg:hidden z-10">
                 <motion.button
                     whileHover={{ scale: 1.02 }}
@@ -564,7 +579,7 @@ function ShoppingBag() {
                     disabled={cartEmpty || isCheckingOut}
                     className={`group relative flex h-12 items-center justify-center overflow-hidden font-light text-neutral-200 text-sm tracking-wide w-full uppercase ${
                         cartEmpty
-                            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                            ? "bg-gray-200 text-gray-500"
                             : "bg-foreground"
                     }`}
                 >
@@ -578,9 +593,7 @@ function ShoppingBag() {
                             className="w-5 h-5 border-2 border-t-transparent border-white"
                         />
                     ) : (
-                        <span>
-                            Proceed To Checkout • &#x20B9;{total.toFixed(2)}
-                        </span>
+                        <span>Proceed To Checkout • ₹{total.toFixed(2)}</span>
                     )}
                 </motion.button>
             </div>

@@ -4,20 +4,12 @@ import { FiShoppingBag, FiMapPin, FiCreditCard } from "react-icons/fi";
 import { useEffect } from "react";
 import { setOrders } from "../../../redux/slices/orderSlice";
 import axiosInstance from "../../../utils/apiConnector";
+import { useOrders } from "../../../hooks/useOrder";
 
 export default function Dashboard() {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.user) || {};
-    const orders = useSelector((state) => state.order.orders) || [];
-
-    // fetch user's orders once
-    useEffect(() => {
-        if (!user._id) return;
-        axiosInstance
-            .get(`/user/orders/${user._id}`)
-            .then((res) => dispatch(setOrders(res.data)))
-            .catch((err) => console.error(err));
-    }, [user._id, dispatch]);
+    const orders = useOrders(user?._id);
 
     // derive dashboard stats from orders
     const totalOrders = orders.length;
@@ -85,7 +77,7 @@ export default function Dashboard() {
             </div>
 
             {/* Recent Orders */}
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
                 <h3 className="flex items-center gap-2 text-xl font-semibold uppercase text-foreground tracking-wide">
                     <FiShoppingBag size={20} /> Recent Orders
                 </h3>
@@ -157,7 +149,7 @@ export default function Dashboard() {
                         ))}
                     </div>
                 )}
-            </div>
+            </div> */}
         </motion.div>
     );
 }

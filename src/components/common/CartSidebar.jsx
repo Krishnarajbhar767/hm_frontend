@@ -85,10 +85,7 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                     ) : (
                         cartItems?.map((item, idx) => (
                             <motion.div
-                                key={
-                                    item._id +
-                                    item?.withCustomization?.toString()
-                                }
+                                key={item._id + item?.addons?.toString()}
                                 layout
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -131,8 +128,16 @@ const CartSidebar = ({ isOpen, closeHandler }) => {
                                         Color: {item?.color}
                                     </p>
                                     <p className="text-foreground text-xs">
-                                        Fall, pico and tassels :{" "}
-                                        {item?.withCustomization ? "Yes" : "No"}
+                                        Fall, pico:{" "}
+                                        {item?.addons.withFallPico
+                                            ? "Yes"
+                                            : "No"}
+                                    </p>
+                                    <p className="text-foreground text-xs">
+                                        Tassels :{" "}
+                                        {item?.addons.withTassels
+                                            ? "Yes"
+                                            : "No"}
                                     </p>
                                     <div className="flex justify-between items-center mt-2">
                                         <div className="flex items-center gap-2">

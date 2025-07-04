@@ -4,6 +4,7 @@ import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import JoinNewsLetter from "../components/common/JoinNewsLetter";
 import { AnimatePresence } from "motion/react";
+import WhatsAppChatIcon from "../components/common/WhatsAppChatIcon";
 function MainLayout() {
     // When This Public Route Mount Then Render JoinNewsLetter Component
 
@@ -19,6 +20,12 @@ function MainLayout() {
             <AnimatePresence>
                 <JoinNewsLetter />
             </AnimatePresence>
+            <WhatsAppChatIcon
+                phoneNumber={8960500991}
+                message={
+                    "Hello Team Srijan Fabs, I hope you're doing well. I would like to get in touch regarding your services."
+                }
+            />
         </div>
     );
 }

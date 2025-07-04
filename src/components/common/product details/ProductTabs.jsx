@@ -146,31 +146,38 @@ function ProductTabs({ product, reviews = [] }) {
                             </h3>
                             <div className="flex items-center gap-2">
                                 <div className="flex items-center">
-                                    {renderStars(product?.rating || 4.5)}
+                                    {renderStars(product?.rating || 0)}
                                 </div>
-                                <span className="text-sm text-foreground">
-                                    {product?.rating || 4.5} out of 5 (
-                                    {reviews.length} reviews)
+                                <span className="capitalize text-sm text-foreground">
+                                    {product?.rating || 0} out of 5 (
+                                    {product?.reviews?.length || 0} reviews)
                                 </span>
                             </div>
                         </div>
 
                         <div className="space-y-6">
-                            {reviews.map((review, index) => (
+                            {(product?.reviews || []).map((review, index) => (
                                 <div
                                     key={index}
                                     className="border-b border-gray-100 pb-6 last:border-b-0"
                                 >
                                     <div className="flex items-start gap-4">
                                         <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                                            <User className="w-5 h-5 text-foreground" />
+                                            {/* Could render user avatar if available */}
+                                            <Star className="w-5 h-5 text-foreground" />
                                         </div>
                                         <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-1">
+                                            <div className="capitalize flex items-center gap-2 mb-1">
                                                 <span className="font-medium text-foreground">
-                                                    {review.user}
+                                                    {/* Assuming review.user has name fields */}
+                                                    {review?.user?.firstName ||
+                                                        review?.user ||
+                                                        "User"}
+                                                    {review?.user?.lastName
+                                                        ? ` ${review.user.lastName}`
+                                                        : ""}
                                                 </span>
-                                                {review.verified && (
+                                                {review?.verified && (
                                                     <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
                                                         Verified Purchase
                                                     </span>
@@ -180,12 +187,22 @@ function ProductTabs({ product, reviews = [] }) {
                                                 <div className="flex">
                                                     {renderStars(review.rating)}
                                                 </div>
-                                                <span className="text-sm text-foreground flex items-center gap-1">
-                                                    <Calendar className="w-3 h-3" />
-                                                    {new Date(
-                                                        review.date
-                                                    ).toLocaleDateString()}
-                                                </span>
+                                                {review?.createdAt && (
+                                                    <span className="text-sm text-foreground flex items-center gap-1">
+                                                        {/* Optionally import Calendar icon */}
+                                                        {/* <Calendar className="w-3 h-3" /> */}
+                                                        {new Date(
+                                                            review.createdAt
+                                                        ).toLocaleDateString(
+                                                            "en-GB",
+                                                            {
+                                                                day: "2-digit",
+                                                                month: "2-digit",
+                                                                year: "numeric",
+                                                            }
+                                                        )}
+                                                    </span>
+                                                )}
                                             </div>
                                             <p className="text-foreground leading-relaxed">
                                                 {review.comment}

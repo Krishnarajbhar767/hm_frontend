@@ -2,8 +2,40 @@
 import { useSelector } from "react-redux";
 import ShoppingBag from "./components/ShoppingBag";
 import ShippingAndCheckout from "./components/ShippingAndCheckout";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 function Cart() {
+    const location = useLocation();
+    const initialBuyNowItem = location.state?.buyNowItem || null;
+    const [buyNowItem, setBuyNowItem] = useState(initialBuyNowItem);
+    const isBuyNow = Boolean(buyNowItem);
+
+    //  PROBLEM: if buyNowItem is undefined, buyNowItem.quantity throws
+    // FIX: initialize localQty safely, default to 1 if no buyNowItem
+    const [localQty, setLocalQty] = useState(
+        () => (buyNowItem && buyNowItem.quantity) || 1
+    );
+
+    // ⬇ Choose items array based on mode
+    const reduxItems = useSelector((state) => state.cart.cartItems);
+    const cartItems = isBuyNow
+        ? [{ ...buyNowItem, quantity: localQty }]
+        : reduxItems;
+
+    //  Sync localQty if buyNowItem changes (e.g. user navigates directly)
+    useEffect(() => {
+        if (isBuyNow) {
+            setLocalQty(buyNowItem.quantity || 1);
+        }
+    }, [buyNowItem, isBuyNow]);
+
+    // Calculate subtotal
+    const subtotal = cartItems.reduce(
+        (sum, item) => sum + item.finalPrice * item.quantity,
+        0
+    );
+
     const Data = [
         {
             id: 1,
@@ -21,9 +53,9 @@ function Cart() {
             subHeading: "Review and submit your order",
         },
     ];
+    // Your step definitions
 
-    // State Cart Slice For Count Step Count
-    const { stepCount } = useSelector((state) => state.cart);
+    const [stepCount, setStepCount] = useState(1);
 
     return (
         <div className="boxedContainer h-auto w-full py-4 sm:py-6 md:py-8 px-3 sm:px-6 md:px-8 max-w-7xl mx-auto">
@@ -45,9 +77,10 @@ function Cart() {
                         >
                             <div
                                 className={`w-6 h-6 flex items-center justify-center text-xs font-medium
-                                    ${stepCount >= item.id
-                                        ? "bg-foreground text-white"
-                                        : "bg-white  border border-foreground text-foreground"
+                                    ${
+                                        stepCount >= item.id
+                                            ? "bg-foreground text-white"
+                                            : "bg-white  border border-foreground text-foreground"
                                     }`}
                             >
                                 {item.id}
@@ -63,10 +96,11 @@ function Cart() {
                 <div className="hidden md:grid w-full grid-cols-3 gap-4">
                     {Data.map((item) => (
                         <div
-                            className={`flex gap-4 py-2 ${stepCount >= item.id
-                                ? "border-b-2 border-foreground"
-                                : "border-b border-foreground/50"
-                                }`}
+                            className={`flex gap-4 py-2 ${
+                                stepCount >= item.id
+                                    ? "border-b-2 border-foreground"
+                                    : "border-b border-foreground/50"
+                            }`}
                             key={item.id}
                         >
                             <h1 className="text-sm md:text-base lg:text-[18px] uppercase font-medium">
@@ -87,8 +121,21 @@ function Cart() {
 
             {/* Content Container with Responsive Padding */}
             <div className="w-full">
-                {stepCount === 1 && <ShoppingBag />}
-                {stepCount === 2 && <ShippingAndCheckout />}
+                {stepCount === 1 && (
+                    <ShoppingBag
+                        cartItems={cartItems}
+                        isBuyNow={isBuyNow}
+                        setLocalQty={setLocalQty}
+                        setBuyNowItem={setBuyNowItem}
+                        setStepCount={setStepCount}
+                    />
+                )}
+                {stepCount === 2 && (
+                    <ShippingAndCheckout
+                        cartItems={cartItems}
+                        setStepCount={setStepCount}
+                    />
+                )}
                 {/* {stepCount === 3 && <Confirmation />} */}
             </div>
         </div>

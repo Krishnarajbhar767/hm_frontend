@@ -3,12 +3,473 @@ import {
     FiArrowUp,
     FiArrowDown,
     FiSearch,
+    FiFilter,
+    FiX,
+    FiCalendar,
+    FiDollarSign,
+    FiUser,
+    FiPackage,
+    FiCreditCard,
+    FiTruck,
 } from "react-icons/fi";
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../utils/apiConnector";
 
+// Animation variants
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+        },
+    },
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+};
+
+// Status Badge Component
+const StatusBadge = ({ status, type = "delivery" }) => {
+    const getStatusConfig = (status, type) => {
+        const statusLower = status?.toLowerCase();
+
+        if (type === "payment") {
+            switch (statusLower) {
+                case "paid":
+                    return {
+                        bg: "bg-emerald-50",
+                        text: "text-emerald-700",
+                        border: "border-emerald-200",
+                        icon: "✓",
+                    };
+                case "pending":
+                    return {
+                        bg: "bg-amber-50",
+                        text: "text-amber-700",
+                        border: "border-amber-200",
+                        icon: "⏳",
+                    };
+                case "failed":
+                    return {
+                        bg: "bg-red-50",
+                        text: "text-red-700",
+                        border: "border-red-200",
+                        icon: "✗",
+                    };
+                default:
+                    return {
+                        bg: "bg-gray-50",
+                        text: "text-gray-700",
+                        border: "border-gray-200",
+                        icon: "?",
+                    };
+            }
+        }
+
+        // Delivery status
+        switch (statusLower) {
+            case "delivered":
+                return {
+                    bg: "bg-emerald-50",
+                    text: "text-emerald-700",
+                    border: "border-emerald-200",
+                    icon: "📦",
+                };
+            case "shipped":
+                return {
+                    bg: "bg-blue-50",
+                    text: "text-blue-700",
+                    border: "border-blue-200",
+                    icon: "🚚",
+                };
+            case "out for delivery":
+                return {
+                    bg: "bg-purple-50",
+                    text: "text-purple-700",
+                    border: "border-purple-200",
+                    icon: "🏃",
+                };
+            case "pending":
+                return {
+                    bg: "bg-amber-50",
+                    text: "text-amber-700",
+                    border: "border-amber-200",
+                    icon: "⏳",
+                };
+            case "canceled":
+                return {
+                    bg: "bg-red-50",
+                    text: "text-red-700",
+                    border: "border-red-200",
+                    icon: "❌",
+                };
+            default:
+                return {
+                    bg: "bg-gray-50",
+                    text: "text-gray-700",
+                    border: "border-gray-200",
+                    icon: "?",
+                };
+        }
+    };
+
+    const config = getStatusConfig(status, type);
+
+    return (
+        <span
+            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${config.bg} ${config.text} ${config.border}`}
+        >
+            <span className="text-xs">{config.icon}</span>
+            <span className="capitalize">{status}</span>
+        </span>
+    );
+};
+
+// Admin Orders Header Component
+const AdminOrdersHeader = ({ totalOrders, filteredCount }) => (
+    <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-6"
+    >
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div>
+                <h1 className="flex items-center gap-3 text-2xl sm:text-3xl font-bold text-gray-800">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                        <FiShoppingCart size={24} className="text-blue-600" />
+                    </div>
+                    Orders Management
+                </h1>
+                <p className="text-sm text-gray-600 mt-2">
+                    Manage and track all customer orders from one place
+                </p>
+            </div>
+            <div className="text-right">
+                <div className="text-2xl font-bold text-gray-800">
+                    {filteredCount}
+                </div>
+                <div className="text-sm text-gray-600">
+                    {filteredCount === totalOrders
+                        ? "Total Orders"
+                        : `of ${totalOrders} orders`}
+                </div>
+            </div>
+        </div>
+    </motion.div>
+);
+
+// Order Filters Component
+const OrderFilters = ({
+    searchTerm,
+    setSearchTerm,
+    sortField,
+    sortOrder,
+    toggleSort,
+    deliveryFilter,
+    setDeliveryFilter,
+    paymentFilter,
+    setPaymentFilter,
+    hasActiveFilters,
+    clearFilters,
+}) => (
+    <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.1 }}
+        className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm"
+    >
+        <div className="flex items-center gap-2 mb-4">
+            <FiFilter size={18} className="text-gray-600" />
+            <h3 className="text-lg font-semibold text-gray-800">
+                Filters & Search
+            </h3>
+            {hasActiveFilters && (
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={clearFilters}
+                    className="ml-auto flex items-center gap-1 px-3 py-1 bg-red-50 text-red-700 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors"
+                >
+                    <FiX size={14} />
+                    Clear All
+                </motion.button>
+            )}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            {/* Search */}
+            <div className="lg:col-span-4">
+                <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+                    Search Orders
+                </label>
+                <div className="relative">
+                    <FiSearch
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                        size={16}
+                    />
+                    <input
+                        type="text"
+                        placeholder="Name, email, order ID..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    />
+                </div>
+            </div>
+
+            {/* Sort Buttons */}
+            <div className="lg:col-span-3">
+                <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+                    Sort By
+                </label>
+                <div className="flex gap-2">
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => toggleSort("totalAmount")}
+                        className={`flex items-center gap-1 px-3 py-2 text-sm rounded-lg font-medium transition-colors ${
+                            sortField === "totalAmount"
+                                ? "bg-blue-100 text-blue-700 border border-blue-200"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        }`}
+                    >
+                        <FiDollarSign size={14} />
+                        Amount
+                        {sortField === "totalAmount" &&
+                            (sortOrder === "asc" ? (
+                                <FiArrowUp size={12} />
+                            ) : (
+                                <FiArrowDown size={12} />
+                            ))}
+                    </motion.button>
+
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => toggleSort("createdAt")}
+                        className={`flex items-center gap-1 px-3 py-2 text-sm rounded-lg font-medium transition-colors ${
+                            sortField === "createdAt"
+                                ? "bg-blue-100 text-blue-700 border border-blue-200"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        }`}
+                    >
+                        <FiCalendar size={14} />
+                        Date
+                        {sortField === "createdAt" &&
+                            (sortOrder === "asc" ? (
+                                <FiArrowUp size={12} />
+                            ) : (
+                                <FiArrowDown size={12} />
+                            ))}
+                    </motion.button>
+                </div>
+            </div>
+
+            {/* Delivery Filter */}
+            <div className="lg:col-span-2">
+                <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+                    Delivery Status
+                </label>
+                <select
+                    value={deliveryFilter}
+                    onChange={(e) => setDeliveryFilter(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                >
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="out for delivery">Out for Delivery</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="canceled">Canceled</option>
+                </select>
+            </div>
+
+            {/* Payment Filter */}
+            <div className="lg:col-span-3">
+                <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+                    Payment Status
+                </label>
+                <select
+                    value={paymentFilter}
+                    onChange={(e) => setPaymentFilter(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                >
+                    <option value="all">All Payments</option>
+                    <option value="pending">Pending</option>
+                    <option value="paid">Paid</option>
+                    <option value="failed">Failed</option>
+                </select>
+            </div>
+        </div>
+    </motion.div>
+);
+
+// Order Card Component
+const OrderCard = ({
+    order,
+    onDeliveryUpdate,
+    onPaymentUpdate,
+    onNavigate,
+}) => (
+    <motion.div
+        variants={itemVariants}
+        whileHover={{ scale: 1.02, y: -5 }}
+        transition={{ duration: 0.2 }}
+        className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
+    >
+        {/* Card Header - Clickable */}
+        <div
+            className="p-6 cursor-pointer hover:bg-gray-50 transition-colors"
+            onClick={() => onNavigate(`/admin/orders/order/${order._id}`)}
+        >
+            <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <FiPackage size={18} className="text-blue-600" />
+                    </div>
+                    <div>
+                        <h3 className="font-semibold text-gray-800 text-sm">
+                            #{order.razorpay_order_id.slice(5, 10)}...
+                        </h3>
+                        <p className="text-xs text-gray-500 font-mono">
+                            ID: {order._id.slice(-8)}
+                        </p>
+                    </div>
+                </div>
+                <div className="text-right">
+                    <div className="text-lg font-bold text-gray-800">
+                        ₹{order.totalAmount}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                        {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                        })}
+                    </div>
+                </div>
+            </div>
+
+            {/* Customer Info */}
+            <div className="flex items-center gap-2 mb-4">
+                <FiUser size={14} className="text-gray-400" />
+                <span className="text-sm text-gray-700 capitalize">
+                    {order.user?.firstName} {order.user?.lastName}
+                </span>
+            </div>
+
+            {/* Current Status Display */}
+            <div className="flex items-center justify-between">
+                <StatusBadge status={order.deliveryStatus} type="delivery" />
+                <StatusBadge status={order.paymentStatus} type="payment" />
+            </div>
+        </div>
+
+        {/* Card Footer - Admin Controls */}
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+            <div className="space-y-3">
+                {/* Delivery Status Update */}
+                <div>
+                    <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                        <FiTruck size={12} className="inline mr-1" />
+                        Update Delivery
+                    </label>
+                    <select
+                        value={order.deliveryStatus}
+                        onChange={(e) =>
+                            onDeliveryUpdate(order._id, e.target.value)
+                        }
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    >
+                        <option value="Pending">Pending</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Out for Delivery">
+                            Out for Delivery
+                        </option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Canceled">Canceled</option>
+                    </select>
+                </div>
+
+                {/* Payment Status Update */}
+                <div>
+                    <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                        <FiCreditCard size={12} className="inline mr-1" />
+                        Update Payment
+                    </label>
+                    <select
+                        value={order.paymentStatus}
+                        onChange={(e) =>
+                            onPaymentUpdate(order._id, e.target.value)
+                        }
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    >
+                        <option value="Pending">Pending</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Failed">Failed</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </motion.div>
+);
+
+// Orders Grid Component
+const OrdersGrid = ({
+    orders,
+    onDeliveryUpdate,
+    onPaymentUpdate,
+    navigate,
+}) => {
+    if (orders.length === 0) {
+        return (
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center py-16"
+            >
+                <div className="max-w-md mx-auto">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FiShoppingCart size={32} className="text-gray-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                        No Orders Found
+                    </h3>
+                    <p className="text-gray-600">
+                        No orders match your current filters. Try adjusting your
+                        search criteria.
+                    </p>
+                </div>
+            </motion.div>
+        );
+    }
+
+    return (
+        <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+        >
+            {orders.map((order) => (
+                <OrderCard
+                    key={order._id}
+                    order={order}
+                    onDeliveryUpdate={onDeliveryUpdate}
+                    onPaymentUpdate={onPaymentUpdate}
+                    onNavigate={navigate}
+                />
+            ))}
+        </motion.div>
+    );
+};
+
+// Main Admin Orders Component
 export default function AdminOrders() {
     const [orders, setOrders] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -16,22 +477,29 @@ export default function AdminOrders() {
     const [sortOrder, setSortOrder] = useState("asc");
     const [deliveryFilter, setDeliveryFilter] = useState("all");
     const [paymentFilter, setPaymentFilter] = useState("all");
-
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     // Fetch orders once
     useEffect(() => {
+        setLoading(true);
         axiosInstance
             .get("/admin/orders/all-orders")
-            .then((res) => setOrders(res.data.data || []))
-            .catch((err) => console.error("Error fetching orders:", err));
+            .then((res) => {
+                setOrders(res.data.data || []);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error("Error fetching orders:", err);
+                setLoading(false);
+            });
     }, []);
 
-    // derive displayedOrders
+    // Derive displayedOrders
     const displayedOrders = useMemo(() => {
         let result = [...orders];
 
-        // 1) search by name / email / razorpay_order_id
+        // 1) Search by name / email / razorpay_order_id
         if (searchTerm.trim()) {
             const term = searchTerm.trim().toLowerCase();
             result = result.filter((o) => {
@@ -48,21 +516,21 @@ export default function AdminOrders() {
             });
         }
 
-        // 2) delivery filter
+        // 2) Delivery filter
         if (deliveryFilter !== "all") {
             result = result.filter(
                 (o) => o.deliveryStatus?.toLowerCase() === deliveryFilter
             );
         }
 
-        // 3) payment filter
+        // 3) Payment filter
         if (paymentFilter !== "all") {
             result = result.filter(
                 (o) => o.paymentStatus?.toLowerCase() === paymentFilter
             );
         }
 
-        // 4) sorting
+        // 4) Sorting
         if (sortField) {
             result.sort((a, b) => {
                 const aVal = a[sortField];
@@ -122,200 +590,75 @@ export default function AdminOrders() {
         }
     };
 
-    const getStatusColor = (status) => {
-        switch (status.toLowerCase()) {
-            case "delivered":
-                return "bg-green-100 text-green-800";
-            case "shipped":
-            case "out for delivery":
-                return "bg-teal-100 text-teal-800";
-            case "pending":
-                return "bg-yellow-100 text-yellow-800";
-            case "canceled":
-                return "bg-red-100 text-red-800";
-            default:
-                return "bg-gray-100 text-gray-800";
-        }
+    const hasActiveFilters =
+        deliveryFilter !== "all" ||
+        paymentFilter !== "all" ||
+        searchTerm.trim();
+
+    const clearFilters = () => {
+        setDeliveryFilter("all");
+        setPaymentFilter("all");
+        setSearchTerm("");
+        setSortField(null);
     };
 
-    return (
-        <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-6"
-        >
-            {/* Header */}
-            <h2 className="flex items-center gap-2 text-xl font-semibold uppercase text-gray-800 tracking-wide">
-                <FiShoppingCart size={20} /> Orders
-            </h2>
-
-            {/* Controls */}
-            <div className="flex flex-wrap gap-2 items-center">
-                {/* Search */}
-                <div className="flex items-center border border-gray-300 rounded-md px-2">
-                    <FiSearch className="text-gray-500" />
-                    <input
-                        type="text"
-                        placeholder="Search name, email, order ID..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="ml-1 py-1 text-sm outline-none"
-                    />
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 py-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="animate-pulse space-y-8">
+                        <div className="h-32 bg-gray-200 rounded-xl"></div>
+                        <div className="h-24 bg-gray-200 rounded-xl"></div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                            {[...Array(6)].map((_, i) => (
+                                <div
+                                    key={i}
+                                    className="h-80 bg-gray-200 rounded-xl"
+                                ></div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
-
-                {/* Sort Buttons */}
-                <button
-                    onClick={() => toggleSort("totalAmount")}
-                    className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
-                >
-                    Total
-                    {sortField === "totalAmount" &&
-                        (sortOrder === "asc" ? <FiArrowUp /> : <FiArrowDown />)}
-                </button>
-                <button
-                    onClick={() => toggleSort("createdAt")}
-                    className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
-                >
-                    Date
-                    {sortField === "createdAt" &&
-                        (sortOrder === "asc" ? <FiArrowUp /> : <FiArrowDown />)}
-                </button>
-
-                {/* Delivery Filter */}
-                <select
-                    value={deliveryFilter}
-                    onChange={(e) => setDeliveryFilter(e.target.value)}
-                    className="px-3 py-1 text-sm border border-gray-300 rounded-md"
-                >
-                    <option value="all">All Delivery</option>
-                    <option value="pending">Pending</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="out for delivery">Out for Delivery</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="canceled">Canceled</option>
-                </select>
-
-                {/* Payment Filter */}
-                <select
-                    value={paymentFilter}
-                    onChange={(e) => setPaymentFilter(e.target.value)}
-                    className="px-3 py-1 text-sm border border-gray-300 rounded-md"
-                >
-                    <option value="all">All Payment</option>
-                    <option value="pending">Pending</option>
-                    <option value="paid">Paid</option>
-                    <option value="failed">Failed</option>
-                </select>
-
-                {/* Clear Filters */}
-                {(deliveryFilter !== "all" || paymentFilter !== "all") && (
-                    <button
-                        onClick={() => {
-                            setDeliveryFilter("all");
-                            setPaymentFilter("all");
-                        }}
-                        className="px-3 py-1 text-sm bg-red-100 text-red-800 rounded-md hover:bg-red-200"
-                    >
-                        Clear Filters
-                    </button>
-                )}
             </div>
+        );
+    }
 
-            {/* Orders Grid */}
-            {displayedOrders.length === 0 ? (
-                <div className="text-center py-8">
-                    <p className="text-gray-600 text-sm">
-                        No orders available.
-                    </p>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {displayedOrders.map((order) => (
-                        <motion.div
-                            key={order._id}
-                            whileHover={{ scale: 1.02 }}
-                            className="bg-white border border-gray-200 rounded-md shadow-sm p-4 flex flex-col justify-between min-h-[300px]"
-                        >
-                            <div
-                                className="cursor-pointer"
-                                onClick={() =>
-                                    navigate(`/admin/orders/order/${order._id}`)
-                                }
-                            >
-                                <h3 className="text-base font-medium text-gray-800">
-                                    Order #{order.razorpay_order_id}
-                                </h3>
-                                <p className="text-sm text-gray-600">
-                                    {order.user?.firstName}{" "}
-                                    {order.user?.lastName}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                    ₹{order.totalAmount} |{" "}
-                                    {new Date(
-                                        order.createdAt
-                                    ).toLocaleDateString()}
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                    Payment: {order.paymentStatus}
-                                </p>
-                            </div>
+    return (
+        <div className="min-h-screen bg-gray-50 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-8"
+                >
+                    <AdminOrdersHeader
+                        totalOrders={orders.length}
+                        filteredCount={displayedOrders.length}
+                    />
 
-                            <div className="mt-4 flex flex-col gap-2 capitalize">
-                                {/* Delivery Status */}
-                                <span
-                                    className={`inline-block px-2 py-1 text-xs rounded ${getStatusColor(
-                                        order.deliveryStatus
-                                    )}`}
-                                >
-                                    {order.deliveryStatus}
-                                </span>
-                                <select
-                                    value={order.deliveryStatus}
-                                    onChange={(e) =>
-                                        handleDeliveryUpdate(
-                                            order._id,
-                                            e.target.value
-                                        )
-                                    }
-                                    className="p-1 text-sm border border-gray-300 rounded-md"
-                                >
-                                    <option value="Pending">Pending</option>
-                                    <option value="Shipped">Shipped</option>
-                                    <option value="Out for Delivery">
-                                        Out for Delivery
-                                    </option>
-                                    <option value="Delivered">Delivered</option>
-                                    <option value="Canceled">Canceled</option>
-                                </select>
+                    <OrderFilters
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
+                        sortField={sortField}
+                        sortOrder={sortOrder}
+                        toggleSort={toggleSort}
+                        deliveryFilter={deliveryFilter}
+                        setDeliveryFilter={setDeliveryFilter}
+                        paymentFilter={paymentFilter}
+                        setPaymentFilter={setPaymentFilter}
+                        hasActiveFilters={hasActiveFilters}
+                        clearFilters={clearFilters}
+                    />
 
-                                {/* Payment Status */}
-                                <span
-                                    className={`inline-block px-2 py-1 text-xs rounded ${getStatusColor(
-                                        order.paymentStatus
-                                    )}`}
-                                >
-                                    {order.paymentStatus}
-                                </span>
-                                <select
-                                    value={order.paymentStatus}
-                                    onChange={(e) =>
-                                        handlePaymentUpdate(
-                                            order._id,
-                                            e.target.value
-                                        )
-                                    }
-                                    className="p-1 text-sm border border-gray-300 rounded-md"
-                                >
-                                    <option value="Pending">Pending</option>
-                                    <option value="Paid">Paid</option>
-                                    <option value="Failed">Failed</option>
-                                </select>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-            )}
-        </motion.div>
+                    <OrdersGrid
+                        orders={displayedOrders}
+                        onDeliveryUpdate={handleDeliveryUpdate}
+                        onPaymentUpdate={handlePaymentUpdate}
+                        navigate={navigate}
+                    />
+                </motion.div>
+            </div>
+        </div>
     );
 }
