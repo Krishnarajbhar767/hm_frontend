@@ -29,6 +29,7 @@ const PublicRoutes = (
         <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/products/:category/:id" element={<CategoryPage />} />
+        <Route path="/collection/:fabric/:id" element={<CategoryPage />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
         <Route path="/contact" element={<ContactUs />} />
         {/* Legal Pages */}

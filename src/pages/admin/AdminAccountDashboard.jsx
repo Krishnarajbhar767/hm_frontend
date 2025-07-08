@@ -8,6 +8,13 @@ import {
     FiShoppingCart,
     FiSettings,
 } from "react-icons/fi";
+import { GiClothes } from "react-icons/gi";
+
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import axiosInstance from "../../utils/apiConnector";
+import { handleAxiosError } from "../../utils/handleAxiosError";
+import { setFabrics } from "../../redux/slices/fabricSlice";
 
 // Animation variants for sidebar links
 const sidebarLinkVariants = {
@@ -45,6 +52,11 @@ function AdminAccountDashboard() {
         { path: "categories", label: "Categories", icon: <FiGrid size={20} /> },
         { path: "users", label: "Users", icon: <FiUsers size={20} /> },
         { path: "orders", label: "Orders", icon: <FiShoppingCart size={20} /> },
+        {
+            path: "fabrics",
+            label: "fabrics",
+            icon: <GiClothes size={20} />,
+        },
     ];
 
     return (

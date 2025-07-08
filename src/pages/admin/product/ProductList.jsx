@@ -6,22 +6,43 @@ import {
     FiArrowDown,
     FiSearch,
 } from "react-icons/fi";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+//  Skeleton Component
+const ProductCardSkeleton = () => (
+    <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 animate-pulse space-y-2">
+        <div className="w-20 h-20 bg-gray-300 rounded-md mx-auto" />
+        <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto" />
+        <div className="h-3 bg-gray-200 rounded w-full" />
+        <div className="h-3 bg-gray-200 rounded w-5/6" />
+        <div className="h-3 bg-gray-200 rounded w-1/2" />
+        <div className="flex justify-between mt-3">
+            <div className="h-6 w-14 bg-gray-300 rounded"></div>
+            <div className="h-6 w-14 bg-gray-300 rounded"></div>
+        </div>
+    </div>
+);
+
 const ProductList = () => {
     const products = useSelector((state) => state.product.products) || [];
 
-    // --- local state for search / price ---
     const [searchTerm, setSearchTerm] = useState("");
     const [minPrice, setMinPrice] = useState("");
     const [maxPrice, setMaxPrice] = useState("");
 
-    // --- sorting state ---
     const [sortField, setSortField] = useState(null);
     const [sortOrder, setSortOrder] = useState("asc");
+
+    const [loading, setLoading] = useState(true);
+
+    // simulate loading time
+    useEffect(() => {
+        const timer = setTimeout(() => setLoading(false), 1000);
+        return () => clearTimeout(timer);
+    }, [products]);
 
     const toggleSort = (field) => {
         if (sortField === field) {
@@ -32,22 +53,18 @@ const ProductList = () => {
         }
     };
 
-    // --- apply search, price filter, and sorting ---
     const displayedProducts = useMemo(() => {
         let list = [...products];
 
-        // 1. search by name
         if (searchTerm.trim()) {
             const term = searchTerm.trim().toLowerCase();
             list = list.filter((p) => p.name.toLowerCase().includes(term));
         }
 
-        // 2. price filter
         const min = parseFloat(minPrice) || 0;
         const max = parseFloat(maxPrice) || Infinity;
         list = list.filter((p) => p.price >= min && p.price <= max);
 
-        // 3. sorting
         if (sortField) {
             list.sort((a, b) => {
                 let aVal = a[sortField],
@@ -85,7 +102,7 @@ const ProductList = () => {
                 </Link>
             </div>
 
-            {/* Search & Price Filters */}
+            {/* Search & Filters */}
             <div className="flex flex-wrap gap-2 items-center">
                 <div className="flex items-center border border-gray-300 rounded-md px-2">
                     <FiSearch className="text-gray-500" />
@@ -115,46 +132,31 @@ const ProductList = () => {
 
             {/* Sorting Controls */}
             <div className="flex flex-wrap gap-2">
-                <button
-                    onClick={() => toggleSort("price")}
-                    className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
-                >
-                    Sort by Price
-                    {sortField === "price" &&
-                        (sortOrder === "asc" ? (
-                            <FiArrowUp size={16} />
-                        ) : (
-                            <FiArrowDown size={16} />
-                        ))}
-                </button>
-                <button
-                    onClick={() => toggleSort("stock")}
-                    className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
-                >
-                    Sort by Stock
-                    {sortField === "stock" &&
-                        (sortOrder === "asc" ? (
-                            <FiArrowUp size={16} />
-                        ) : (
-                            <FiArrowDown size={16} />
-                        ))}
-                </button>
-                <button
-                    onClick={() => toggleSort("rating")}
-                    className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
-                >
-                    Sort by Rating
-                    {sortField === "rating" &&
-                        (sortOrder === "asc" ? (
-                            <FiArrowUp size={16} />
-                        ) : (
-                            <FiArrowDown size={16} />
-                        ))}
-                </button>
+                {["price", "stock", "rating"].map((field) => (
+                    <button
+                        key={field}
+                        onClick={() => toggleSort(field)}
+                        className="flex items-center gap-1 px-3 py-1 text-sm bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+                    >
+                        Sort by {field.charAt(0).toUpperCase() + field.slice(1)}
+                        {sortField === field &&
+                            (sortOrder === "asc" ? (
+                                <FiArrowUp size={16} />
+                            ) : (
+                                <FiArrowDown size={16} />
+                            ))}
+                    </button>
+                ))}
             </div>
 
             {/* Product Grid */}
-            {displayedProducts.length === 0 ? (
+            {loading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {Array.from({ length: 6 }).map((_, idx) => (
+                        <ProductCardSkeleton key={idx} />
+                    ))}
+                </div>
+            ) : displayedProducts.length === 0 ? (
                 <div className="text-center py-8">
                     <p className="text-gray-600 text-sm">
                         No products match your criteria.
@@ -166,7 +168,7 @@ const ProductList = () => {
                         <motion.div
                             key={product._id}
                             whileHover={{ scale: 1.02 }}
-                            className="bg-white border border-gray-200 rounded-md shadow-sm p-4 flex flex-col gap-2"
+                            className="bg-white border border-gray-200 rounded-md shadow-sm p-4 flex flex-col gap-2 capitalize"
                         >
                             <img
                                 src={product.images[0]}
@@ -197,7 +199,7 @@ const ProductList = () => {
                                 </Link>
                                 <button
                                     onClick={() => {
-                                        /* your delete logic */
+                                        // TODO: implement delete logic
                                     }}
                                     className="flex items-center gap-1 text-red-600 hover:text-red-700 text-sm"
                                 >

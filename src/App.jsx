@@ -14,6 +14,7 @@ import productApis from "./services/api/public/products.apis";
 import categoriesApi from "./services/api/public/category.api";
 import axiosInstance from "./utils/apiConnector";
 import { handleAxiosError } from "./utils/handleAxiosError";
+import { setFabrics } from "./redux/slices/fabricSlice.js";
 
 function App() {
     const dispatch = useDispatch();
@@ -100,6 +101,19 @@ function App() {
         loadUserData();
     }, [user]);
 
+    const fetchFabrics = async () => {
+        try {
+            const res = await axiosInstance.get("/admin/fabrics/");
+            dispatch(setFabrics(res.data));
+        } catch (err) {
+            console.error("Error fetching fabrics", err);
+            handleAxiosError(err);
+        }
+    };
+
+    useEffect(() => {
+        fetchFabrics();
+    }, []);
     return <AppRoutes />;
 }
 

@@ -8,6 +8,7 @@ import {
     FiPlus,
 } from "react-icons/fi";
 import { useSelector } from "react-redux";
+import { FALLPICO_PRICE, TASSELLS_PRICE } from "../../../../Constant";
 
 // Animation variants
 const sectionVariants = {
@@ -153,8 +154,8 @@ const OrderOverview = ({ order, formatINR }) => (
 // Product Item Component
 const ProductItem = ({ item, index, formatINR }) => {
     const basePrice = item.product.price;
-    const fallPicoPrice = item.withFallPico ? 300 : 0;
-    const tasselsPrice = item.withTassels ? 200 : 0;
+    const fallPicoPrice = item.withFallPico ? FALLPICO_PRICE : 0;
+    const tasselsPrice = item.withTassels ? TASSELLS_PRICE : 0;
     const addonPrice = fallPicoPrice + tasselsPrice;
     const itemTotal = (basePrice + addonPrice) * item.quantity;
 
@@ -169,7 +170,10 @@ const ProductItem = ({ item, index, formatINR }) => {
                 {/* Product Image */}
                 <div className="flex-shrink-0">
                     <img
-                        src={item.product.images[0] || "/placeholder.svg"}
+                        src={
+                            item.product?.images[0] ||
+                            "/Product_Placeholder.webp"
+                        }
                         alt={item.product.name}
                         className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-lg border border-gray-200"
                     />
@@ -218,7 +222,7 @@ const ProductItem = ({ item, index, formatINR }) => {
                                                     Fall Pico
                                                 </span>
                                                 <span className="font-medium text-blue-600">
-                                                    +₹300
+                                                    +₹{FALLPICO_PRICE}
                                                 </span>
                                             </div>
                                         )}
@@ -229,7 +233,7 @@ const ProductItem = ({ item, index, formatINR }) => {
                                                     Tassels
                                                 </span>
                                                 <span className="font-medium text-blue-600">
-                                                    +₹200
+                                                    +₹{TASSELLS_PRICE}
                                                 </span>
                                             </div>
                                         )}
@@ -281,19 +285,27 @@ const ShippingInfo = ({ order }) => (
                         Delivery Address
                     </p>
                     <div className="text-sm text-foreground space-y-1">
-                        <p className="font-medium">
-                            {order.shippingAddress.street}
-                        </p>
-                        <p>
-                            {order.shippingAddress.city},{" "}
-                            {order.shippingAddress.state}
-                        </p>
-                        <p>
-                            {order.shippingAddress.postalCode},{" "}
-                            {order.shippingAddress.country}
-                        </p>
-                        <p className="font-medium">
-                            Phone: {order.shippingAddress.phone}
+                        <p className="text-sm text-foreground leading-relaxed">
+                            {order?.shippingAddress?.street ||
+                                order?.shippingAddressSnapshot?.street}
+                            <br />
+                            {order?.shippingAddress?.city ||
+                                order?.shippingAddressSnapshot?.city}
+                            ,{" "}
+                            {order?.shippingAddress?.state ||
+                                order?.shippingAddressSnapshot?.state}
+                            <br />
+                            {order?.shippingAddress?.postalCode ||
+                                order?.shippingAddressSnapshot?.postalCode}
+                            ,{" "}
+                            {order?.shippingAddress?.country ||
+                                order?.shippingAddressSnapshot?.country}
+                            <br />
+                            <span className="font-medium">
+                                Phone:{" "}
+                                {order?.shippingAddress?.phone ||
+                                    order?.shippingAddressSnapshot?.phone}
+                            </span>
                         </p>
                     </div>
                 </div>

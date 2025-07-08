@@ -106,7 +106,7 @@ function Profile() {
                         />
                     </div>
                     <div>
-                        <p className="text-lg sm:text-xl font-medium text-foreground">
+                        <p className="text-lg sm:text-xl font-medium text-foreground capitalize">
                             {user?.firstName} {user?.lastName}
                         </p>
                         <p className="text-sm sm:text-base text-foreground">
@@ -151,7 +151,7 @@ function Profile() {
                         onSubmit={handleSubmitProfile(onSubmitProfile)}
                         className="space-y-6"
                     >
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 capitalize">
                             <InputField
                                 label="First Name"
                                 name="firstName"

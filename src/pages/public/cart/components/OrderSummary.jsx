@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { FALLPICO_PRICE, TASSELLS_PRICE } from "../../../../Constant";
 
 function OrderSummary({ cartItems, subtotal, gst, total }) {
     return (
@@ -19,8 +20,8 @@ function OrderSummary({ cartItems, subtotal, gst, total }) {
                     {cartItems.map((item, index) => {
                         const basePrice =
                             item.finalPrice -
-                            (item.addons.withFallPico ? 300 : 0) -
-                            (item.addons.withTassels ? 200 : 0);
+                            (item.addons.withFallPico ? FALLPICO_PRICE : 0) -
+                            (item.addons.withTassels ? TASSELLS_PRICE : 0);
                         const itemTotal = item.finalPrice * item.quantity;
 
                         return (
@@ -33,14 +34,20 @@ function OrderSummary({ cartItems, subtotal, gst, total }) {
                                 </p>
                                 {item.addons.withFallPico && (
                                     <p>
-                                        With Fall Pico: +₹300 × {item.quantity}{" "}
-                                        = ₹{(300 * item.quantity).toFixed(2)}
+                                        With Fall Pico: +₹{FALLPICO_PRICE} ×{" "}
+                                        {item.quantity} = ₹
+                                        {(
+                                            FALLPICO_PRICE * item.quantity
+                                        ).toFixed(2)}
                                     </p>
                                 )}
                                 {item.addons.withTassels && (
                                     <p>
-                                        With Tassels: +₹200 × {item.quantity} =
-                                        ₹{(200 * item.quantity).toFixed(2)}
+                                        With Tassels: +₹{TASSELLS_PRICE} ×{" "}
+                                        {item.quantity} = ₹
+                                        {(
+                                            TASSELLS_PRICE * item.quantity
+                                        ).toFixed(2)}
                                     </p>
                                 )}
                                 <p className="font-medium">

@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../../utils/apiConnector"; // Adjust path as needed
+import { FALLPICO_PRICE, TASSELLS_PRICE } from "../../../../Constant";
 
 /** Sticky mobile summary bar (Cart Total + Checkout) */
 function MobileCartSummary({ total, onCheckout, isCheckingOut, cartEmpty }) {
@@ -81,7 +82,7 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
                 <motion.img
                     src={imageUrl}
                     alt={item.name}
-                    className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-cover"
+                    className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-cover object-top"
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}
                 />
@@ -93,11 +94,12 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
                         <p className="text-xs text-gray-500 mt-1">
                             Addons:
                             {item.addons.withFallPico &&
-                                " With Fall Pico (+₹300)"}
+                                ` With Fall Pico (+₹${FALLPICO_PRICE})`}
                             {item.addons.withFallPico &&
                                 item.addons.withTassels &&
                                 ", "}
-                            {item.addons.withTassels && " With Tassels (+₹200)"}
+                            {item.addons.withTassels &&
+                                `With Tassels (+₹${TASSELLS_PRICE})`}
                         </p>
                     )}
                     {/* Mobile‐only breakdown */}
@@ -291,8 +293,8 @@ function OrderSummary({
                     {cartItems.map((item, index) => {
                         const basePrice =
                             item.finalPrice -
-                            (item.addons.withFallPico ? 300 : 0) -
-                            (item.addons.withTassels ? 200 : 0);
+                            (item.addons.withFallPico ? FALLPICO_PRICE : 0) -
+                            (item.addons.withTassels ? TASSELLS_PRICE : 0);
                         const itemTotal = item.finalPrice * item.quantity;
                         return (
                             <div key={index} className="mb-3 border-b pb-2">
@@ -304,14 +306,20 @@ function OrderSummary({
                                 </p>
                                 {item.addons.withFallPico && (
                                     <p>
-                                        With Fall Pico: +₹300 × {item.quantity}{" "}
-                                        = ₹{(300 * item.quantity).toFixed(2)}
+                                        With Fall Pico: +₹{FALLPICO_PRICE} ×{" "}
+                                        {item.quantity} = ₹
+                                        {(
+                                            FALLPICO_PRICE * item.quantity
+                                        ).toFixed(2)}
                                     </p>
                                 )}
                                 {item.addons.withTassels && (
                                     <p>
-                                        With Tassels: +₹200 × {item.quantity} =
-                                        ₹{(200 * item.quantity).toFixed(2)}
+                                        With Tassels: +₹{TASSELLS_PRICE} ×{" "}
+                                        {item.quantity} = ₹
+                                        {(
+                                            TASSELLS_PRICE * item.quantity
+                                        ).toFixed(2)}
                                     </p>
                                 )}
                                 <p className="font-medium">

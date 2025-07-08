@@ -25,10 +25,11 @@ function Header() {
         useSelector((state) => state?.user?.token) ||
         localStorage.getItem("token");
     const role = useSelector((state) => state?.user?.user?.role);
+    const fabrics = useSelector((s) => s.fabrics);
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
-
+    const [optimisedFabricsLinks, setOptimisedFabricsLinks] = useState([]);
     // Build optimized category links with "All" sorting
     const [optimisedCategoriesList, setOptimisedCategoriesList] = useState([]);
     useEffect(() => {
@@ -39,6 +40,7 @@ function Header() {
             if (b.name.toLowerCase() === "all") return 1;
             return 0;
         });
+        // Making Category In Proper From
         const navLinks = sorted.map((item) => {
             const slug = slugify(item.name, { lower: true, strict: true });
             return {
@@ -47,6 +49,15 @@ function Header() {
                 path: `/products/${slug}/${item._id}`,
             };
         });
+        const fabLinks = fabrics?.map((item) => {
+            const slug = slugify(item.title, { lower: true, strict: true });
+            return {
+                title: item.title,
+                _id: item._id,
+                path: `/collection/${slug}/${item._id}`,
+            };
+        });
+        setOptimisedFabricsLinks(fabLinks);
         setOptimisedCategoriesList(navLinks);
     }, [categories]);
 
@@ -57,6 +68,11 @@ function Header() {
             title: "Product",
             path: "/product",
             subLinks: optimisedCategoriesList,
+        },
+        {
+            title: "Collection",
+            path: "/collection",
+            subLinks: optimisedFabricsLinks,
         },
         { title: "About Us", path: "/about" },
         { title: "Contact", path: "/contact" },
@@ -126,7 +142,7 @@ function Header() {
                         animate="visible"
                         exit="hidden"
                         variants={headerVariants}
-                        className="fixed top-0 left-0 right-0 z-50 bg-white text-foreground px-4 sm:px-6 h-20 shadow border-b border-gray-300 flex items-center justify-between"
+                        className="fixed top-0 left-0 right-0 z-50 bg-white text-foreground px-4 sm:px-10 h-20 shadow border-b border-gray-300 flex items-center justify-between"
                     >
                         {/* Desktop Nav (md and up) */}
                         <nav className="hidden md:flex gap-6 text-foreground font-medium text-sm lg:text-[14px] tracking-wide uppercase">
@@ -201,7 +217,7 @@ function Header() {
                         </nav>
 
                         {/* Logo */}
-                        <Link to="/" className="flex-shrink-0">
+                        <Link to="/" className="flex-shrink-0 mr-48">
                             <img
                                 src={LOGO}
                                 alt="Srijan Fab Logo"
@@ -347,7 +363,7 @@ function Header() {
                         {/* Links */}
                         {Links.map((link) => (
                             <div key={link.title} className="py-2">
-                                <div className="flex justify-between items-center">
+                                <div className="flex justify-between items-center capitalize">
                                     {link.subLinks ? (
                                         <span className="text-foreground text-sm tracking-wider capitalize">
                                             {link.title}
@@ -405,7 +421,7 @@ function Header() {
                                                     key={sublink._id}
                                                     to={sublink.path}
                                                     className={({ isActive }) =>
-                                                        `text-xs text-foreground hover:text-primary px-3 py-2 rounded-md ${
+                                                        `capitalize text-xs text-foreground hover:text-primary px-3 py-2 rounded-md ${
                                                             isActive
                                                                 ? "text-primary font-semibold"
                                                                 : ""

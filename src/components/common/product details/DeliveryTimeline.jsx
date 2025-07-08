@@ -11,13 +11,12 @@ function DeliveryTimeline() {
         {
             icon: Package,
             title: "Processing & Packaging",
-            description: "1-2 business days",
+            description: "2-3 business days",
         },
         {
             icon: Truck,
             title: "Shipping",
-            description:
-                "3-5 business days (standard) or 1-2 business days (express)",
+            description: "4-6 business days excluding holidays and festivals",
         },
         {
             icon: Check,

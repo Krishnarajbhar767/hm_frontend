@@ -1,15 +1,38 @@
 import { FiGrid, FiEdit, FiTrash } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { setCategories } from "../../../redux/slices/categorySlice";
+
+//  Category Skeleton Component
+const CategorySkeleton = () => (
+    <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 animate-pulse space-y-2">
+        <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+        <div className="h-3 bg-gray-200 rounded w-full"></div>
+        <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+        <div className="flex justify-between mt-3">
+            <div className="h-6 w-14 bg-gray-300 rounded"></div>
+            <div className="h-6 w-14 bg-gray-300 rounded"></div>
+        </div>
+    </div>
+);
 
 function AdminCategories() {
     const categories = useSelector((state) => state.category.categories || []);
     const [deleteCategoryId, setDeleteCategoryId] = useState(null);
+    const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    // Simulate loading from API (you can replace with actual API logic)
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setLoading(false); // simulate categories are now loaded
+        }, 1000); // 1 second delay
+        return () => clearTimeout(timeout);
+    }, [categories]);
 
     const confirmDelete = (id) => {
         dispatch(setCategories(categories.filter((cat) => cat.id !== id)));
@@ -37,7 +60,13 @@ function AdminCategories() {
             </div>
 
             {/* Category List */}
-            {categories.length === 0 ? (
+            {loading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                        <CategorySkeleton key={i} />
+                    ))}
+                </div>
+            ) : categories.length === 0 ? (
                 <div className="text-center py-8 text-gray-600 text-sm">
                     No categories available.
                 </div>
@@ -56,7 +85,7 @@ function AdminCategories() {
                                 {category.description}
                             </p>
                             <p className="text-sm text-gray-600">
-                                Products: {category.products?.length}
+                                Products: {category.products?.length || 0}
                             </p>
                             <div className="flex justify-between mt-2">
                                 <button

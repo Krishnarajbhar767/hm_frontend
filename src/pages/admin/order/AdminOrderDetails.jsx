@@ -10,10 +10,18 @@ import {
     FiMail,
     FiPhone,
     FiHash,
+    FiPrinter,
+    FiUpload,
 } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../utils/apiConnector";
-
+import { useReactToPrint } from "react-to-print";
+import { useRef } from "react";
+import ReactToPrint from "react-to-print";
+import UploadReceiptModal from "./UploadReceiptModal";
+import PrintableComponent from "./PrintableComponent";
+import { FALLPICO_PRICE, TASSELLS_PRICE } from "../../../Constant";
+import ReceiptPreview from "../../../components/common/ReceiptPreview";
 // Animation variants
 const sectionVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -55,7 +63,6 @@ const StatusBadge = ({ status, type = "default" }) => {
                 return "bg-gray-50 text-gray-700 border-gray-200";
         }
     };
-
     return (
         <span
             className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
@@ -68,37 +75,66 @@ const StatusBadge = ({ status, type = "default" }) => {
     );
 };
 
-// Admin Order Header Component
-const AdminOrderHeader = ({ order }) => (
-    <motion.div
-        custom={0}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-        className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
-    >
-        <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
-                Admin Order Management
-            </h1>
-            <p className="text-sm text-gray-600">
-                Order ID:{" "}
-                <span className="font-mono font-medium">
-                    {order?.razorpay_order_id || "N/A"}
-                </span>
-            </p>
-        </div>
-        <motion.div whileHover={{ x: -5 }} transition={{ duration: 0.2 }}>
-            <Link
-                to="/admin/orders"
-                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-800 hover:text-blue-600 transition-colors"
+const AdminOrderHeader = ({ order, onPrint }) => {
+    const [showModal, setShowModal] = useState(false);
+
+    return (
+        <>
+            <motion.div
+                custom={0}
+                initial="hidden"
+                animate="visible"
+                variants={sectionVariants}
+                className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
             >
-                <FiArrowLeft size={16} />
-                Back to Orders
-            </Link>
-        </motion.div>
-    </motion.div>
-);
+                <div>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+                        Admin Order Management
+                    </h1>
+                    <p className="text-sm text-gray-600">
+                        Order ID:{" "}
+                        <span className="font-mono font-medium">
+                            {order?.razorpay_order_id || "N/A"}
+                        </span>
+                    </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                    <button
+                        onClick={onPrint}
+                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-800 hover:text-blue-600 transition-colors border rounded-sm bg-gray-100"
+                    >
+                        <FiPrinter size={18} />
+                        Print Receipt
+                    </button>
+
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-800 hover:text-blue-600 transition-colors border rounded-sm bg-gray-100"
+                    >
+                        <FiUpload size={18} />
+                        Upload Delhivery Receipt
+                    </button>
+
+                    <Link
+                        to="/admin/orders"
+                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-800 hover:text-blue-600 transition-colors"
+                    >
+                        <FiArrowLeft size={16} />
+                        Back to Orders
+                    </Link>
+                </div>
+            </motion.div>
+
+            {/* Import and Render Modal */}
+            <UploadReceiptModal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                orderId={order?._id}
+            />
+        </>
+    );
+};
 
 // Customer Info Component
 const CustomerInfo = ({ user }) => (
@@ -236,8 +272,8 @@ const AdminOrderOverview = ({ order, formatINR }) => (
 // Admin Product Item Component
 const AdminProductItem = ({ item, index, formatINR }) => {
     const basePrice = item.product.price;
-    const fallPicoPrice = item.withFallPico ? 300 : 0;
-    const tasselsPrice = item.withTassels ? 200 : 0;
+    const fallPicoPrice = item.withFallPico ? FALLPICO_PRICE : 0;
+    const tasselsPrice = item.withTassels ? TASSELLS_PRICE : 0;
     const addonPrice = fallPicoPrice + tasselsPrice;
     const itemTotal = (basePrice + addonPrice) * item.quantity;
 
@@ -311,7 +347,7 @@ const AdminProductItem = ({ item, index, formatINR }) => {
                                                     Fall Pico
                                                 </span>
                                                 <span className="font-medium text-blue-600">
-                                                    +₹300
+                                                    +₹{FALLPICO_PRICE}
                                                 </span>
                                             </div>
                                         )}
@@ -322,7 +358,7 @@ const AdminProductItem = ({ item, index, formatINR }) => {
                                                     Tassels
                                                 </span>
                                                 <span className="font-medium text-blue-600">
-                                                    +₹200
+                                                    +₹{TASSELLS_PRICE}
                                                 </span>
                                             </div>
                                         )}
@@ -372,19 +408,27 @@ const AdminShippingInfo = ({ order }) => (
                         Delivery Address
                     </p>
                     <div className="text-sm text-gray-800 space-y-1">
-                        <p className="font-medium">
-                            {order.shippingAddress.street}
-                        </p>
-                        <p>
-                            {order.shippingAddress.city},{" "}
-                            {order.shippingAddress.state}
-                        </p>
-                        <p>
-                            {order.shippingAddress.postalCode},{" "}
-                            {order.shippingAddress.country}
-                        </p>
-                        <p className="font-medium">
-                            Contact: {order.shippingAddress.phone}
+                        <p className="text-sm text-foreground leading-relaxed">
+                            {order?.shippingAddress?.street ||
+                                order?.shippingAddressSnapshot?.street}
+                            <br />
+                            {order?.shippingAddress?.city ||
+                                order?.shippingAddressSnapshot?.city}
+                            ,{" "}
+                            {order?.shippingAddress?.state ||
+                                order?.shippingAddressSnapshot?.state}
+                            <br />
+                            {order?.shippingAddress?.postalCode ||
+                                order?.shippingAddressSnapshot?.postalCode}
+                            ,{" "}
+                            {order?.shippingAddress?.country ||
+                                order?.shippingAddressSnapshot?.country}
+                            <br />
+                            <span className="font-medium">
+                                Phone:{" "}
+                                {order?.shippingAddress?.phone ||
+                                    order?.shippingAddressSnapshot?.phone}
+                            </span>
                         </p>
                     </div>
                 </div>
@@ -505,6 +549,39 @@ function AdminOrderDetails() {
     const { id } = useParams();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
+    console.log("Order From ADMINORDERDE", order);
+    const printRef = useRef();
+
+    // Print Reciept Options
+    const receiptOption = {
+        id: order?.razorpay_order_id || "",
+        date: order?.createdAt || "",
+        customerName: `${order?.user?.firstName || ""} ${
+            order?.user?.lastName || ""
+        }`,
+        email: order?.user?.email || "",
+        phone: order?.shippingAddressSnapshot?.phone || "",
+
+        shippingAddress: {
+            street: order?.shippingAddressSnapshot?.street || "",
+            city: order?.shippingAddressSnapshot?.city || "",
+            state: order?.shippingAddressSnapshot?.state || "",
+            country: order?.shippingAddressSnapshot?.country || "",
+            postalCode: order?.shippingAddressSnapshot?.postalCode || "",
+        },
+
+        items: (order?.items || []).map((item) => ({
+            name: item?.product?.name || "Product",
+            quantity: item?.quantity || 0,
+            price: item?.product?.price || 0,
+            withFallPico: item?.withFallPico || false,
+            withTassels: item?.withTassels || false,
+        })),
+
+        subtotal: order?.totalAmount || 0, // already includes GST
+        shipping: "Free",
+        paymentMethod: order?.paymentMethod || "N/A",
+    };
 
     useEffect(() => {
         setLoading(true);
@@ -578,6 +655,17 @@ function AdminOrderDetails() {
         );
     }
 
+    // Print Function
+    const handlePrint = () => {
+        const printContents = printRef.current.innerHTML;
+        const originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        window.location.reload(); // optional
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 py-8">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -587,7 +675,10 @@ function AdminOrderDetails() {
                     transition={{ duration: 0.3 }}
                     className="space-y-8"
                 >
-                    <AdminOrderHeader order={order} />
+                    <AdminOrderHeader
+                        order={order}
+                        onPrint={() => handlePrint()}
+                    />
                     <CustomerInfo user={order.user} />
                     <AdminOrderOverview order={order} formatINR={formatINR} />
 
@@ -618,6 +709,12 @@ function AdminOrderDetails() {
 
                     <AdminShippingInfo order={order} />
                     <AdminPaymentInfo order={order} />
+                    {/* Section Of Print Items  */}
+                    <PrintableComponent
+                        receipt={receiptOption}
+                        printRef={printRef}
+                    />
+                    <ReceiptPreview imageUrl={order?.delhiveryReceipt} />
                 </motion.div>
             </div>
         </div>

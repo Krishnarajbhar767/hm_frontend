@@ -21,10 +21,10 @@ function Home() {
         () => [
             {
                 image: Banner1,
-                heading: "Grace in Every Thread",
-                subheading: "Handwoven Elegance",
+                heading: "Bandhej Beauties",
+                subheading: "Handwoven Elegance", // Need It
                 paragraph:
-                    "Celebrate timeless tradition with sarees that carry the legacy of skilled artisans. Every fold speaks of heritage.",
+                    "Born from the hands of artisans, dyed with heritage, and draped in joy—discover Bandhej sarees that brighten every moment.",
             },
             {
                 image: Banner2,

@@ -15,7 +15,7 @@ import { handleAxiosError } from "../../../utils/handleAxiosError";
 const EditProduct = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-
+    const fabrics = useSelector((sc) => sc.fabrics);
     const { products } = useSelector((state) => state.product);
     const categories = useSelector((state) => state.category.categories || []);
     const product = products?.find((p) => p._id === id);
@@ -46,7 +46,7 @@ const EditProduct = () => {
                 price: product.price,
                 stock: product.stock,
                 category: product.category._id || product.category,
-                fabric: product.fabric,
+                fabric: product.fabric._id,
                 technique: product.technique,
                 color: product.color,
                 weight: product.weight,
@@ -200,6 +200,7 @@ const EditProduct = () => {
                     name="category"
                     register={register}
                     errors={errors}
+                    value={product.category}
                     rules={{ required: "Category is required" }}
                     options={categories.map((cat) => ({
                         value: cat._id || cat.value,
@@ -243,13 +244,19 @@ const EditProduct = () => {
 
                 {/* Additional Fields */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <InputField
+                    <SelectField
                         label="Fabric"
                         name="fabric"
                         register={register}
                         errors={errors}
                         rules={{ required: "Fabric is required" }}
+                        options={fabrics?.map((cat) => ({
+                            value: cat._id || cat.value,
+                            label: cat.title || cat.label,
+                        }))}
+                        value={product.fabric._id}
                     />
+
                     <InputField
                         label="Technique"
                         name="technique"

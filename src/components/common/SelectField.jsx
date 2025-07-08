@@ -45,14 +45,13 @@ const SelectField = ({
                 name={name}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
-                className="w-full p-3 py-4 border-[2px] border-gray-400 focus:outline-none focus:border-gray-800 text-gray-700 bg-white appearance-none transition-all duration-100 ease-linear"
+                className="w-full p-3 py-4 border-[2px] border-gray-400 focus:outline-none focus:border-gray-800 text-gray-700 bg-white appearance-none transition-all duration-100 ease-linear capitalize"
                 defaultValue={value}
                 disabled={readOnly}
             >
                 <option value="" disabled hidden></option>
                 {options.map((opt) => (
                     <option key={opt.value} value={opt?.value}>
-                        {console.log(opt)}
                         {opt?.label}
                     </option>
                 ))}

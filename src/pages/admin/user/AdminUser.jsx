@@ -4,12 +4,29 @@ import { FiUsers, FiEdit, FiTrash, FiX, FiPlus } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import InputField from "../../../components/common/InputField";
-
 import { toast } from "react-hot-toast";
 import adminUserApis from "../../../services/api/admin/product/user.api";
 
+// 🔹 Skeleton Component
+const UserSkeleton = () => {
+    return (
+        <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 animate-pulse space-y-2">
+            <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+            <div className="h-3 bg-gray-200 rounded w-full"></div>
+            <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+            <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+            <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+            <div className="flex justify-between mt-3">
+                <div className="h-6 w-14 bg-gray-300 rounded"></div>
+                <div className="h-6 w-14 bg-gray-300 rounded"></div>
+            </div>
+        </div>
+    );
+};
+
 function AdminUsers() {
     const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editUser, setEditUser] = useState(null);
     const [deleteUserId, setDeleteUserId] = useState(null);
@@ -21,7 +38,6 @@ function AdminUsers() {
         reset,
     } = useForm();
 
-    // fetch on mount
     useEffect(() => {
         (async () => {
             try {
@@ -29,21 +45,23 @@ function AdminUsers() {
                 setUsers(data);
             } catch (err) {
                 toast.error("Failed to load users");
+            } finally {
+                setLoading(false);
             }
         })();
     }, []);
 
-    // add / edit
     const onSubmit = handleSubmit(async (formData) => {
         const toastId = toast.loading("Please wait...");
         try {
             let updatedList;
             if (editUser) {
-                // update
-                updatedList = await userApis.update(editUser._id, formData);
+                updatedList = await adminUserApis.update(
+                    editUser._id,
+                    formData
+                );
             } else {
-                // create
-                updatedList = await userApis.create(formData);
+                updatedList = await adminUserApis.create(formData);
             }
             setUsers(updatedList);
             toast.success(editUser ? "User updated" : "User added");
@@ -57,7 +75,6 @@ function AdminUsers() {
         }
     });
 
-    // open edit
     const onEditUser = (user) => {
         setEditUser(user);
         reset({
@@ -72,11 +89,10 @@ function AdminUsers() {
         setIsModalOpen(true);
     };
 
-    // delete
     const confirmDelete = async (id) => {
         const toastId = toast.loading("Deleting...");
         try {
-            const updatedList = await userApis.delete(id);
+            const updatedList = await adminUserApis.delete(id);
             setUsers(updatedList);
             toast.success("User deleted");
             setDeleteUserId(null);
@@ -108,7 +124,13 @@ function AdminUsers() {
             </div>
 
             {/* User List */}
-            {users.length === 0 ? (
+            {loading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                        <UserSkeleton key={i} />
+                    ))}
+                </div>
+            ) : users.length === 0 ? (
                 <div className="text-center py-8">
                     <p className="text-gray-600 text-sm">No users available.</p>
                 </div>
@@ -140,13 +162,6 @@ function AdminUsers() {
                                         .split("T")[0]
                                 }
                             </p>
-                            {/* <p className="text-sm text-gray-600">
-                                Cart Items:{" "}
-                                {user?.cart?.item?.reduce(
-                                    (sum, c) => sum + c.items.length,
-                                    0
-                                )}
-                            </p> */}
                             <div className="flex justify-between mt-2">
                                 <button
                                     onClick={() => onEditUser(user)}
@@ -168,7 +183,7 @@ function AdminUsers() {
 
             {/* Add/Edit Modal */}
             <div
-                className={`glass h-screen  fixed inset-0 bg-opacity-30 flex items-center justify-center z-50 p-4 sm:p-6 overflow-y-hidden ${
+                className={`glass h-screen fixed inset-0 bg-opacity-30 flex items-center justify-center z-50 p-4 sm:p-6 overflow-y-hidden ${
                     isModalOpen ? "" : "hidden"
                 }`}
             >
@@ -176,7 +191,7 @@ function AdminUsers() {
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-white bg-opacity-50 backdrop-blur-md p-4 sm:p-6 w-full max-w-md sm:max-w-lg my-4 sm:my-0 shadow-lg border border-gray-300 border-opacity-20 rounded-lg relative  overflow-y-scroll h-[90%]"
+                    className="bg-white bg-opacity-50 backdrop-blur-md p-4 sm:p-6 w-full max-w-md sm:max-w-lg my-4 sm:my-0 shadow-lg border border-gray-300 border-opacity-20 rounded-lg relative overflow-y-scroll h-[90%]"
                 >
                     <button
                         onClick={() => {

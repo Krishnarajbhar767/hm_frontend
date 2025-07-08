@@ -10,24 +10,25 @@ function CareInstructions() {
             title: "Washing",
             instructions: [
                 "Dry clean only for best results",
-                "If hand washing, use cold water with mild detergent",
-                "Do not soak for extended periods",
+                "Do not iron at home",
+                "No machine wash",
             ],
         },
         {
-            title: "Drying & Ironing",
+            title: "Care",
             instructions: [
-                "Air dry in shade, away from direct sunlight",
-                "Iron on medium heat with a cloth barrier",
-                "Steam ironing recommended for best results",
+                "Avoid direct contact with perfumes or deodorants to preserve the fabric's sheen and fragrance.",
+                "Refold every few months",
             ],
         },
         {
             title: "Storage",
             instructions: [
                 "Store folded in a cool, dry place",
-                "Use acid-free tissue paper between folds",
+                "Use cotton Or muslin cloth",
                 "Avoid hanging for long periods to maintain shape",
+                "Avoid plastic covers",
+                "Avoid  naphthalene balls ",
             ],
         },
     ];

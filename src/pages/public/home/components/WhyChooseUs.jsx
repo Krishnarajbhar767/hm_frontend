@@ -3,6 +3,7 @@ import React from "react";
 import { MdSupportAgent } from "react-icons/md";
 import { AiOutlineSafety } from "react-icons/ai";
 import { TbTruckDelivery } from "react-icons/tb";
+import { IoSparkles } from "react-icons/io5";
 
 const data = [
     {
@@ -15,10 +16,11 @@ const data = [
         heading: "24/7 Customer Support",
         subheading: "Friendly 24/7 customer support",
     },
+
     {
-        icon: <AiOutlineSafety />,
-        heading: "Money Back Guarantee",
-        subheading: "We return money within 30 days",
+        icon: <IoSparkles />,
+        heading: "Premium Quality",
+        subheading: "Quality You Can Trust",
     },
 ];
 function WhyChooseUs() {

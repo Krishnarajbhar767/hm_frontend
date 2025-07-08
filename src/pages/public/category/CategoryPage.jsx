@@ -3,9 +3,10 @@ import { Link, useParams } from "react-router-dom";
 import SidebarFilter from "../../../components/common/SidebarFilter";
 import { Star, Filter, Grid, List, ChevronDown } from "lucide-react";
 
-// Enhanced CategoryPage Component with premium UI and better mobile experience
 function CategoryPage() {
     const { id, category } = useParams();
+    const { fabric } = useParams();
+    console.log("Is Fabrics Routes ->", fabric);
     const displayCategory = category?.replace(/-/g, " ") || "Category";
 
     const [products, setProducts] = useState([]);
@@ -17,34 +18,20 @@ function CategoryPage() {
     const [sortOption, setSortOption] = useState("default");
     const [viewMode, setViewMode] = useState("grid");
 
-    // Enhanced skeleton loader with shimmer effect
     const ProductSkeleton = () => (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-            <div className="relative">
-                <div className="aspect-[4/5] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50 animate-shimmer"></div>
-                </div>
-            </div>
-            <div className="p-4 space-y-3">
-                <div className="h-5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded animate-pulse">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50 animate-shimmer"></div>
-                </div>
-                <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-3/4 animate-pulse">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50 animate-shimmer"></div>
-                </div>
-                <div className="flex justify-between items-center">
-                    <div className="h-6 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-20 animate-pulse">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50 animate-shimmer"></div>
-                    </div>
-                    <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-16 animate-pulse">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50 animate-shimmer"></div>
-                    </div>
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm h-full flex flex-col">
+            <div className="relative h-64 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
+            <div className="p-4 space-y-3 flex-1 flex flex-col">
+                <div className="h-5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded animate-pulse" />
+                <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-3/4 animate-pulse" />
+                <div className="flex justify-between items-center mt-auto">
+                    <div className="h-6 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-20 animate-pulse" />
+                    <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-16 animate-pulse" />
                 </div>
             </div>
         </div>
     );
 
-    // Fetch products and category details
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -69,17 +56,49 @@ function CategoryPage() {
                 setLoading(false);
             }
         };
-        fetchProducts();
-    }, [id, displayCategory]);
 
-    // Handle filter changes
+        const fetchProductByFabric = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(
+                    `${
+                        import.meta.env.VITE_BACKEND_URL
+                    }/products/${fabric}/${id}`
+                );
+                if (!response.ok)
+                    throw new Error("Failed to fetch category data");
+                const data = await response.json();
+                console.log("Response Of Fabrics Api ->", data.data);
+                setProducts(data?.data || []);
+                setFilteredProducts(data?.data || []);
+                setCategoryDetails({
+                    name: fabric || displayCategory,
+                    description:
+                        data?.data?.description ||
+                        "Explore our curated collection of premium products.",
+                });
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        if (!fabric) {
+            fetchProducts();
+        } else {
+            fetchProductByFabric();
+        }
+    }, [id, displayCategory, fabric]);
+
     const handleFilterChange = (filters) => {
         const { priceRange, fabric, color, technique } = filters;
         let filtered = products.filter((product) => {
             const inPriceRange =
                 product.price >= priceRange[0] &&
                 product.price <= priceRange[1];
-            const matchesFabric = fabric ? product.fabric === fabric : true;
+            const matchesFabric = fabric
+                ? product.fabric.title.toLowerCase() === fabric.toLowerCase()
+                : true;
             const matchesColor = color ? product.color === color : true;
             const matchesTechnique = technique
                 ? product.technique === technique
@@ -96,7 +115,6 @@ function CategoryPage() {
         setFilteredProducts(filtered);
     };
 
-    // Sort products based on selected option
     const sortProducts = (productsToSort, option) => {
         const sorted = [...productsToSort];
         if (option === "price-low-to-high") {
@@ -114,7 +132,6 @@ function CategoryPage() {
         return sorted;
     };
 
-    // Handle sort option change
     const handleSortChange = (e) => {
         const option = e.target.value;
         setSortOption(option);
@@ -138,9 +155,8 @@ function CategoryPage() {
     };
 
     return (
-        <main className=" ">
+        <main>
             <div className="boxedContainer pb-4">
-                {/* Enhanced Header Section */}
                 <div className="py-8 border-b border-gray-200 bg-white mb-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center space-y-4">
@@ -151,8 +167,8 @@ function CategoryPage() {
                                 {categoryDetails?.description}
                             </p>
                             <div className="flex items-center justify-center gap-2 text-sm text-foreground">
-                                <span className="w-2 h-2 bg-green-500 rounded-full "></span>
-                                <span className="text-foreground">
+                                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                                <span>
                                     {filteredProducts.length} Products Available
                                 </span>
                             </div>
@@ -160,7 +176,6 @@ function CategoryPage() {
                     </div>
                 </div>
 
-                {/* Enhanced Filter and Sort Controls */}
                 <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
                     <div className="flex items-center gap-4">
                         <button
@@ -171,7 +186,6 @@ function CategoryPage() {
                             Filters
                         </button>
 
-                        {/* View Mode Toggle */}
                         <div className="hidden sm:flex items-center gap-1 bg-gray-100 p-1 rounded-lg">
                             <button
                                 onClick={() => setViewMode("grid")}
@@ -222,20 +236,18 @@ function CategoryPage() {
                 </div>
 
                 <div className="flex gap-8">
-                    {/* Enhanced Sidebar Filter */}
                     <SidebarFilter
                         onFilterChange={handleFilterChange}
                         isOpen={isSidebarOpen}
                         toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
                     />
 
-                    {/* Enhanced Product Grid */}
                     <div className="flex-1">
                         {loading ? (
                             <div
                                 className={`grid gap-6 ${
                                     viewMode === "grid"
-                                        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
+                                        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 auto-rows-fr"
                                         : "grid-cols-1"
                                 }`}
                             >
@@ -276,23 +288,24 @@ function CategoryPage() {
                             <div
                                 className={`grid gap-6 ${
                                     viewMode === "grid"
-                                        ? "grid-cols-1 sm:grid-cols-2"
+                                        ? "grid-cols-1 sm:grid-cols-2 auto-rows-fr"
                                         : "grid-cols-1"
                                 }`}
                             >
                                 {filteredProducts.map((product) => (
                                     <div
                                         key={product._id}
-                                        className={`group bg-white border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-300 rounded-lg overflow-hidden ${
-                                            viewMode === "list" ? "flex" : ""
+                                        className={`capitalize group bg-white border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-300 rounded-lg overflow-hidden h-full ${
+                                            viewMode === "list"
+                                                ? "flex"
+                                                : "flex flex-col"
                                         }`}
                                     >
-                                        {/* Product Image */}
                                         <div
                                             className={`relative overflow-hidden bg-gray-50 ${
                                                 viewMode === "list"
                                                     ? "w-48 flex-shrink-0"
-                                                    : "aspect-[4/5]"
+                                                    : "aspect-[4/5] h-96"
                                             }`}
                                         >
                                             <img
@@ -319,36 +332,16 @@ function CategoryPage() {
                                             )}
                                         </div>
 
-                                        <div className="p-4 flex-1 space-y-3">
-                                            {/* Product Title */}
+                                        <div className="p-4 flex flex-col flex-1 space-y-3">
                                             <h3 className="text-lg font-semibold text-foreground line-clamp-2 group-hover:text-foreground transition-colors">
                                                 {product.name}
                                             </h3>
 
-                                            {/* Product Description */}
                                             <p className="text-sm text-foreground line-clamp-2 leading-relaxed">
                                                 {product.description ||
                                                     "Premium quality product with excellent craftsmanship."}
                                             </p>
 
-                                            {/* Rating and Reviews */}
-                                            {/* {product.rating && (
-                                                <div className="flex items-center gap-2">
-                                                    <div className="flex items-center">
-                                                        {renderStars(
-                                                            product.rating
-                                                        )}
-                                                    </div>
-                                                    <span className="text-sm text-foreground">
-                                                        {product.rating} (
-                                                        {product.reviewCount ||
-                                                            0}{" "}
-                                                        reviews)
-                                                    </span>
-                                                </div>
-                                            )} */}
-
-                                            {/* Price and Stock */}
                                             <div className="flex justify-between items-center">
                                                 <div className="space-y-1">
                                                     <p className="text-xl font-bold text-foreground">
@@ -373,13 +366,13 @@ function CategoryPage() {
                                                 </div>
                                             </div>
 
-                                            {/* Product Details */}
                                             <div className="grid grid-cols-2 gap-2 text-xs text-foreground bg-gray-50 p-3 rounded-lg">
                                                 <div>
                                                     <span className="font-medium">
                                                         Fabric:
                                                     </span>{" "}
-                                                    {product.fabric || "N/A"}
+                                                    {product.fabric?.title ||
+                                                        "N/A"}
                                                 </div>
                                                 <div>
                                                     <span className="font-medium">
@@ -389,10 +382,9 @@ function CategoryPage() {
                                                 </div>
                                             </div>
 
-                                            {/* View Details Button */}
                                             <Link
                                                 to={`/product/${product._id}`}
-                                                className="block w-full text-center bg-foreground text-white py-3 px-4 rounded-lg hover:bg-foreground/90 transition-colors duration-200 font-medium"
+                                                className="mt-auto block w-full text-center bg-foreground text-white py-3 px-4 rounded-lg hover:bg-foreground/90 transition-colors duration-200 font-medium"
                                             >
                                                 View Details
                                             </Link>

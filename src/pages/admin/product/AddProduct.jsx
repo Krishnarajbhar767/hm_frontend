@@ -11,6 +11,9 @@ import productApis from "../../../services/api/admin/product/product.api";
 import { handleAxiosError } from "../../../utils/handleAxiosError";
 import { setProducts } from "../../../redux/slices/productSlice";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../../utils/apiConnector";
+import { useEffect } from "react";
+import { setFabrics } from "../../../redux/slices/fabricSlice";
 
 const AddProduct = () => {
     const {
@@ -21,9 +24,11 @@ const AddProduct = () => {
     } = useForm();
     const navigate = useNavigate();
     const categories = useSelector((state) => state.category.categories || []);
+
     const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
     const dispatch = useDispatch();
+    // Fetch Fabrics  on First load
 
     // Handle file input and generate preview
     const handleImageUpload = (e) => {
@@ -175,12 +180,16 @@ const AddProduct = () => {
 
                 {/* Additional Details */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <InputField
+                    <SelectField
                         label="Fabric"
                         name="fabric"
                         register={register}
                         errors={errors}
                         rules={{ required: "Fabric is required" }}
+                        options={fabrics?.map((cat) => ({
+                            value: cat._id || cat.value,
+                            label: cat.title || cat.label,
+                        }))}
                     />
                     <InputField
                         label="Technique"

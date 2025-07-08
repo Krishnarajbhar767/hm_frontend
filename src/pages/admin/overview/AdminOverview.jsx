@@ -9,10 +9,27 @@ import {
     FiUser,
     FiClock,
     FiGrid,
-    FiCalendar,
 } from "react-icons/fi";
 import { motion } from "framer-motion";
 import axiosInstance from "../../../utils/apiConnector";
+
+// Skeleton card component
+const SkeletonCard = () => (
+    <div className="bg-white border border-gray-200 rounded p-4 animate-pulse">
+        <div className="h-4 w-1/4 bg-gray-300 rounded mb-2" />
+        <div className="h-6 w-1/2 bg-gray-200 rounded" />
+    </div>
+);
+
+// Skeleton list item
+const SkeletonList = () => (
+    <div className="bg-white border border-gray-200 rounded p-4 animate-pulse space-y-2">
+        <div className="h-4 w-1/3 bg-gray-300 rounded" />
+        <div className="h-4 w-2/3 bg-gray-200 rounded" />
+        <div className="h-4 w-1/4 bg-gray-300 rounded" />
+        <div className="h-4 w-1/2 bg-gray-200 rounded" />
+    </div>
+);
 
 export default function AdminOverview() {
     const [data, setData] = useState(null);
@@ -26,26 +43,6 @@ export default function AdminOverview() {
             .catch((err) => console.error("Error fetching overview:", err));
     }, []);
 
-    if (!data) {
-        return (
-            <div className="text-center py-24 text-gray-600">
-                Loading dashboard…
-            </div>
-        );
-    }
-
-    const {
-        lowStockProducts,
-        totalRevenue,
-        pendingOrders,
-        averageRating,
-        totalProducts,
-        activeUsers,
-        orderStats,
-        topSellingProducts,
-    } = data;
-
-    // unified time filter
     const filterByTime = (arr, key) => {
         return arr.filter((x) => {
             const d = new Date(x[key]);
@@ -63,142 +60,128 @@ export default function AdminOverview() {
             animate={{ opacity: 1, x: 0 }}
             className="space-y-6"
         >
-            {/* Header + Filters */}
+            {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between">
                 <h2 className="flex items-center gap-2 text-xl font-semibold uppercase text-gray-800">
                     <FiHome /> Dashboard Overview
                 </h2>
-                {/* <div className="flex gap-3">
-                    <div className="flex items-center gap-2">
-                        <FiCalendar className="text-gray-600" />
-                        <select
-                            className="border p-1 rounded text-gray-800"
-                            value={month}
-                            onChange={(e) => setMonth(e.target.value)}
-                        >
-                            <option value="">All Months</option>
-                            {Array.from({ length: 12 }, (_, i) => (
-                                <option key={i} value={i + 1}>
-                                    {new Date(0, i).toLocaleString("default", {
-                                        month: "long",
-                                    })}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <FiCalendar className="text-gray-600" />
-                        <input
-                            type="date"
-                            className="border p-1 rounded text-gray-800"
-                            max={new Date().toISOString().slice(0, 10)}
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                        />
-                    </div>
-                </div> */}
             </div>
 
-            {/* Key Metrics */}
+            {/* Metrics Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                    {
-                        icon: <FiAlertTriangle className="text-red-600" />,
-                        label: "Low Stock Products",
-                        // now filter by createdAt
-                        value: filterByTime(lowStockProducts, "createdAt")
-                            .length,
-                    },
-                    {
-                        icon: <FiDollarSign className="text-green-600" />,
-                        label: "Total Revenue",
-                        value: `₹${totalRevenue.toLocaleString()}`,
-                    },
-                    {
-                        icon: <FiShoppingCart className="text-yellow-600" />,
-                        label: "Pending Orders",
-                        // also filter by createdAt
-                        value: filterByTime(pendingOrders, "createdAt").length,
-                    },
-                    {
-                        icon: <FiStar className="text-teal-600" />,
-                        label: "Average Rating",
-                        value: averageRating,
-                    },
-                ].map((card, i) => (
-                    <motion.div
-                        key={i}
-                        whileHover={{ scale: 1.02 }}
-                        className="bg-white border border-gray-200 rounded p-4 flex items-center gap-3"
-                    >
-                        {card.icon}
-                        <div>
-                            <p className="text-xs text-gray-600 uppercase">
-                                {card.label}
-                            </p>
-                            <p className="text-lg font-medium text-gray-800">
-                                {card.value}
-                            </p>
-                        </div>
-                    </motion.div>
-                ))}
+                {data
+                    ? [
+                          {
+                              icon: (
+                                  <FiAlertTriangle className="text-red-600" />
+                              ),
+                              label: "Low Stock Products",
+                              value: filterByTime(
+                                  data.lowStockProducts,
+                                  "createdAt"
+                              ).length,
+                          },
+                          {
+                              icon: <FiDollarSign className="text-green-600" />,
+                              label: "Total Revenue",
+                              value: `₹${data.totalRevenue.toLocaleString()}`,
+                          },
+                          {
+                              icon: (
+                                  <FiShoppingCart className="text-yellow-600" />
+                              ),
+                              label: "Pending Orders",
+                              value: filterByTime(
+                                  data.pendingOrders,
+                                  "createdAt"
+                              ).length,
+                          },
+                          {
+                              icon: <FiStar className="text-teal-600" />,
+                              label: "Average Rating",
+                              value: data.averageRating,
+                          },
+                      ].map((card, i) => (
+                          <motion.div
+                              key={i}
+                              whileHover={{ scale: 1.02 }}
+                              className="bg-white border border-gray-200 rounded p-4 flex items-center gap-3"
+                          >
+                              {card.icon}
+                              <div>
+                                  <p className="text-xs text-gray-600 uppercase">
+                                      {card.label}
+                                  </p>
+                                  <p className="text-lg font-medium text-gray-800">
+                                      {card.value}
+                                  </p>
+                              </div>
+                          </motion.div>
+                      ))
+                    : Array.from({ length: 4 }).map((_, i) => (
+                          <SkeletonCard key={i} />
+                      ))}
             </div>
 
-            {/* Detailed Grid */}
+            {/* Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                    {
-                        icon: <FiGrid className="text-blue-600" />,
-                        label: "Total Products",
-                        value: totalProducts,
-                    },
-                    {
-                        icon: <FiUser className="text-purple-600" />,
-                        label: "Active Users",
-                        value: activeUsers,
-                    },
-                    {
-                        icon: <FiClock className="text-gray-600" />,
-                        label: "By Delivery Status",
-                        list: orderStats.map((s) => ({
-                            key: s._id,
-                            value: s.count,
-                        })),
-                    },
-                ].map((item, idx) => (
-                    <motion.div
-                        key={idx}
-                        whileHover={{ scale: 1.02 }}
-                        className="bg-white border border-gray-200 rounded p-4"
-                    >
-                        <div className="flex items-center gap-2 mb-2">
-                            {item.icon}
-                            <h3 className="text-sm uppercase text-gray-600">
-                                {item.label}
-                            </h3>
-                        </div>
-                        {item.list ? (
-                            <ul className="space-y-1 text-gray-800">
-                                {item.list.map((x) => (
-                                    <li
-                                        key={x.key}
-                                        className="flex justify-between"
-                                    >
-                                        <span>{x.key}</span>
-                                        <span>{x.value}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="text-lg font-medium text-gray-800">
-                                {item.value}
-                            </p>
-                        )}
-                    </motion.div>
-                ))}
+                {data
+                    ? [
+                          {
+                              icon: <FiGrid className="text-blue-600" />,
+                              label: "Total Products",
+                              value: data.totalProducts,
+                          },
+                          {
+                              icon: <FiUser className="text-purple-600" />,
+                              label: "Active Users",
+                              value: data.activeUsers,
+                          },
+                          {
+                              icon: <FiClock className="text-gray-600" />,
+                              label: "By Delivery Status",
+                              list: data.orderStats.map((s) => ({
+                                  key: s._id,
+                                  value: s.count,
+                              })),
+                          },
+                      ].map((item, idx) => (
+                          <motion.div
+                              key={idx}
+                              whileHover={{ scale: 1.02 }}
+                              className="bg-white border border-gray-200 rounded p-4"
+                          >
+                              <div className="flex items-center gap-2 mb-2">
+                                  {item.icon}
+                                  <h3 className="text-sm uppercase text-gray-600">
+                                      {item.label}
+                                  </h3>
+                              </div>
+                              {item.list ? (
+                                  <ul className="space-y-1 text-gray-800">
+                                      {item.list.map((x) => (
+                                          <li
+                                              key={x.key}
+                                              className="flex justify-between"
+                                          >
+                                              <span>{x.key}</span>
+                                              <span>{x.value}</span>
+                                          </li>
+                                      ))}
+                                  </ul>
+                              ) : (
+                                  <p className="text-lg font-medium text-gray-800">
+                                      {item.value}
+                                  </p>
+                              )}
+                          </motion.div>
+                      ))
+                    : Array.from({ length: 3 }).map((_, i) => (
+                          <SkeletonList key={i} />
+                      ))}
             </div>
 
-            {/* Top Selling */}
+            {/* Top Selling List */}
             <motion.div
                 whileHover={{ scale: 1.02 }}
                 className="bg-white border border-gray-200 rounded p-4"
@@ -209,17 +192,24 @@ export default function AdminOverview() {
                         Top Selling
                     </h3>
                 </div>
-                {topSellingProducts.length ? (
-                    <ul className="space-y-1 text-gray-800">
-                        {topSellingProducts.map((p) => (
-                            <li key={p.name} className="flex justify-between">
-                                <span>{p.name}</span>
-                                <span>{p.sales} sold</span>
-                            </li>
-                        ))}
-                    </ul>
+                {data ? (
+                    data.topSellingProducts.length > 0 ? (
+                        <ul className="space-y-1 text-gray-800">
+                            {data.topSellingProducts.map((p) => (
+                                <li
+                                    key={p.name}
+                                    className="flex justify-between"
+                                >
+                                    <span>{p.name}</span>
+                                    <span>{p.sales} sold</span>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="text-gray-600 text-sm">No sales data</p>
+                    )
                 ) : (
-                    <p className="text-gray-600 text-sm">No sales data</p>
+                    <SkeletonList />
                 )}
             </motion.div>
         </motion.div>

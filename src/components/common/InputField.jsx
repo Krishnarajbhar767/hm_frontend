@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 
 const InputField = ({
     label,
@@ -10,64 +10,23 @@ const InputField = ({
     type = "text",
     readOnly = false,
 }) => {
-    const [isFocused, setIsFocused] = useState(false);
-    const [hasValue, setHasValue] = useState(value);
-    const inputRef = useRef(null);
-
-    const handleFocus = () => {
-        setIsFocused(true);
-    };
-
-    const handleBlur = (e) => {
-        setIsFocused(false);
-        setHasValue(e.target.value !== "");
-    };
-
-    useEffect(() => {
-        if (inputRef.current) {
-            setHasValue(inputRef.current.value);
-        }
-    }, []);
-
     return (
-        <div className="relative mb-6">
+        <div className="input-wrapper capitalize">
             <input
-                {...register(name, {
-                    ...rules,
-                    onBlur: (e) => {
-                        handleBlur(e);
-                        if (rules.onBlur) rules.onBlur(e); // Preserve any existing onBlur rules
-                    },
-                })}
-                ref={(e) => {
-                    // Assign the ref for react-hook-form
-                    register(name, rules).ref(e);
-                    // Also assign to our custom ref
-                    inputRef.current = e;
-                }}
+                {...register(name, rules)}
+                type={type}
                 id={name}
                 name={name}
-                type={type}
-                className="w-full p-3 py-4 border-[2px] border-foreground/60 focus:outline-none focus:border-foreground text-foreground transition-all duration-100 ease-linear uppercase"
-                placeholder=" "
-                onFocus={handleFocus}
-                readOnly={readOnly}
                 defaultValue={value}
+                placeholder=" "
+                className="input-field capitalize"
+                readOnly={readOnly}
             />
-            <label
-                htmlFor={name}
-                className={`absolute capitalize px-2 z-10 bg-white left-3 transition-all duration-200 ${
-                    isFocused || hasValue
-                        ? "top-0 text-xs text-foreground"
-                        : "top-1/2 text-base text-foreground/80"
-                } transform ${
-                    errors?.[name] ? "-translate-y-1/2" : "-translate-y-1/2"
-                }`}
-            >
+            <label htmlFor={name} className="input-label capitalize">
                 {label}
             </label>
             {errors?.[name] && (
-                <p className="text-red-500 text-xs mt-1 absolute">
+                <p className="text-red-500 text-xs mt-1 absolute capitalize">
                     {errors[name]?.message}
                 </p>
             )}

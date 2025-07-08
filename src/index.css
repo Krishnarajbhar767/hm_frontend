@@ -4,6 +4,47 @@
     --color-primary: #f17f21;
     --color-foreground: rgb(83, 62, 45);
 }
+/* INput Style Start */
+.input-wrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.input-field {
+    width: 100%;
+    padding: 1rem 0.75rem;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    outline: none;
+    background: none;
+    color: #000;
+}
+
+.input-field:focus {
+    border-color: #000;
+}
+
+.input-label {
+    text-transform: capitalize;
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    padding: 0 0.25rem;
+    color: rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    transition: all 0.2s ease;
+}
+
+.input-field:focus + .input-label,
+.input-field:not(:placeholder-shown) + .input-label,
+.input-field:-webkit-autofill + .input-label {
+    top: 0;
+    font-size: 0.75rem;
+    color: #000;
+}
+
+/* INput Style ENd  */
 
 html,
 body {

@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { setOrders } from "../../../redux/slices/orderSlice";
 import axiosInstance from "../../../utils/apiConnector";
 import { useOrders } from "../../../hooks/useOrder";
+import { FALLPICO_PRICE, TASSELLS_PRICE } from "../../../Constant";
 
 function Orders() {
     const user = useSelector((state) => state.user.user);
@@ -78,7 +79,7 @@ function Orders() {
                         Order ID
                     </p>
                     <p className="text-sm font-bold text-foreground font-mono">
-                        #{order?.razorpay_order_id?.slice(-8) || "N/A"}
+                        #{order?.razorpay_order_id || "N/A"}
                     </p>
                 </div>
 
@@ -130,11 +131,11 @@ function Orders() {
 
     // Price Breakdown Component
     const PriceBreakdown = ({ item }) => {
-        const basePrice = item.product.price;
-        const fallPicoPrice = item.withFallPico ? 300 : 0;
-        const tasselsPrice = item.withTassels ? 200 : 0;
+        const basePrice = item?.product?.price;
+        const fallPicoPrice = item.withFallPico ? FALLPICO_PRICE : 0;
+        const tasselsPrice = item.withTassels ? TASSELLS_PRICE : 0;
         const unitPrice = basePrice + fallPicoPrice + tasselsPrice;
-        const totalPrice = unitPrice * item.quantity;
+        const totalPrice = unitPrice * item?.quantity;
 
         return (
             <div className="space-y-1 text-sm">
@@ -204,7 +205,7 @@ function Orders() {
         <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
             <div className="flex-shrink-0">
                 <img
-                    src={item.product?.images[0]}
+                    src={item.product?.images[0] || "/Product_Placeholder.webp"}
                     alt={item.product?.name}
                     className="w-20 h-20 object-cover rounded-lg border-2 border-gray-200 shadow-sm"
                 />
@@ -232,16 +233,25 @@ function Orders() {
                     </h5>
                     <div className="bg-white p-3 rounded-lg border border-gray-200">
                         <p className="text-sm text-foreground leading-relaxed">
-                            {order?.shippingAddress.street}
+                            {order?.shippingAddress?.street ||
+                                order?.shippingAddressSnapshot?.street}
                             <br />
-                            {order?.shippingAddress.city},{" "}
-                            {order?.shippingAddress.state}
+                            {order?.shippingAddress?.city ||
+                                order?.shippingAddressSnapshot?.city}
+                            ,{" "}
+                            {order?.shippingAddress?.state ||
+                                order?.shippingAddressSnapshot?.state}
                             <br />
-                            {order?.shippingAddress.postalCode},{" "}
-                            {order?.shippingAddress.country}
+                            {order?.shippingAddress?.postalCode ||
+                                order?.shippingAddressSnapshot?.postalCode}
+                            ,{" "}
+                            {order?.shippingAddress?.country ||
+                                order?.shippingAddressSnapshot?.country}
                             <br />
                             <span className="font-medium">
-                                Phone: {order?.shippingAddress.phone}
+                                Phone:{" "}
+                                {order?.shippingAddress?.phone ||
+                                    order?.shippingAddressSnapshot?.phone}
                             </span>
                         </p>
                     </div>
@@ -370,7 +380,7 @@ function Orders() {
                     Order History
                 </h2>
                 <div className="text-sm text-foreground/70 bg-foreground/5 px-3 py-1 rounded-full">
-                    {orders.length} {orders.length === 1 ? "Order" : "Orders"}
+                    {orders?.length} {orders?.length === 1 ? "Order" : "Orders"}
                 </div>
             </div>
 
@@ -381,7 +391,7 @@ function Orders() {
                 <div className="space-y-6">
                     {orders.map((order, index) => (
                         <OrderCard
-                            key={order._id}
+                            key={order?._id}
                             order={order}
                             index={index}
                         />

@@ -11,16 +11,19 @@ function Home3Grid() {
         { image: Banner2, link: "#", title: "Product1" },
         { image: Banner3, link: "#", title: "Product1" },
     ];
+
     return (
         <div className="boxedContainer w-full py-4  h-auto  overflow-x-hidden  ">
             <div className="md:mb-14 mb-10 mt-4">
                 <div>
-                    <Heading text={"Lorem ipsum dolor sit amet consectetur."} />
+                    <Heading
+                        text={"A Heritage of Threads, A Legacy of Grace."}
+                    />
                 </div>
                 <div className="mt-2">
                     <SubHeading
                         text={
-                            "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem, quis!"
+                            "At Srijan Fabs, every saree is more than fabric — it’s a story handwoven in tradition, artistry, and timeless beauty."
                         }
                     />
                 </div>

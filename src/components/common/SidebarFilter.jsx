@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronUp, X, Filter, RotateCcw } from "lucide-react";
+import { useSelector } from "react-redux";
 
 // Reusable FilterSection component for accordion-style sections
 const FilterSection = ({ title, isOpen, onToggle, children }) => (
@@ -23,6 +24,8 @@ const FilterSection = ({ title, isOpen, onToggle, children }) => (
 
 // Main SidebarFilter component
 const SidebarFilter = ({ onFilterChange, isOpen, toggleSidebar }) => {
+    const fabrics = useSelector((s) => s.fabrics);
+    const fabricTitles = ["All Fabrics", ...fabrics.map((f) => f.title)];
     const [minInput, setMinInput] = useState("0");
     const [maxInput, setMaxInput] = useState("200000");
     const [priceRange, setPriceRange] = useState([0, 200000]);
@@ -185,17 +188,10 @@ const SidebarFilter = ({ onFilterChange, isOpen, toggleSidebar }) => {
                         onToggle={() => toggleSection("fabric")}
                     >
                         <div className="space-y-2">
-                            {[
-                                "All Fabrics",
-                                "Silk",
-                                "Cotton",
-                                "Georgette",
-                                "Chiffon",
-                                "Linen",
-                            ].map((fabricOption) => (
+                            {fabricTitles.map((fabricOption) => (
                                 <label
                                     key={fabricOption}
-                                    className="flex items-center space-x-3 cursor-pointer"
+                                    className="flex items-center space-x-3 cursor-pointer capitalize"
                                 >
                                     <input
                                         type="radio"

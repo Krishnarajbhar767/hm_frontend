@@ -13,9 +13,11 @@ import EditCategory from "../pages/admin/category/EditCategory";
 import AddCategory from "../pages/admin/category/AddCategory";
 import AdminOrderDetails from "../pages/admin/order/AdminOrderDetails";
 import AdminHomeManagement from "../pages/admin/home/AdminHomeManagement";
+import AdminFabrics from "../pages/admin/fabrics/AdminFabrics";
 
 const AdminRoutes = (
     <Route path="/admin" element={<AdminLayout />}>
+        <Route path="" element={<AdminOverview />} />
         <Route path="home-ui" element={<AdminHomeManagement />} />
         <Route path="overview" element={<AdminOverview />} />
         <Route path="products" element={<AdminProducts />} />
@@ -27,7 +29,7 @@ const AdminRoutes = (
         <Route path="users" element={<AdminUsers />} />
         <Route path="orders" element={<AdminOrders />} />
         <Route path="orders/order/:id" element={<AdminOrderDetails />} />
-        <Route path="" element={<AdminOverview />} />
+        <Route path="fabrics" element={<AdminFabrics />} />
     </Route>
 );
 

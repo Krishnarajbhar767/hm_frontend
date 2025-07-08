@@ -10,16 +10,16 @@ function HomeOnlyTwoSlideGrid() {
 
     const slideData = [
         {
-            heading: "Gulab Bari",
+            heading: "Laal Raga",
             subHeading:
-                "The Gulab Bari collection pays homage to this heritage Banarasi music festival, translating its ethos through handwoven, hand-dyed, and brush-painted textile artistry. Light and airy Khaddi Georgettes are adorned with Chaiti roses in full bloom, lyrical drapes display serene ombrés symbolic of seasonal transitions, and cascading roseate vines come together in a silken symphony.",
+                "Bold yet poised, this red silk drape is woven with elegance and dyed in the essence of classic Indian artistry.",
             discoverLink: "href",
             image: Banner1,
         },
         {
-            heading: "Antinomy",
+            heading: "Where Blue Whispers and Flowers Sing:",
             subHeading:
-                "Antinomy reimagines Banarasi artistry through a modern lens, where classic craftsmanship evolves into contemporary expression, bringing forth pieces that challenge convention while remaining deeply rooted in tradition.",
+                "Blue like the morning sky, bright with florals in bloom—this pure Katan silk saree redefines elegance with a splash of vibrant heritage.",
             discoverLink: "href2",
             image: Banner2,
         },

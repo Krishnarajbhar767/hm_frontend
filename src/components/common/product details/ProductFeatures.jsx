@@ -9,9 +9,7 @@ function ProductFeatures({ product }) {
         {
             icon: Sparkles,
             title: "Premium Quality Fabric",
-            description: `Made from the finest ${
-                product?.fabric || "fabric"
-            } sourced from traditional artisans, ensuring exceptional comfort and durability.`,
+            description: `Made from the finest silk sourced from traditional artisans, ensuring exceptional comfort and durability.`,
         },
         {
             icon: Scissors,
@@ -19,13 +17,7 @@ function ProductFeatures({ product }) {
             description:
                 "Each piece is meticulously crafted by skilled artisans with decades of experience in traditional techniques.",
         },
-        {
-            icon: Award,
-            title: "Authentic Design",
-            description: `Features authentic ${
-                product?.technique || "traditional"
-            } designs that celebrate cultural heritage and timeless aesthetics.`,
-        },
+
         {
             icon: Leaf,
             title: "Eco-Friendly",
@@ -37,12 +29,6 @@ function ProductFeatures({ product }) {
             title: "Versatile Styling",
             description:
                 "Perfect for both traditional occasions and contemporary settings, offering versatile styling options.",
-        },
-        {
-            icon: Gift,
-            title: "Gift-Ready Packaging",
-            description:
-                "Comes in elegant packaging, making it a perfect gift for special occasions and celebrations.",
         },
     ];
 

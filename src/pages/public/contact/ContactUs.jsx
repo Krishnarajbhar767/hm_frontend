@@ -115,8 +115,8 @@ const ContactUs = () => {
                         {/* Success message */}
                         {success && (
                             <div className="bg-green-100 text-green-800 text-sm p-3 mb-4 rounded">
-                                ✅ Message sent successfully! We'll get back to
-                                you shortly.
+                                Message sent successfully! We'll get back to you
+                                shortly.
                             </div>
                         )}
 
@@ -274,19 +274,58 @@ const ContactUs = () => {
                         {[
                             {
                                 question: "What are your shipping options?",
-                                answer: "We offer standard shipping (7-10 days) and express shipping (3-5 days) across India.",
-                            },
-                            {
-                                question: "Do you offer custom fabric orders?",
-                                answer: "Yes, we specialize in custom orders. Contact our design team to discuss your requirements.",
+                                answer: "We offer standard shipping of 4-6 working days excluding holidays and festivals.",
                             },
                             {
                                 question: "What is your return policy?",
-                                answer: "We offer a 7-day return policy for unused items in original condition. Custom orders are not returnable unless there's a defect.",
+                                answer: "We offer no return policy unless there is a manufacturing defect. Return or exchange is only done if the wrong product is received.",
+                            },
+                            {
+                                question:
+                                    "Is the product the same as it looks on the website?",
+                                answer: "Yes—the products and fabrics are exactly as shown on the website. Some minor variations may occur due to lighting or photography.",
+                            },
+                            {
+                                question:
+                                    "Do you have Banarasi sarees with real zari? What is the cost?",
+                                answer: "Yes, we do. Prices vary depending on weaving technique and fabric. For detailed options and pricing, please call us at 8960500991 or 6307116564.",
+                            },
+                            {
+                                question: "Do sarees include the blouse piece?",
+                                answer: "Yes—every saree from Srijan Fabs includes a matching blouse piece.",
+                            },
+                            {
+                                question:
+                                    "What are the dimensions of your sarees?",
+                                answer: `Standard dimensions are:
+• Length: 5.4 – 5.6 m (212 – 236″)  
+• Width: 1.1 – 1.17 m (44 – 46″)  
+• Blouse piece: 0.8 – 1 m (31 – 39″)  
+There may be minor variations. For exact measurements, send us a product photo and we’ll measure it for you.`,
+                            },
+                            {
+                                question:
+                                    "How should I care for and store the sarees?",
+                                answer: "Our Banarasi sarees are pure handwoven silk. We recommend professional dry-cleaning only. Avoid moisture, direct heat on zari, and any contact with perfume.",
+                            },
+                            {
+                                question:
+                                    "What are the shipping charges in India?",
+                                answer: "Shipping in India is free.",
                             },
                             {
                                 question: "How can I track my order?",
-                                answer: "Once your order ships, you'll receive a tracking number via email or in your dashboard.",
+                                answer: "Once your order ships, you’ll receive a tracking number via email or WhatsApp. You can also check its status in your order history on our site.",
+                            },
+                            {
+                                question:
+                                    "What if I have a requirement that’s not listed here?",
+                                answer: "We’re happy to help with custom needs! Call us at 8960500991 or 6307116564 and we’ll assist you.",
+                            },
+                            {
+                                question:
+                                    "Will my order take longer if I choose the Fall Pico and Tassel option?",
+                                answer: "Yes—the Fall Pico & Tassel customization adds approximately 2–3 extra days, as each piece is finished with extra care.",
                             },
                         ].map((faq, index) => (
                             <div
