@@ -9,6 +9,7 @@ import {
     FiSettings,
 } from "react-icons/fi";
 import { GiClothes } from "react-icons/gi";
+import { BiSolidOffer } from "react-icons/bi";
 
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -56,6 +57,11 @@ function AdminAccountDashboard() {
             path: "fabrics",
             label: "fabrics",
             icon: <GiClothes size={20} />,
+        },
+        {
+            path: "offers",
+            label: "offers",
+            icon: <BiSolidOffer size={20} />,
         },
     ];
 

@@ -14,6 +14,7 @@ import AddCategory from "../pages/admin/category/AddCategory";
 import AdminOrderDetails from "../pages/admin/order/AdminOrderDetails";
 import AdminHomeManagement from "../pages/admin/home/AdminHomeManagement";
 import AdminFabrics from "../pages/admin/fabrics/AdminFabrics";
+import AdminOffers from "../pages/admin/offer/AdminOffers";
 
 const AdminRoutes = (
     <Route path="/admin" element={<AdminLayout />}>
@@ -30,6 +31,7 @@ const AdminRoutes = (
         <Route path="orders" element={<AdminOrders />} />
         <Route path="orders/order/:id" element={<AdminOrderDetails />} />
         <Route path="fabrics" element={<AdminFabrics />} />
+        <Route path="offers" element={<AdminOffers />} />
     </Route>
 );
 
