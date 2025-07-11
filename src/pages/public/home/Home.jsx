@@ -1,28 +1,37 @@
-import React, { useMemo } from "react";
+import React, { useMemo, Suspense } from "react";
 import HomeHeroSlider from "./components/HomeHeroSlider";
-
-import HomeSection4 from "./components/HomeOnlyTwoSlideGrid";
-
-import WhyChooseUs from "./components/WhyChooseUs";
-import Home3Grid from "./components/Home3Grid";
-import HomeVideo from "./components/HomeVideo";
-import Home2BigGrid from "./components/Home2BigGrid";
-import HomeOnlyTwoSlideGrid from "./components/HomeOnlyTwoSlideGrid";
-import HomeOneImageOnly from "./components/HomeOneImageOnly";
-import HomeLetsExplore from "./components/HomeLetsExplore";
 import Banner1 from "../../../assets/images/slider/SF_BNNR_1920X1080.jpg_1.jpg";
 import Banner2 from "../../../assets/images/slider/SF_BNNR_1920X1080.jpg_2.jpg";
 import Banner3 from "../../../assets/images/slider/SF_BNNR_1920X1080.jpg_3.jpg";
 import Banner4 from "../../../assets/images/slider/SF_BNNR_1920X1080_4.jpg";
 import Slide2Banner1 from "../../../assets/images/slider2/SF_BNNR_1920X1080_5.jpg";
 import Slide2Banner2 from "../../../assets/images/slider2/SF_BNNR_1920X1080_6.jpg";
+import Loader from "../../../components/common/Loader";
+// Lazy-load heavy sections
+const HomeSection4 = React.lazy(() =>
+    import("./components/HomeOnlyTwoSlideGrid")
+);
+const WhyChooseUs = React.lazy(() => import("./components/WhyChooseUs"));
+const Home3Grid = React.lazy(() => import("./components/Home3Grid"));
+const HomeVideo = React.lazy(() => import("./components/HomeVideo"));
+const Home2BigGrid = React.lazy(() => import("./components/Home2BigGrid"));
+const HomeOneImageOnly = React.lazy(() =>
+    import("./components/HomeOneImageOnly")
+);
+const HomeLetsExplore = React.lazy(() =>
+    import("./components/HomeLetsExplore")
+);
+
+// Fallback loader
+// const Loader = () => <div className="py-8 text-center">Loading section...</div>;
+
 function Home() {
     const sliderData1 = useMemo(
         () => [
             {
                 image: Banner1,
                 heading: "Bandhej Beauties",
-                subheading: "Handwoven Elegance", // Need It
+                subheading: "Handwoven Elegance",
                 paragraph:
                     "Born from the hands of artisans, dyed with heritage, and draped in joy—discover Bandhej sarees that brighten every moment.",
             },
@@ -43,6 +52,7 @@ function Home() {
         ],
         []
     );
+
     const sliderData2 = useMemo(
         () => [
             {
@@ -59,53 +69,33 @@ function Home() {
                 paragraph:
                     "From boardrooms to banquets, our sarees blend contemporary chic with cultural richness, made for every woman’s journey.",
             },
-            // {
-            //     image: Banner3,
-            //     heading: "Crafted with Heart",
-            //     subheading: "From Loom to Love",
-            //     paragraph:
-            //         "Each piece is more than fabric — it’s an emotion. Woven by hands, worn with pride. Discover sarees that feel like home.",
-            // },
         ],
         []
     );
+
     return (
         <div className="w-full h-full">
-            <div>
-                <HomeHeroSlider sliderData={sliderData1} />
-            </div>
+            {/* Hero Slider */}
+            <HomeHeroSlider sliderData={sliderData1} />
 
-            {/* Section Starts */}
-            {/* Section1 */}
-            <div>
+            {/* Sections */}
+            <Suspense fallback={<Loader />}>
                 <Home3Grid />
-            </div>
-            {/* Section 2 */}
-            <div>
                 <HomeVideo />
-            </div>
-            {/* Section 3 */}
-            <div>
                 <Home2BigGrid />
-            </div>
+            </Suspense>
+
             <div className="boxedContainer py-4">
                 <HomeHeroSlider textPosition={true} sliderData={sliderData2} />
             </div>
 
-            <div>
+            <Suspense fallback={<Loader />}>
                 <HomeOneImageOnly />
-            </div>
-            <div>
-                <HomeOnlyTwoSlideGrid />
-            </div>
-            <div>
+                <HomeSection4 />
                 <HomeLetsExplore />
-            </div>
-            <div>
                 <WhyChooseUs />
-            </div>
+            </Suspense>
         </div>
-        // Moving Text
     );
 }
 

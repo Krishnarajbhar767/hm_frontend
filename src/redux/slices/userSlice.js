@@ -4,6 +4,7 @@ import getCookieByName from "../../utils/getCookie";
 const initialState = {
     user: null,
     token: localStorage.getItem("token") || null,
+    isLoading: true, // Add this
 };
 
 const userSlice = createSlice({
@@ -12,20 +13,24 @@ const userSlice = createSlice({
     reducers: {
         setUser: (state, action) => {
             state.user = action.payload;
+            state.isLoading = false;
         },
         setToken: (state, action) => {
             state.token = action.payload;
         },
-        clearUser: (state, action) => {
+        clearUser: (state) => {
             state.user = null;
             state.token = null;
+            state.isLoading = false; // ensure auth is resolved
             localStorage.removeItem("token");
             localStorage.clear();
+        },
+        setAuthLoading: (state, action) => {
+            state.isLoading = action.payload;
         },
     },
 });
 
-// Action creators are generated for each case reducer function
-export const { setUser, setToken, clearUser } = userSlice.actions;
-
+export const { setUser, setToken, clearUser, setAuthLoading } =
+    userSlice.actions;
 export default userSlice.reducer;

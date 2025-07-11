@@ -1,7 +1,128 @@
-import { useEffect, useRef } from "react";
-import AppRoutes from "./routes/AppRoutes.jsx";
+// import { useEffect, useRef } from "react";
+// import AppRoutes from "./routes/AppRoutes.jsx";
+// import { useDispatch, useSelector } from "react-redux";
+// import { clearUser, setUser } from "./redux/slices/userSlice";
+// import { setIsProductLoaded, setProducts } from "./redux/slices/productSlice";
+// import {
+//     setCategories,
+//     setIsCategoriesLoaded,
+// } from "./redux/slices/categorySlice";
+// import { setCart } from "./redux/slices/cartSlice";
+// import { setWishList } from "./redux/slices/wishListSlice";
+// import authApis from "./services/api/auth/auth.apis";
+// import productApis from "./services/api/public/products.apis";
+// import categoriesApi from "./services/api/public/category.api";
+// import axiosInstance from "./utils/apiConnector";
+// import { handleAxiosError } from "./utils/handleAxiosError";
+// import { setFabrics } from "./redux/slices/fabricSlice.js";
+
+// function App() {
+//     const dispatch = useDispatch();
+
+//     const isProductLoaded = useSelector((state) => state.product?.isLoaded);
+//     const isCategoryLoaded = useSelector((state) => state.category?.isLoaded);
+//     const token = useSelector((state) => state?.user?.token);
+//     const user = useSelector((state) => state?.user?.user);
+
+//     const hasFetchedUser = useRef(false);
+
+//     const fetchUser = async () => {
+//         try {
+//             const userData = await authApis.getUser(token);
+//             dispatch(setUser(userData));
+//         } catch (error) {
+//             dispatch(clearUser());
+//             handleAxiosError(error);
+//         }
+//     };
+
+//     const fetchProducts = async () => {
+//         try {
+//             const products = await productApis.getAllProduct();
+//             dispatch(setProducts(products));
+//             dispatch(setIsProductLoaded(true));
+//         } catch (error) {
+//             handleAxiosError(error);
+//         }
+//     };
+
+//     const fetchCategories = async () => {
+//         try {
+//             const categories = await categoriesApi.getAllCategories();
+//             dispatch(setCategories(categories));
+//             dispatch(setIsCategoriesLoaded(true));
+//         } catch (error) {
+//             handleAxiosError(error);
+//         }
+//     };
+
+//     // Fetch products only once
+//     useEffect(() => {
+//         if (!isProductLoaded) {
+//             fetchProducts();
+//         }
+//     }, [isProductLoaded]);
+
+//     // Fetch categories only once
+//     useEffect(() => {
+//         if (!isCategoryLoaded) {
+//             fetchCategories();
+//         }
+//     }, [isCategoryLoaded]);
+
+//     // Fetch user only once if token is available
+//     useEffect(() => {
+//         if (token && !user && !hasFetchedUser.current) {
+//             hasFetchedUser.current = true;
+//             fetchUser();
+//         }
+//     }, [token, user]);
+
+//     // Fetch cart and wishlist only when user is available
+//     useEffect(() => {
+//         const loadUserData = async () => {
+//             try {
+//                 if (user) {
+//                     const [cartRes, wishListRes] = await Promise.all([
+//                         axiosInstance.get(`/user/cart/${user._id}`),
+//                         axiosInstance.get(`/user/wishlist/${user._id}`),
+//                     ]);
+//                     dispatch(setCart(cartRes.data));
+//                     dispatch(setWishList(wishListRes.data));
+//                 } else {
+//                     const localCart =
+//                         JSON.parse(localStorage.getItem("cart")) || [];
+//                     dispatch(setCart(localCart));
+//                 }
+//             } catch (error) {
+//                 handleAxiosError(error);
+//             }
+//         };
+//         loadUserData();
+//     }, [user]);
+
+//     const fetchFabrics = async () => {
+//         try {
+//             const res = await axiosInstance.get("/admin/fabrics/");
+//             dispatch(setFabrics(res.data));
+//         } catch (err) {
+//             console.error("Error fetching fabrics", err);
+//             handleAxiosError(err);
+//         }
+//     };
+
+//     useEffect(() => {
+//         fetchFabrics();
+//     }, []);
+//     return <AppRoutes />;
+// }
+
+// export default App;
+
+import { useEffect, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearUser, setUser } from "./redux/slices/userSlice";
+import AppRoutes from "./routes/AppRoutes.jsx";
+import { clearUser, setAuthLoading, setUser } from "./redux/slices/userSlice";
 import { setIsProductLoaded, setProducts } from "./redux/slices/productSlice";
 import {
     setCategories,
@@ -9,111 +130,109 @@ import {
 } from "./redux/slices/categorySlice";
 import { setCart } from "./redux/slices/cartSlice";
 import { setWishList } from "./redux/slices/wishListSlice";
+import { setFabrics } from "./redux/slices/fabricSlice";
+
 import authApis from "./services/api/auth/auth.apis";
 import productApis from "./services/api/public/products.apis";
 import categoriesApi from "./services/api/public/category.api";
 import axiosInstance from "./utils/apiConnector";
 import { handleAxiosError } from "./utils/handleAxiosError";
-import { setFabrics } from "./redux/slices/fabricSlice.js";
 
 function App() {
     const dispatch = useDispatch();
 
-    const isProductLoaded = useSelector((state) => state.product?.isLoaded);
-    const isCategoryLoaded = useSelector((state) => state.category?.isLoaded);
-    const token = useSelector((state) => state?.user?.token);
-    const user = useSelector((state) => state?.user?.user);
+    const { token, user } = useSelector((state) => state.user);
+    const isProductLoaded = useSelector((state) => state.product.isLoaded);
+    const isCategoryLoaded = useSelector((state) => state.category.isLoaded);
 
     const hasFetchedUser = useRef(false);
 
-    const fetchUser = async () => {
+    // ========== CALLBACKS ==========
+
+    const fetchUser = useCallback(async () => {
+        dispatch(setAuthLoading(true));
         try {
             const userData = await authApis.getUser(token);
             dispatch(setUser(userData));
-        } catch (error) {
+        } catch (err) {
             dispatch(clearUser());
-            handleAxiosError(error);
+            handleAxiosError(err);
         }
-    };
+    }, [dispatch, token]);
 
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async () => {
         try {
             const products = await productApis.getAllProduct();
             dispatch(setProducts(products));
             dispatch(setIsProductLoaded(true));
-        } catch (error) {
-            handleAxiosError(error);
+        } catch (err) {
+            handleAxiosError(err);
         }
-    };
+    }, [dispatch]);
 
-    const fetchCategories = async () => {
+    const fetchCategories = useCallback(async () => {
         try {
             const categories = await categoriesApi.getAllCategories();
             dispatch(setCategories(categories));
             dispatch(setIsCategoriesLoaded(true));
-        } catch (error) {
-            handleAxiosError(error);
+        } catch (err) {
+            handleAxiosError(err);
         }
-    };
+    }, [dispatch]);
 
-    // Fetch products only once
+    const fetchCartAndWishlist = useCallback(async () => {
+        try {
+            if (user) {
+                const [cartRes, wishListRes] = await Promise.all([
+                    axiosInstance.get(`/user/cart/${user._id}`),
+                    axiosInstance.get(`/user/wishlist/${user._id}`),
+                ]);
+                dispatch(setCart(cartRes.data));
+                dispatch(setWishList(wishListRes.data));
+            } else {
+                const localCart =
+                    JSON.parse(localStorage.getItem("cart")) || [];
+                dispatch(setCart(localCart));
+            }
+        } catch (err) {
+            handleAxiosError(err);
+        }
+    }, [dispatch, user]);
+
+    const fetchFabrics = useCallback(async () => {
+        try {
+            const res = await axiosInstance.get("/admin/fabrics/");
+            dispatch(setFabrics(res.data));
+        } catch (err) {
+            handleAxiosError(err);
+        }
+    }, [dispatch]);
+
+    // ========== EFFECTS ==========
+
     useEffect(() => {
-        if (!isProductLoaded) {
-            fetchProducts();
-        }
-    }, [isProductLoaded]);
+        if (!isProductLoaded) fetchProducts();
+    }, [isProductLoaded, fetchProducts]);
 
-    // Fetch categories only once
     useEffect(() => {
-        if (!isCategoryLoaded) {
-            fetchCategories();
-        }
-    }, [isCategoryLoaded]);
+        if (!isCategoryLoaded) fetchCategories();
+    }, [isCategoryLoaded, fetchCategories]);
 
-    // Fetch user only once if token is available
     useEffect(() => {
         if (token && !user && !hasFetchedUser.current) {
             hasFetchedUser.current = true;
             fetchUser();
         }
-    }, [token, user]);
+    }, [token, user, fetchUser]);
 
-    // Fetch cart and wishlist only when user is available
     useEffect(() => {
-        const loadUserData = async () => {
-            try {
-                if (user) {
-                    const [cartRes, wishListRes] = await Promise.all([
-                        axiosInstance.get(`/user/cart/${user._id}`),
-                        axiosInstance.get(`/user/wishlist/${user._id}`),
-                    ]);
-                    dispatch(setCart(cartRes.data));
-                    dispatch(setWishList(wishListRes.data));
-                } else {
-                    const localCart =
-                        JSON.parse(localStorage.getItem("cart")) || [];
-                    dispatch(setCart(localCart));
-                }
-            } catch (error) {
-                handleAxiosError(error);
-            }
-        };
-        loadUserData();
-    }, [user]);
-
-    const fetchFabrics = async () => {
-        try {
-            const res = await axiosInstance.get("/admin/fabrics/");
-            dispatch(setFabrics(res.data));
-        } catch (err) {
-            console.error("Error fetching fabrics", err);
-            handleAxiosError(err);
-        }
-    };
+        fetchCartAndWishlist();
+    }, [fetchCartAndWishlist]);
 
     useEffect(() => {
         fetchFabrics();
-    }, []);
+    }, [fetchFabrics]);
+
     return <AppRoutes />;
 }
 

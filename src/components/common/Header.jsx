@@ -30,17 +30,17 @@ function Header() {
     const location = useLocation();
     const navigate = useNavigate();
     const [optimisedFabricsLinks, setOptimisedFabricsLinks] = useState([]);
-    // Build optimized category links with "All" sorting
     const [optimisedCategoriesList, setOptimisedCategoriesList] = useState([]);
+
     useEffect(() => {
-        if (!categories) return;
+        if (!categories || !fabrics) return;
         // Sort to prioritize category named "All"
         const sorted = [...categories].sort((a, b) => {
             if (a.name.toLowerCase() === "all") return -1;
             if (b.name.toLowerCase() === "all") return 1;
             return 0;
         });
-        // Making Category In Proper From
+        // Generate category links
         const navLinks = sorted.map((item) => {
             const slug = slugify(item.name, { lower: true, strict: true });
             return {
@@ -49,6 +49,7 @@ function Header() {
                 path: `/products/${slug}/${item._id}`,
             };
         });
+        // Generate fabric links
         const fabLinks = fabrics?.map((item) => {
             const slug = slugify(item.title, { lower: true, strict: true });
             return {
@@ -59,9 +60,9 @@ function Header() {
         });
         setOptimisedFabricsLinks(fabLinks);
         setOptimisedCategoriesList(navLinks);
-    }, [categories]);
+    }, [categories, fabrics]);
 
-    // Navigation links (using Srijan Fab's link titles)
+    // Navigation links
     const Links = [
         { title: "Home", path: "/" },
         {
@@ -221,7 +222,7 @@ function Header() {
                             <img
                                 src={LOGO}
                                 alt="Srijan Fab Logo"
-                                className="h-16 w-auto object-contain"
+                                className="h-12 sm:h-16 w-auto object-contain"
                             />
                         </Link>
 
@@ -330,7 +331,7 @@ function Header() {
 
                         {/* Hamburger (mobile only) */}
                         <button
-                            className="md:hidden p-1.5 focus:outline-none"
+                            className="md:hidden p-1.5 focus:outline-none absolute right-4 top-1/2 -translate-y-1/2"
                             onClick={() => setIsMenuOpen((prev) => !prev)}
                             aria-label="Toggle menu"
                         >
@@ -358,7 +359,7 @@ function Header() {
 
             {/* Mobile Menu */}
             {isMenuOpen && (
-                <nav className="fixed top-[80px] left-0 right-0 bg-white border-t border-gray-200 z-40">
+                <nav className="fixed top-[80px] left-0 right-0 bg-white border-t border-gray-200 z-40 overflow-y-auto max-h-[calc(100vh-80px)]">
                     <div className="flex flex-col px-4 py-3">
                         {/* Links */}
                         {Links.map((link) => (

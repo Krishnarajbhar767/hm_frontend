@@ -1,6 +1,6 @@
-import { useState } from "react";
-import ProductList from "./ProductList";
-
+// import { useState } from "react";
+import { lazy } from "react";
+const ProductList = lazy(() => import("./ProductList"));
 // Mock data for products
 
 function AdminProducts() {

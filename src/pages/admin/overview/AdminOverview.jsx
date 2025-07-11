@@ -198,7 +198,7 @@ export default function AdminOverview() {
                             {data.topSellingProducts.map((p) => (
                                 <li
                                     key={p.name}
-                                    className="flex justify-between"
+                                    className="flex justify-between capitalize"
                                 >
                                     <span>{p.name}</span>
                                     <span>{p.sales} sold</span>

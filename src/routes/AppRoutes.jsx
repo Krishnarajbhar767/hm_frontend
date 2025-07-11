@@ -3,11 +3,18 @@ import { Route, Routes } from "react-router-dom";
 import PublicRoutes from "./PublicRoutes";
 import UserRoutes from "./UserRoutes";
 import AdminRoutes from "./AdminRoutes";
+import { useSelector } from "react-redux";
+import Loader from "../components/common/Loader";
 
 function AppRoutes() {
+    const token = useSelector((s) => s.user?.token);
+    const isLoading = useSelector((state) => state.user.isLoading);
+
+    if (token && isLoading) {
+        return <Loader />;
+    }
     return (
         <Routes>
-            
             {PublicRoutes}
 
             {/* User Routes */}

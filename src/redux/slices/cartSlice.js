@@ -29,6 +29,7 @@ const initialState = {
     totalItems,
     subtotal,
     stepCount: 1,
+    discountPercentage: 0,
 };
 
 const cartSlice = createSlice({
@@ -93,6 +94,12 @@ const cartSlice = createSlice({
             state.cartItems = action.payload;
             recalculateTotals(state);
         },
+        setCouponDiscount: (state, action) => {
+            state.discountPercentage = action.payload.discountPercentage;
+        },
+        removeCouponDiscount: (state) => {
+            state.discountPercentage = 0;
+        },
     },
 });
 
@@ -104,6 +111,9 @@ export const {
     clearCart,
     setStepCount,
     setCart,
+    setCoupon,
+    setCouponDiscount,
+    removeCouponDiscount,
 } = cartSlice.actions;
 
 // Export reducer

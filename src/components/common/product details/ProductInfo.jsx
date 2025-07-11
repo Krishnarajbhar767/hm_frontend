@@ -18,6 +18,7 @@ import axiosInstance from "../../../utils/apiConnector";
 import { setWishList } from "../../../redux/slices/wishListSlice";
 import BookVideoCallModal from "../BookVideoCall";
 import { FALLPICO_PRICE, TASSELLS_PRICE } from "../../../Constant";
+import { useOffer } from "../../../hooks/useOffer";
 
 export default function ProductInfo({ product, onAddToCart, onShare }) {
     const dispatch = useDispatch();
@@ -25,6 +26,7 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
     const { cartItems } = useSelector((s) => s.cart);
     const { user } = useSelector((s) => s.user || {});
     const wishlistItems = useSelector((s) => s.wishlist);
+    const offer = useOffer(); // fetched once per session
 
     const [qty, setQty] = useState(1);
     const [inCart, setInCart] = useState(false);
@@ -36,10 +38,14 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
     const [shippingOpen, setShippingOpen] = useState(false);
 
     const basePrice = product?.price || 0;
-    const totalPrice =
-        basePrice +
+    const addonPrice =
         (withFallPico ? FALLPICO_PRICE : 0) +
         (withTassels ? TASSELLS_PRICE : 0);
+
+    // Apply discount only to base price
+    const discountedBase = offer ? basePrice * (1 - offer / 100) : basePrice;
+    const finalPrice = Math.round(discountedBase + addonPrice);
+    const totalBefore = Math.round(basePrice + addonPrice);
 
     useEffect(() => {
         setInCart(cartItems.some((i) => i._id === product?._id));
@@ -67,7 +73,7 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
             ...product,
             quantity: qty,
             addons: { withFallPico, withTassels },
-            finalPrice: totalPrice,
+            finalPrice,
         });
         setInCart(true);
     };
@@ -79,7 +85,7 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                     ...product,
                     quantity: qty,
                     addons: { withFallPico, withTassels },
-                    finalPrice: totalPrice,
+                    finalPrice,
                 },
             },
         });
@@ -99,17 +105,18 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
     };
 
     return (
-        <div className="space-y-8 text-base leading-relaxed capitalize">
+        <div className="space-y-8 text-base leading-relaxed capitalize px-0 sm:px-6 lg:px-8">
+            {/* Header */}
             <div className="border-b pb-4 space-y-3">
-                <div className="flex justify-between items-start">
-                    <div>
-                        <h1 className="text-3xl font-semibold capitalize">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div className="flex-1">
+                        <h1 className="text-2xl sm:text-3xl font-semibold">
                             {product?.name}
                         </h1>
-                        <div className="flex items-center gap-2 text-sm">
+                        {/* <div className="flex items-center gap-2 text-sm mt-1">
                             {renderStars(product?.rating)}
                             <span>({product?.reviewCount || 0} Reviews)</span>
-                        </div>
+                        </div> */}
                     </div>
                     <div className="flex gap-2">
                         <button
@@ -132,9 +139,10 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                         </button>
                     </div>
                 </div>
+
                 <button
                     onClick={() => setCallModalOpen(true)}
-                    className="px-6 py-2 border border-gray-600 bg-gray-200 hover:bg-gray-100"
+                    className="py-2 px-4 border border-gray-600 bg-gray-200 hover:bg-gray-100 mt-2"
                 >
                     Book A Video Call
                 </button>
@@ -146,24 +154,18 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                 )}
             </div>
 
-            <div className="text-2xl font-bold text-foreground">
-                ₹{totalPrice.toLocaleString()}
+            {/* Pricing */}
+            <div className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-3">
+                ₹{finalPrice}
+                {offer && (
+                    <span className="text-lg sm:text-xl text-green-600 font-medium">
+                        <span className="line-through">₹{totalBefore}</span> (
+                        {offer}% OFF)
+                    </span>
+                )}
             </div>
-            {product?.originalPrice > basePrice && (
-                <div className="flex gap-3 text-sm">
-                    <span className="line-through text-gray-500">
-                        ₹{product.originalPrice.toLocaleString()}
-                    </span>
-                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                        {Math.round(
-                            ((product.originalPrice - basePrice) /
-                                product.originalPrice) *
-                                100
-                        )}
-                        % Off
-                    </span>
-                </div>
-            )}
+
+            {/* Stock status */}
             <div className="flex gap-2 text-sm items-center">
                 {product?.stock > 0 ? (
                     <>
@@ -178,7 +180,8 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                 )}
             </div>
 
-            <div className="space-y-1">
+            {/* Product details */}
+            <div className="space-y-1 text-md sm:text-lg text-gray-700">
                 <p>
                     <strong>Overview:</strong> {product?.description}
                 </p>
@@ -201,8 +204,19 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                         <strong>Assurance:</strong> {product.assurance}
                     </p>
                 )}
+                {product?.weight && (
+                    <p>
+                        <strong>Weight:</strong> {product?.weight}
+                    </p>
+                )}
+                {product?.hsnCode && (
+                    <p>
+                        <strong>HSN Code:</strong> {product?.hsnCode}
+                    </p>
+                )}
             </div>
 
+            {/* Customizations */}
             <div className="border-t pt-4 space-y-3">
                 <h2 className="text-lg font-semibold">Customizations</h2>
                 <label className="flex justify-between items-center">
@@ -229,6 +243,7 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                 </label>
             </div>
 
+            {/* Quantity */}
             <div className="space-y-2">
                 <label className="font-medium">Quantity</label>
                 <div className="flex items-center gap-3">
@@ -250,6 +265,7 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                 </div>
             </div>
 
+            {/* Actions */}
             <div className="space-y-2">
                 <button
                     onClick={handleBuyNow}
@@ -263,11 +279,12 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                     disabled={!product.stock}
                     className="w-full py-3 rounded border border-foreground text-foreground hover:bg-gray-50 disabled:bg-gray-100"
                 >
-                    <ShoppingCart className="inline-block mr-2" />{" "}
+                    <ShoppingCart className="inline-block mr-2" />
                     {inCart ? "Go To Cart" : "Add To Cart"}
                 </button>
             </div>
 
+            {/* Trust icons */}
             <div className="grid grid-cols-3 gap-4 text-center text-sm pt-4">
                 <div>
                     <Truck className="mx-auto mb-1" /> Free Shipping
@@ -280,13 +297,13 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                 </div>
             </div>
 
-            {/* FAQ Section */}
+            {/* FAQ */}
             <div className="pt-6 border-t">
                 <button
                     onClick={() => setFaqOpen(!faqOpen)}
                     className="flex justify-between items-center w-full font-semibold text-lg"
                 >
-                    Color & Care Guide
+                    Color & Care Guide{" "}
                     {faqOpen ? <ChevronUp /> : <ChevronDown />}
                 </button>
                 {faqOpen && (
@@ -300,18 +317,19 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                 )}
             </div>
 
-            {/* Shipping Section */}
+            {/* Supplier Info */}
             <div className="pt-4 border-t">
                 <button
                     onClick={() => setShippingOpen(!shippingOpen)}
                     className="flex justify-between items-center w-full font-semibold text-lg"
                 >
-                    Supplier information
+                    Supplier Information{" "}
                     {shippingOpen ? <ChevronUp /> : <ChevronDown />}
                 </button>
                 {shippingOpen && (
                     <div className="mt-2 text-sm text-gray-600">
                         2nd Floor, C.K 20/9 Shittla Katra Thatheri Bazar
+                        <br />
                         Varanasi, Uttar Pradesh 221010
                     </div>
                 )}

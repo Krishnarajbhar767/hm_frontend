@@ -21,7 +21,7 @@ function MainLayout() {
                 <JoinNewsLetter />
             </AnimatePresence>
             <WhatsAppChatIcon
-                phoneNumber={8960500991}
+                phoneNumber={918960500991}
                 message={
                     "Hello Team Srijan Fabs, I hope you're doing well. I would like to get in touch regarding your services."
                 }

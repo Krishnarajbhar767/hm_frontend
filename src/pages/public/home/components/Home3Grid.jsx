@@ -39,7 +39,7 @@ function Home3Grid() {
                             className="w-full h-[500px] object-cover object-top md:object-center  hover:scale-[101%] transition-all ease-linear duration-200 shadow-sm  border border-gray-200 "
                         />
                         <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4">
-                            <p class="text-white text-lg font-semibold text-center">
+                            <p className="text-white text-lg font-semibold text-center">
                                 {item.title}
                             </p>
                         </div>

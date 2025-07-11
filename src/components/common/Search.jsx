@@ -1,22 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, memo } from "react";
 import Heading from "../../pages/public/home/components/Heading";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import slugify from "slugify";
 
+//  Debounce Hook
+const useDebounce = (value, delay = 300) => {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+    useEffect(() => {
+        const handler = setTimeout(() => setDebouncedValue(value), delay);
+        return () => clearTimeout(handler);
+    }, [value, delay]);
+    return debouncedValue;
+};
+
 const Search = ({ isOpen, closeHandler }) => {
     const [query, setQuery] = useState("");
+    const debouncedQuery = useDebounce(query);
+    // Loadin Animation After First load
+    const [hasOpenedBefore, setHasOpenedBefore] = useState(false);
+    useEffect(() => setHasOpenedBefore(true), []);
 
     useEffect(() => {
         const scrollbarWidth =
             window.innerWidth - document.documentElement.clientWidth;
         document.body.style.overflow = "hidden";
-        document.documentElement.style.overflow = "hidden";
         document.body.style.paddingRight = `${scrollbarWidth}px`;
         return () => {
             document.body.style.overflow = "";
-            document.documentElement.style.overflow = "";
             document.body.style.paddingRight = "";
         };
     }, []);
@@ -25,11 +37,13 @@ const Search = ({ isOpen, closeHandler }) => {
         (state) => state?.category?.categories || []
     );
     const products = useSelector((state) => state?.product?.products || []);
-    const filteredProducts = query
-        ? products.filter((item) =>
-              item?.name?.toLowerCase().includes(query.toLowerCase())
-          )
-        : products;
+
+    const filteredProducts = useMemo(() => {
+        const q = debouncedQuery.toLowerCase();
+        return debouncedQuery
+            ? products.filter((item) => item?.name?.toLowerCase().includes(q))
+            : products;
+    }, [debouncedQuery, products]);
 
     return (
         <div
@@ -38,24 +52,19 @@ const Search = ({ isOpen, closeHandler }) => {
         >
             <motion.div
                 className="absolute flex flex-col bg-white w-full sm:w-4/5 md:w-1/2 lg:w-1/3 h-full right-0 z-[101]"
-                initial={{ opacity: 0, x: 300 }}
+                initial={hasOpenedBefore ? { opacity: 0, x: 300 } : false}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
                 exit={{ opacity: 0, x: 300 }}
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* Header */}
                 <Header closeHandler={closeHandler} />
-
-                {/* Search Input */}
                 <SearchInput query={query} setQuery={setQuery} />
-
-                {/* Content */}
                 <SearchContent
                     categories={categories}
                     products={filteredProducts}
                     closeHandler={closeHandler}
-                    query={query}
+                    query={debouncedQuery}
                 />
             </motion.div>
         </div>
@@ -64,7 +73,7 @@ const Search = ({ isOpen, closeHandler }) => {
 
 export default Search;
 
-// ---------------------- Components ----------------------
+// ---------------------- Subcomponents ----------------------
 
 const Header = ({ closeHandler }) => (
     <>
@@ -98,6 +107,7 @@ const SearchInput = ({ query, setQuery }) => (
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 className="outline-none w-full border-none py-2 text-sm sm:text-base text-foreground"
+                autoFocus
             />
             <svg
                 className="w-4 h-4 sm:w-5 sm:h-5 text-foreground absolute left-2 top-1/2 -translate-y-1/2"
@@ -119,16 +129,12 @@ const SearchInput = ({ query, setQuery }) => (
 
 const SearchContent = ({ categories, products, closeHandler, query }) => (
     <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-4">
-        {/* Categories */}
         <h1 className="font-medium text-base sm:text-lg text-foreground tracking-wide mt-2">
             Quick Links
         </h1>
-        <ul className="text-foreground mt-2 space-y-1 text-sm sm:text-md font-medium tracking-wide capitalize flex flex-col ">
+        <ul className="text-foreground mt-2 space-y-1 text-sm sm:text-md font-medium tracking-wide capitalize flex flex-col">
             {categories?.slice(0, 3).map((item) => {
-                const slug = slugify(item.name, {
-                    lower: true,
-                    strict: true,
-                });
+                const slug = slugify(item.name, { lower: true, strict: true });
                 return (
                     <Link
                         key={item._id}
@@ -142,7 +148,6 @@ const SearchContent = ({ categories, products, closeHandler, query }) => (
             })}
         </ul>
 
-        {/* Products */}
         <h1 className="font-medium text-lg sm:text-lg text-foreground mt-4">
             {query ? "Search Results" : "Need some inspiration?"}
         </h1>
@@ -162,29 +167,52 @@ const SearchContent = ({ categories, products, closeHandler, query }) => (
     </div>
 );
 
-const ProductCard = ({ item, closeHandler }) => (
-    <Link to={`/product/${item._id}`} onClick={closeHandler}>
-        <div className="flex h-36 sm:h-36 gap-3 border-b last:border-b-0 border-foreground/40 pb-3">
-            {/* Image */}
-            <div className="w-36 sm:w-36">
-                <img
-                    src={item.images?.[0]}
-                    className="h-full w-full object-cover  object-top cursor-pointer"
-                    alt={item?.name}
-                />
+const ProductCard = memo(({ item, closeHandler }) => {
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [isMounted, setIsMounted] = useState(true);
+
+    useEffect(() => {
+        setIsMounted(true);
+        return () => setIsMounted(false);
+    }, []);
+
+    const handleImageLoad = () => {
+        if (isMounted) setIsLoaded(true);
+    };
+
+    return (
+        <Link to={`/product/${item._id}`} onClick={closeHandler}>
+            <div className="flex h-36 gap-3 border-b last:border-b-0 border-foreground/40 pb-3">
+                {/* Image container with shimmer until load */}
+                <div className="w-36 relative overflow-hidden  bg-gray-100">
+                    {!isLoaded && (
+                        <div className="absolute inset-0 bg-gray-300 animate-pulse" />
+                    )}
+                    <img
+                        src={item.images?.[0]}
+                        alt={item?.name}
+                        className={`h-full w-full object-cover object-top cursor-pointer transition-opacity duration-300 ${
+                            isLoaded ? "opacity-100" : "opacity-0"
+                        }`}
+                        onLoad={handleImageLoad}
+                        loading="lazy"
+                        decoding="async"
+                    />
+                </div>
+
+                {/* Info */}
+                <div className="flex-1 space-y-1 mt-1 overflow-hidden">
+                    <h1 className="capitalize text-md sm:text-lg font-medium cursor-pointer line-clamp-1">
+                        {item?.name}
+                    </h1>
+                    <h2 className="text-sm sm:text-md cursor-pointer font-normal">
+                        ₹ {item?.price}
+                    </h2>
+                    <h2 className="text-xs sm:text-sm cursor-pointer line-clamp-3">
+                        {item?.description}
+                    </h2>
+                </div>
             </div>
-            {/* Info */}
-            <div className="flex-1 space-y-1 mt-1 overflow-hidden">
-                <h1 className="capitalize text-md sm:text-lg font-medium cursor-pointer line-clamp-1">
-                    {item?.name}
-                </h1>
-                <h2 className="text-sm sm:text-md cursor-pointer font-normal">
-                    &#x20B9; {item?.price}
-                </h2>
-                <h2 className="text-xs sm:text-sm cursor-pointer line-clamp-3">
-                    {item?.description}
-                </h2>
-            </div>
-        </div>
-    </Link>
-);
+        </Link>
+    );
+});

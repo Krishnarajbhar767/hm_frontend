@@ -1,8 +1,19 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FALLPICO_PRICE, TASSELLS_PRICE } from "../../../../Constant";
+import { useSelector } from "react-redux";
 
-function OrderSummary({ cartItems, subtotal, gst, total }) {
+const OrderSummary = React.memo(function OrderSummary({
+    cartItems,
+    subtotal,
+    gst,
+    total,
+}) {
+    const discountPercentage = useSelector(
+        (state) => state?.cart?.discountPercentage
+    );
+    const discount = (subtotal * discountPercentage) / 100;
+    console.log("Discount ->", discount);
     return (
         <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -64,12 +75,25 @@ function OrderSummary({ cartItems, subtotal, gst, total }) {
                         <span>Subtotal</span>
                         <span>₹{subtotal.toFixed(2)}</span>
                     </div>
+
+                    {discount && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="flex justify-between text-green-600"
+                        >
+                            <span>Discount</span>
+                            <span>-₹{discount.toFixed(2)}</span>
+                        </motion.div>
+                    )}
+
                     <div className="flex justify-between items-center">
                         <span className="text-sm">
-                            Including ₹{gst} in texes (5% GST)
+                            Including ₹{gst} in taxes (5% GST)
                         </span>
-                        {/* <span>₹{gst.toFixed(2)}</span> */}
                     </div>
+
                     <div className="border-t border-foreground/50 pt-2 sm:pt-3 mt-2 sm:mt-3">
                         <div className="flex justify-between text-sm sm:text-base md:text-lg font-semibold text-foreground">
                             <span>Total</span>
@@ -87,6 +111,6 @@ function OrderSummary({ cartItems, subtotal, gst, total }) {
             </div>
         </motion.div>
     );
-}
+});
 
 export default OrderSummary;

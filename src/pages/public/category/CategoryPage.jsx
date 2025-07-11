@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import SidebarFilter from "../../../components/common/SidebarFilter";
 import { Star, Filter, Grid, List, ChevronDown } from "lucide-react";
 
 function CategoryPage() {
-    const { id, category } = useParams();
-    const { fabric } = useParams();
-    console.log("Is Fabrics Routes ->", fabric);
-    const displayCategory = category?.replace(/-/g, " ") || "Category";
+    const { id, category, fabric } = useParams();
+    const displayCategory =
+        (category || fabric)?.replace(/-/g, " ") || "Category";
 
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -18,141 +17,111 @@ function CategoryPage() {
     const [sortOption, setSortOption] = useState("default");
     const [viewMode, setViewMode] = useState("grid");
 
-    const ProductSkeleton = () => (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm h-full flex flex-col">
-            <div className="relative h-64 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
-            <div className="p-4 space-y-3 flex-1 flex flex-col">
-                <div className="h-5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded animate-pulse" />
-                <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-3/4 animate-pulse" />
-                <div className="flex justify-between items-center mt-auto">
-                    <div className="h-6 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-20 animate-pulse" />
-                    <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded w-16 animate-pulse" />
+    const ProductSkeleton = useMemo(
+        () => () =>
+            (
+                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm h-full flex flex-col">
+                    <div className="relative h-64 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
+                    <div className="p-4 space-y-3 flex-1 flex flex-col">
+                        <div className="h-5 bg-gray-200 rounded animate-pulse" />
+                        <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse" />
+                        <div className="flex justify-between items-center mt-auto">
+                            <div className="h-6 w-20 bg-gray-200 rounded animate-pulse" />
+                            <div className="h-4 w-16 bg-gray-200 rounded animate-pulse" />
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            ),
+        []
     );
 
     useEffect(() => {
-        const fetchProducts = async () => {
+        const controller = new AbortController();
+        async function fetchData() {
+            setLoading(true);
+            setError(null);
             try {
-                setLoading(true);
-                const response = await fetch(
-                    `${import.meta.env.VITE_BACKEND_URL}/categories/${id}`
-                );
-                if (!response.ok)
-                    throw new Error("Failed to fetch category data");
-                const data = await response.json();
-                setProducts(data?.data?.products || []);
-                setFilteredProducts(data?.data?.products || []);
+                const url = fabric
+                    ? `${
+                          import.meta.env.VITE_BACKEND_URL
+                      }/products/${fabric}/${id}`
+                    : `${import.meta.env.VITE_BACKEND_URL}/categories/${id}`;
+                const res = await fetch(url, { signal: controller.signal });
+                if (!res.ok) throw new Error("Failed to fetch data");
+                const json = await res.json();
+                const list = fabric ? json.data : json.data.products;
+                setProducts(list);
+                setFilteredProducts(list);
                 setCategoryDetails({
-                    name: data?.data?.name || displayCategory,
+                    name: fabric || json.data.name || displayCategory,
                     description:
-                        data?.data?.description ||
+                        json.data.description ||
                         "Explore our curated collection of premium products.",
                 });
             } catch (err) {
-                setError(err.message);
+                if (err.name !== "AbortError") setError(err.message);
             } finally {
                 setLoading(false);
             }
-        };
+        }
 
-        const fetchProductByFabric = async () => {
-            try {
-                setLoading(true);
-                const response = await fetch(
-                    `${
-                        import.meta.env.VITE_BACKEND_URL
-                    }/products/${fabric}/${id}`
+        fetchData();
+        return () => controller.abort();
+    }, [id, fabric, displayCategory]);
+
+    const handleFilterChange = useCallback(
+        (filters) => {
+            const { priceRange, fabric, color, technique } = filters;
+            const filtered = products.filter((p) => {
+                return (
+                    p.price >= priceRange[0] &&
+                    p.price <= priceRange[1] &&
+                    (fabric
+                        ? p.fabric.title.toLowerCase() === fabric.toLowerCase()
+                        : true) &&
+                    (color ? p.color === color : true) &&
+                    (technique ? p.technique === technique : true)
                 );
-                if (!response.ok)
-                    throw new Error("Failed to fetch category data");
-                const data = await response.json();
-                console.log("Response Of Fabrics Api ->", data.data);
-                setProducts(data?.data || []);
-                setFilteredProducts(data?.data || []);
-                setCategoryDetails({
-                    name: fabric || displayCategory,
-                    description:
-                        data?.data?.description ||
-                        "Explore our curated collection of premium products.",
-                });
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        if (!fabric) {
-            fetchProducts();
-        } else {
-            fetchProductByFabric();
-        }
-    }, [id, displayCategory, fabric]);
+            });
+            setFilteredProducts(filtered);
+        },
+        [products]
+    );
 
-    const handleFilterChange = (filters) => {
-        const { priceRange, fabric, color, technique } = filters;
-        let filtered = products.filter((product) => {
-            const inPriceRange =
-                product.price >= priceRange[0] &&
-                product.price <= priceRange[1];
-            const matchesFabric = fabric
-                ? product.fabric.title.toLowerCase() === fabric.toLowerCase()
-                : true;
-            const matchesColor = color ? product.color === color : true;
-            const matchesTechnique = technique
-                ? product.technique === technique
-                : true;
-            return (
-                inPriceRange &&
-                matchesFabric &&
-                matchesColor &&
-                matchesTechnique
-            );
-        });
+    const sortProducts = useCallback((list, opt) => {
+        const arr = [...list];
+        if (opt === "price-low-to-high") arr.sort((a, b) => a.price - b.price);
+        else if (opt === "price-high-to-low")
+            arr.sort((a, b) => b.price - a.price);
+        else if (opt === "rating")
+            arr.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        else if (opt === "newest")
+            arr.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        return arr;
+    }, []);
 
-        filtered = sortProducts(filtered, sortOption);
-        setFilteredProducts(filtered);
-    };
+    const handleSortChange = useCallback(
+        (e) => {
+            setSortOption(e.target.value);
+            setFilteredProducts((prev) => sortProducts(prev, e.target.value));
+        },
+        [sortProducts]
+    );
 
-    const sortProducts = (productsToSort, option) => {
-        const sorted = [...productsToSort];
-        if (option === "price-low-to-high") {
-            sorted.sort((a, b) => a.price - b.price);
-        } else if (option === "price-high-to-low") {
-            sorted.sort((a, b) => b.price - a.price);
-        } else if (option === "rating") {
-            sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-        } else if (option === "newest") {
-            sorted.sort(
-                (a, b) =>
-                    new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
-            );
-        }
-        return sorted;
-    };
-
-    const handleSortChange = (e) => {
-        const option = e.target.value;
-        setSortOption(option);
-        const sorted = sortProducts(filteredProducts, option);
-        setFilteredProducts(sorted);
-    };
-
-    const renderStars = (rating) => {
-        return Array(5)
-            .fill()
-            .map((_, index) => (
+    const renderStars = useCallback(
+        (rating) =>
+            Array.from({ length: 5 }, (_, i) => (
                 <Star
-                    key={index}
+                    key={i}
                     className={`w-3 h-3 ${
-                        index < Math.floor(rating || 0)
+                        i < Math.floor(rating || 0)
                             ? "fill-yellow-400 text-yellow-400"
                             : "text-gray-300"
                     }`}
                 />
-            ));
-    };
+            )),
+        []
+    );
 
     return (
         <main>
@@ -182,10 +151,8 @@ function CategoryPage() {
                             onClick={() => setIsSidebarOpen(true)}
                             className="lg:hidden flex items-center gap-2 bg-foreground text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 font-medium"
                         >
-                            <Filter className="w-4 h-4" />
-                            Filters
+                            <Filter className="w-4 h-4" /> Filters
                         </button>
-
                         <div className="hidden sm:flex items-center gap-1 bg-gray-100 p-1 rounded-lg">
                             <button
                                 onClick={() => setViewMode("grid")}
@@ -209,7 +176,6 @@ function CategoryPage() {
                             </button>
                         </div>
                     </div>
-
                     <div className="flex items-center gap-3">
                         <label className="text-sm font-medium text-foreground">
                             Sort by:
@@ -218,7 +184,7 @@ function CategoryPage() {
                             <select
                                 value={sortOption}
                                 onChange={handleSortChange}
-                                className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-foreground focus:border-transparent text-sm font-medium cursor-pointer transition-all duration-200"
+                                className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-foreground text-sm font-medium cursor-pointer transition-all duration-200"
                             >
                                 <option value="default">Featured</option>
                                 <option value="newest">Newest First</option>
@@ -241,21 +207,18 @@ function CategoryPage() {
                         isOpen={isSidebarOpen}
                         toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
                     />
-
                     <div className="flex-1">
                         {loading ? (
                             <div
                                 className={`grid gap-6 ${
                                     viewMode === "grid"
-                                        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 auto-rows-fr"
+                                        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
                                         : "grid-cols-1"
                                 }`}
                             >
-                                {Array(6)
-                                    .fill()
-                                    .map((_, index) => (
-                                        <ProductSkeleton key={index} />
-                                    ))}
+                                {Array.from({ length: 6 }).map((_, i) => (
+                                    <ProductSkeleton key={i} />
+                                ))}
                             </div>
                         ) : error ? (
                             <div className="text-center py-12">
@@ -308,14 +271,19 @@ function CategoryPage() {
                                                     : "aspect-[4/5] h-96"
                                             }`}
                                         >
-                                            <img
+                                            <ProductImage
+                                                src={product.images?.[0]}
+                                                alt={product.name}
+                                            />
+                                            {/* <img
+                                                loading="lazy"
                                                 src={
-                                                    product.images[0] ||
+                                                    product.images?.[0] ||
                                                     "/Product_Placeholder.webp"
                                                 }
                                                 alt={product.name}
                                                 className="w-full h-full object-cover object-top group-hover:scale-102 transition-transform duration-300"
-                                            />
+                                            /> */}
                                             {product.stock < 10 &&
                                                 product.stock > 0 && (
                                                     <div className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-medium">
@@ -336,12 +304,10 @@ function CategoryPage() {
                                             <h3 className="text-lg font-semibold text-foreground line-clamp-2 group-hover:text-foreground transition-colors">
                                                 {product.name}
                                             </h3>
-
                                             <p className="text-sm text-foreground line-clamp-2 leading-relaxed">
                                                 {product.description ||
                                                     "Premium quality product with excellent craftsmanship."}
                                             </p>
-
                                             <div className="flex justify-between items-center">
                                                 <div className="space-y-1">
                                                     <p className="text-xl font-bold text-foreground">
@@ -365,7 +331,6 @@ function CategoryPage() {
                                                     </p>
                                                 </div>
                                             </div>
-
                                             <div className="grid grid-cols-2 gap-2 text-xs text-foreground bg-gray-50 p-3 rounded-lg">
                                                 <div>
                                                     <span className="font-medium">
@@ -375,13 +340,12 @@ function CategoryPage() {
                                                         "N/A"}
                                                 </div>
                                                 <div>
-                                                    <span className="font-medium">
+                                                    <span className="font-medium capitalize">
                                                         Color:
                                                     </span>{" "}
                                                     {product.color || "N/A"}
                                                 </div>
                                             </div>
-
                                             <Link
                                                 to={`/product/${product._id}`}
                                                 className="mt-auto block w-full text-center bg-foreground text-white py-3 px-4 rounded-lg hover:bg-foreground/90 transition-colors duration-200 font-medium"
@@ -401,3 +365,24 @@ function CategoryPage() {
 }
 
 export default CategoryPage;
+
+const ProductImage = React.memo(function ProductImage({ src, alt }) {
+    const [loaded, setLoaded] = useState(false);
+
+    return (
+        <div className="relative w-full h-full">
+            {!loaded && (
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse z-10" />
+            )}
+            <img
+                loading="lazy"
+                src={src}
+                alt={alt}
+                onLoad={() => setLoaded(true)}
+                className={`w-full h-full object-cover object-top transition-opacity duration-500 ${
+                    loaded ? "opacity-100" : "opacity-0"
+                }`}
+            />
+        </div>
+    );
+});

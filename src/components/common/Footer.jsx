@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../utils/apiConnector";
 import { handleAxiosError } from "../../utils/handleAxiosError";
-
+import LOGO from "../../assets/images/logo/SRIJAN FABS PNG VERTICAL.png";
 import {
     FaFacebookF,
     FaLinkedin,
@@ -55,7 +55,12 @@ const Footer = () => {
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
                     {/* Company Info */}
                     <div>
-                        <h2 className="text-2xl font-bold mb-4">SRIJAN</h2>
+                        {/* <h2 className="text-2xl font-bold mb-4">SRIJAN</h2> */}
+                        <img
+                            src={LOGO}
+                            alt="srijanFab_logo"
+                            className="mb-3 relative"
+                        />
                         <p className="text-sm mb-2">
                             2nd Floor, C.K 20/9 Shittla Katra Thatheri Bazar
                             <br />

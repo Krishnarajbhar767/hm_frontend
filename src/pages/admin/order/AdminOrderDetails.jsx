@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
     FiArrowLeft,
@@ -269,116 +269,167 @@ const AdminOrderOverview = ({ order, formatINR }) => (
     </motion.div>
 );
 
-// Admin Product Item Component
-const AdminProductItem = ({ item, index, formatINR }) => {
+const AdminProductItem = ({ item, index, formatINR, order }) => {
+    const navigate = useNavigate();
     const basePrice = item.product.price;
     const fallPicoPrice = item.withFallPico ? FALLPICO_PRICE : 0;
     const tasselsPrice = item.withTassels ? TASSELLS_PRICE : 0;
     const addonPrice = fallPicoPrice + tasselsPrice;
-    const itemTotal = (basePrice + addonPrice) * item.quantity;
+
+    const offerPercent = order?.offer || 0;
+    const couponDiscountAmount = order?.discount || 0;
+
+    const baseOfferDiscount = (basePrice * offerPercent) / 100;
+    const discountedBasePrice = basePrice - baseOfferDiscount;
+
+    const finalUnitPrice = discountedBasePrice + addonPrice;
+    const grossTotal = finalUnitPrice * item.quantity;
+    const netPayableTotal = grossTotal - couponDiscountAmount;
+
+    const couponPercent = couponDiscountAmount
+        ? ((couponDiscountAmount / grossTotal) * 100).toFixed(2)
+        : 0;
 
     return (
         <motion.div
             key={index}
             whileHover={{ scale: 1.01 }}
             transition={{ duration: 0.2 }}
-            className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
+            className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md"
         >
             <div className="flex flex-col sm:flex-row gap-6">
-                {/* Product Image */}
+                {/* Image */}
                 <div className="flex-shrink-0">
                     <img
-                        src={item.product.images[0] || "/placeholder.svg"}
+                        onClick={() =>
+                            navigate(`/product/${item.product?._id}`)
+                        }
+                        src={
+                            item.product.images[0] ||
+                            "/Product_Placeholder.webp"
+                        }
                         alt={item.product.name}
-                        className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-lg border border-gray-200"
+                        className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-sm cursor-pointer"
                     />
                 </div>
 
-                {/* Product Details */}
-                <div className="flex-1 space-y-4">
+                {/* Details */}
+                <div className="flex-1 space-y-4 text-sm text-gray-700">
                     <div>
-                        <h4 className="text-lg font-semibold text-gray-800 mb-1">
+                        <h4 className="text-lg font-semibold text-gray-800 capitalize">
                             {item.product.name}
                         </h4>
-                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <div className="flex gap-4 mt-1 text-xs text-gray-500">
                             <span>
-                                Product ID:{" "}
-                                <span className="font-mono">
-                                    {item.product._id}
-                                </span>
+                                Product ID: <code>{item.product._id}</code>
                             </span>
                             <span>
-                                Quantity:{" "}
-                                <span className="font-medium">
-                                    {item.quantity}
-                                </span>
+                                Qty: <strong>{item.quantity}</strong>
                             </span>
                         </div>
                     </div>
 
-                    {/* Admin Pricing Breakdown */}
-                    <div className="space-y-3">
-                        <div className="bg-gray-50 rounded-lg p-4">
-                            <h5 className="text-sm font-semibold text-gray-800 mb-3">
-                                Pricing Analysis
-                            </h5>
+                    <div className="bg-gray-50 rounded-lg p-4 space-y-4">
+                        <h5 className="text-sm font-bold text-gray-900">
+                            🧾 Price Calculation Summary
+                        </h5>
 
-                            <div className="space-y-2 text-sm">
-                                <div className="flex justify-between">
-                                    <span className="text-gray-600">
-                                        Base Price
-                                    </span>
-                                    <span className="font-medium">
-                                        ₹{formatINR(basePrice)}
-                                    </span>
-                                </div>
+                        {/* Step 1: Base Price */}
+                        <div className="space-y-1">
+                            <p className="font-semibold text-gray-700">
+                                Step 1: Base Price
+                            </p>
+                            <div className="flex justify-between">
+                                <span>Base Price (per unit)</span>
+                                <span>₹{formatINR(basePrice)}</span>
+                            </div>
+                            {offerPercent > 0 && (
+                                <>
+                                    <div className="flex justify-between text-green-600">
+                                        <span>
+                                            Offer Discount ({offerPercent}%)
+                                        </span>
+                                        <span>
+                                            -₹{formatINR(baseOfferDiscount)}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between font-medium">
+                                        <span>Price After Offer</span>
+                                        <span>
+                                            ₹{formatINR(discountedBasePrice)}
+                                        </span>
+                                    </div>
+                                </>
+                            )}
+                        </div>
 
-                                {/* Addons */}
-                                {(item.withFallPico || item.withTassels) && (
-                                    <div className="space-y-1">
-                                        <div className="flex items-center gap-1 text-xs text-gray-500 font-medium">
-                                            <FiPlus size={12} />
-                                            <span>Customer Add-ons</span>
-                                        </div>
-
-                                        {item.withFallPico && (
-                                            <div className="flex justify-between pl-4">
-                                                <span className="text-gray-600">
-                                                    Fall Pico
-                                                </span>
-                                                <span className="font-medium text-blue-600">
-                                                    +₹{FALLPICO_PRICE}
-                                                </span>
-                                            </div>
-                                        )}
-
-                                        {item.withTassels && (
-                                            <div className="flex justify-between pl-4">
-                                                <span className="text-gray-600">
-                                                    Tassels
-                                                </span>
-                                                <span className="font-medium text-blue-600">
-                                                    +₹{TASSELLS_PRICE}
-                                                </span>
-                                            </div>
-                                        )}
+                        {/* Step 2: Add-ons */}
+                        {(item.withFallPico || item.withTassels) && (
+                            <div className="space-y-1 pt-2">
+                                <p className="font-semibold text-gray-700">
+                                    Step 2: Add-ons
+                                </p>
+                                {item.withFallPico && (
+                                    <div className="flex justify-between">
+                                        <span>+ Fall Pico</span>
+                                        <span>+₹{FALLPICO_PRICE}</span>
                                     </div>
                                 )}
+                                {item.withTassels && (
+                                    <div className="flex justify-between">
+                                        <span>+ Tassels</span>
+                                        <span>+₹{TASSELLS_PRICE}</span>
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
-                                <div className="border-t pt-2 flex justify-between font-semibold">
-                                    <span>Per Unit Price</span>
-                                    <span>
-                                        ₹{formatINR(basePrice + addonPrice)}
-                                    </span>
-                                </div>
+                        {/* Step 3: Final Per Unit */}
+                        <div className="border-t pt-2 space-y-1">
+                            <p className="font-semibold text-gray-700">
+                                Step 3: Final Price (Per Unit)
+                            </p>
+                            <div className="flex justify-between font-medium">
+                                <span>Per Unit Final Price</span>
+                                <span>₹{formatINR(finalUnitPrice)}</span>
+                            </div>
+                        </div>
 
-                                <div className="flex justify-between text-lg font-bold text-gray-800">
+                        {/* Step 4: Gross Total */}
+                        <div className="space-y-1 pt-2">
+                            <p className="font-semibold text-gray-700">
+                                Step 4: Gross Total
+                            </p>
+                            <div className="flex justify-between font-bold text-gray-800">
+                                <span>
+                                    {item.quantity} × ₹
+                                    {formatINR(finalUnitPrice)}
+                                </span>
+                                <span>₹{formatINR(grossTotal)}</span>
+                            </div>
+                        </div>
+
+                        {/* Step 5: Coupon Discount */}
+                        {couponDiscountAmount > 0 && (
+                            <div className="space-y-1 pt-2 text-red-600">
+                                <p className="font-semibold text-red-700">
+                                    Step 5: Coupon Discount
+                                </p>
+                                <div className="flex justify-between">
                                     <span>
-                                        Total Revenue ({item.quantity} units)
+                                        Coupon Discount ({couponPercent}%)
                                     </span>
-                                    <span>₹{formatINR(itemTotal)}</span>
+                                    <span>
+                                        -₹{formatINR(couponDiscountAmount)}
+                                    </span>
                                 </div>
                             </div>
+                        )}
+
+                        {/* Step 6: Final Payable */}
+                        <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-900">
+                            <span> Net Payable</span>
+                            <span>₹{formatINR(netPayableTotal)}</span>
                         </div>
                     </div>
                 </div>
@@ -702,6 +753,7 @@ function AdminOrderDetails() {
                                     item={item}
                                     index={idx}
                                     formatINR={formatINR}
+                                    order={order}
                                 />
                             ))}
                         </div>

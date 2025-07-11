@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
+    removeCouponDiscount,
     removeFromCart,
+    setCouponDiscount,
     updateQuantity,
 } from "../../../../redux/slices/cartSlice"; // Adjust path as needed
 import Button from "../../../../components/common/Button"; // Adjust path as needed
@@ -75,19 +77,17 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
             className="grid grid-cols-1 sm:grid-cols-5 gap-2 sm:gap-4 md:gap-6 items-start sm:items-center border-b border-foreground/50 pb-3 sm:pb-4"
         >
             {/* Product + mobile details */}
-            <div
-                className="flex items-start sm:items-center gap-2 sm:gap-3 md:gap-4 col-span-1 sm:col-span-2 cursor-pointer"
-                onClick={() => navigate(`/product/${item._id}`)}
-            >
+            <div className="flex items-start sm:items-center gap-2 sm:gap-3 md:gap-4 col-span-1 sm:col-span-2 cursor-pointer">
                 <motion.img
                     src={imageUrl}
                     alt={item.name}
                     className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-cover object-top"
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}
+                    onClick={() => navigate(`/product/${item._id}`)}
                 />
                 <div className="flex-1">
-                    <h2 className="text-xs sm:text-sm md:text-base font-medium text-foreground uppercase">
+                    <h2 className="text-xs sm:text-sm md:text-base font-medium text-foreground capitalize line-clamp-1">
                         {item.name}
                     </h2>
                     {(item.addons.withFallPico || item.addons.withTassels) && (
@@ -275,6 +275,9 @@ function OrderSummary({
     handleCheckout,
     isCheckingOut,
     cartEmpty,
+    appliedCoupon,
+    removeCoupon,
+    discountPercentage,
 }) {
     return (
         <motion.div
@@ -298,7 +301,9 @@ function OrderSummary({
                         const itemTotal = item.finalPrice * item.quantity;
                         return (
                             <div key={index} className="mb-3 border-b pb-2">
-                                <p className="font-medium">{item.name}</p>
+                                <p className="font-medium line-clamp-1 capitalize">
+                                    {item.name}
+                                </p>
                                 <p>
                                     Base Price: ₹{basePrice.toFixed(2)} ×{" "}
                                     {item.quantity} = ₹
@@ -361,24 +366,40 @@ function OrderSummary({
                     </div>
                 </div>
                 {/* Coupon */}
-                <div className="flex flex-col sm:flex-row gap-2">
-                    <input
-                        type="text"
-                        value={coupon}
-                        onChange={(e) => setCoupon(e.target.value)}
-                        placeholder="Enter coupon code"
-                        className="flex-1 border border-foreground/50 px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-foreground"
-                    />
-                    <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                    >
-                        <Button
-                            text="Apply"
-                            onClick={applyCoupon}
-                            className="text-xs sm:text-sm py-1 sm:py-2 px-3 sm:px-4"
+                <div className="flex flex-col gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
+                        <input
+                            type="text"
+                            value={coupon}
+                            onChange={(e) => setCoupon(e.target.value)}
+                            placeholder="Enter coupon code"
+                            className="uppercase flex-1 border border-foreground/50 px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-foreground"
                         />
-                    </motion.div>
+                        <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            <Button
+                                text="Apply"
+                                onSubmitHandler={applyCoupon}
+                                className="text-xs sm:text-sm py-1 sm:py-2 px-3 sm:px-4"
+                            />
+                        </motion.div>
+                    </div>
+                    {appliedCoupon && (
+                        <div className="mt-2 text-sm text-green-600">
+                            Applied coupon: {appliedCoupon} (
+                            {discountPercentage}% off)
+                            <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                onClick={removeCoupon}
+                                className="ml-2 text-red-500"
+                            >
+                                Remove
+                            </motion.button>
+                        </div>
+                    )}
                 </div>
             </div>
             {/* Desktop checkout */}
@@ -429,7 +450,6 @@ function ShoppingBag({
 
     // Redux state
     const user = useSelector((state) => state.user.user);
-    // const cartItems = useSelector((state) => state.cart.cartItems);
     const subtotal = cartItems.reduce(
         (sum, item) => sum + item.finalPrice * item.quantity,
         0
@@ -437,25 +457,59 @@ function ShoppingBag({
 
     // Local state
     const [coupon, setCoupon] = useState("");
-    const [discount, setDiscount] = useState(0);
+    const [discountPercentage, setDiscountPercentage] = useState(0);
+    const [appliedCoupon, setAppliedCoupon] = useState(null);
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-    const discountedSubtotal = subtotal - discount;
-    const total = discountedSubtotal;
+    const discount = (subtotal * discountPercentage) / 100;
+    const total = subtotal - discount;
     const cartEmpty = cartItems.length === 0;
 
-    // Coupon handler
-    const applyCoupon = () => {
-        if (coupon.trim().toLowerCase() === "save10") {
-            setDiscount(subtotal * 0.1);
-            toast.success("Coupon applied!");
-        } else {
-            setDiscount(0);
-            toast.error("Invalid coupon code");
+    // Coupon handlers
+    const applyCoupon = async () => {
+        if (!coupon.trim()) {
+            toast.error("Please enter a coupon code");
+            return;
+        }
+        if (coupon === appliedCoupon) {
+            toast.info("Coupon already applied");
+            return;
+        }
+        try {
+            const response = await axiosInstance.post("/user/coupon/apply", {
+                couponCode: coupon,
+            });
+            const discountPercent = response.data; // Assuming API returns a number (e.g., 10 for 10%)
+            if (typeof discountPercent === "number" && discountPercent > 0) {
+                setDiscountPercentage(discountPercent);
+                setAppliedCoupon(coupon);
+                dispatch(
+                    setCouponDiscount({
+                        discountPercentage: discountPercent,
+                    })
+                );
+                toast.success("Coupon applied successfully!");
+            } else {
+                toast.error("Invalid coupon code");
+            }
+        } catch (error) {
+            toast.error(
+                error?.response?.data?.message || "Failed to  apply coupon"
+            );
+            console.error(error);
         }
     };
 
-    // Checkout logger
+    const removeCoupon = () => {
+        setDiscountPercentage(0);
+        setAppliedCoupon(null);
+        setCoupon("");
+        // Removing Discount DYnamic For Shopping Bag ->
+        dispatch(removeCouponDiscount);
+        toast.success("Coupon removed");
+    };
+
+    // Checkout handler
     const handleCheckout = () => {
         if (cartEmpty) {
             toast.error("Your cart is empty");
@@ -575,6 +629,9 @@ function ShoppingBag({
                     handleCheckout={handleCheckout}
                     isCheckingOut={isCheckingOut}
                     cartEmpty={cartEmpty}
+                    appliedCoupon={appliedCoupon}
+                    removeCoupon={removeCoupon}
+                    discountPercentage={discountPercentage}
                 />
             </div>
 

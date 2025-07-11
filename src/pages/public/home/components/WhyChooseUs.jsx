@@ -9,7 +9,7 @@ const data = [
     {
         icon: <TbTruckDelivery />,
         heading: "Fast And Free Delivery",
-        subheading: "Free delivery for all orders over $140",
+        subheading: "Free delivery for all orders over india",
     },
     {
         icon: <MdSupportAgent />,

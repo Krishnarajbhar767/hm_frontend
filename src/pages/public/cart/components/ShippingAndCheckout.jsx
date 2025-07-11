@@ -9,11 +9,16 @@ import { useSelector } from "react-redux";
 import ShippingForm from "./ShippingForm";
 
 import OrderSummary from "./OrderSummary";
+import { useOffer } from "../../../../hooks/useOffer";
 
 function ShippingAndCheckout({ cartItems, setStepCount }) {
     const [addresses, setAddresses] = useState([]); // this will be  shared  to shippingForm
     // const cartItems = useSelector((state) => state?.cart?.cartItems);
     const user = useSelector((state) => state?.user?.user);
+    const discountPercentage = useSelector(
+        (state) => state?.cart?.discountPercentage
+    );
+    const offer = useOffer();
     const methods = useForm();
 
     // Compute subtotal, gst and total
@@ -22,7 +27,8 @@ function ShippingAndCheckout({ cartItems, setStepCount }) {
         0
     );
     const gst = +(subtotal * 0.05).toFixed(2); // 5% GST
-    const total = subtotal;
+    const discount = (subtotal * discountPercentage) / 100;
+    const total = discount ? subtotal - discount : subtotal;
 
     const onSubmit = async (data) => {
         let isNewAddress = false;
@@ -41,6 +47,8 @@ function ShippingAndCheckout({ cartItems, setStepCount }) {
             amount: total,
             userId: user?._id,
             items: cartItems,
+            discount,
+            offer: offer ? offer : 0,
             addressId: isNewAddress ? isNewAddress : data.addressId,
         });
         console.log("Razor Pay Order ->", order);

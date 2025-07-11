@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
     FiShoppingBag,
@@ -15,6 +15,7 @@ import { setOrders } from "../../../redux/slices/orderSlice";
 import axiosInstance from "../../../utils/apiConnector";
 import { useOrders } from "../../../hooks/useOrder";
 import { FALLPICO_PRICE, TASSELLS_PRICE } from "../../../Constant";
+import Loader from "../../../components/common/Loader";
 
 function Orders() {
     const user = useSelector((state) => state.user.user);
@@ -201,26 +202,35 @@ function Orders() {
     };
 
     // Order Item Component
-    const OrderItem = ({ item }) => (
-        <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-            <div className="flex-shrink-0">
-                <img
-                    src={item.product?.images[0] || "/Product_Placeholder.webp"}
-                    alt={item.product?.name}
-                    className="w-20 h-20 object-cover rounded-lg border-2 border-gray-200 shadow-sm"
-                />
-            </div>
+    const OrderItem = ({ item }) => {
+        const navigate = useNavigate();
+        return (
+            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 capitalize">
+                <div className="flex-shrink-0 ">
+                    <img
+                        onClick={() =>
+                            navigate(`/product/${item.product?._id}`)
+                        }
+                        src={
+                            item.product?.images[0] ||
+                            "/Product_Placeholder.webp"
+                        }
+                        alt={item.product?.name}
+                        className="w-30 h-30 object-cover rounded-sm  border-gray-200 shadow-sm object-top cursor-pointer"
+                    />
+                </div>
 
-            <div className="flex-1 min-w-0">
-                <h4 className="text-base font-semibold text-foreground mb-2">
-                    {item.product?.name}
-                </h4>
+                <div className="flex-1 min-w-0">
+                    <h4 className="text-base font-semibold text-foreground mb-2">
+                        {item.product?.name}
+                    </h4>
 
-                <PriceBreakdown item={item} />
-                <AddonTags item={item} />
+                    {/* <PriceBreakdown item={item} /> */}
+                    <AddonTags item={item} />
+                </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     // Order Footer Component
     const OrderFooter = ({ order }) => (
@@ -385,7 +395,12 @@ function Orders() {
             </div>
 
             {/* Orders List */}
-            {orders.length === 0 ? (
+
+            {!orders ? (
+                <div className="flex items-center justify-center py-24">
+                    <div className="w-10 h-10 border-4 border-gray-300 border-t-foreground rounded-full animate-spin" />
+                </div>
+            ) : orders.length === 0 ? (
                 <EmptyState />
             ) : (
                 <div className="space-y-6">

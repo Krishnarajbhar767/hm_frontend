@@ -21,7 +21,7 @@ export default function AdminOffers() {
     useEffect(() => {
         (async () => {
             try {
-                const { data } = await axiosInstance.get("/offer");
+                const { data } = await axiosInstance.get("/admin/offer");
                 setOffer(data || null);
             } catch (err) {
                 console.error(err);
@@ -35,7 +35,7 @@ export default function AdminOffers() {
     /** Refreshes the offer from server */
     const reloadOffer = async () => {
         try {
-            const { data } = await axiosInstance.get("/offer");
+            const { data } = await axiosInstance.get("/admin/offer");
             setOffer(data || null);
         } catch (err) {
             console.error(err);
@@ -123,7 +123,36 @@ export default function AdminOffers() {
                             <strong>Status:</strong>{" "}
                             {offer.status ? "Active" : "Inactive"}
                         </div>
+                        <div>
+                            <strong>Created At:</strong>{" "}
+                            {new Date(offer.createdAt).toLocaleString()}
+                        </div>
+                        <div>
+                            {(() => {
+                                const createdAt = new Date(
+                                    offer.createdAt
+                                ).getTime();
+                                const maxAgeMs = offer.maxAge * 60 * 60 * 1000;
+                                const isExpired =
+                                    Date.now() > createdAt + maxAgeMs;
+                                return (
+                                    <>
+                                        <strong>Expired:</strong>{" "}
+                                        <span
+                                            className={
+                                                isExpired
+                                                    ? "text-red-600"
+                                                    : "text-green-600"
+                                            }
+                                        >
+                                            {isExpired ? "Yes" : "No"}
+                                        </span>
+                                    </>
+                                );
+                            })()}
+                        </div>
                     </div>
+
                     <button
                         onClick={() => setModalMode("delete")}
                         className="mt-4 flex items-center gap-1 text-red-600 hover:text-red-800"

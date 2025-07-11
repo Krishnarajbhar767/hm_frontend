@@ -1,21 +1,10 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-    FiHome,
-    FiBox,
-    FiGrid,
-    FiUsers,
-    FiShoppingCart,
-    FiSettings,
-} from "react-icons/fi";
+import { FiHome, FiBox, FiGrid, FiUsers, FiShoppingCart } from "react-icons/fi";
 import { GiClothes } from "react-icons/gi";
-import { BiSolidOffer } from "react-icons/bi";
+import { BiSolidOffer, BiSolidCoupon } from "react-icons/bi";
 
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import axiosInstance from "../../utils/apiConnector";
-import { handleAxiosError } from "../../utils/handleAxiosError";
-import { setFabrics } from "../../redux/slices/fabricSlice";
+import { useMemo } from "react";
 
 // Animation variants for sidebar links
 const sidebarLinkVariants = {
@@ -46,24 +35,39 @@ const tabLinkVariants = {
 function AdminAccountDashboard() {
     const location = useLocation();
 
-    const navItems = [
-        { path: "home-ui", label: "Home Ui", icon: <FiHome size={20} /> },
-        { path: "overview", label: "Overview", icon: <FiHome size={20} /> },
-        { path: "products", label: "Products", icon: <FiBox size={20} /> },
-        { path: "categories", label: "Categories", icon: <FiGrid size={20} /> },
-        { path: "users", label: "Users", icon: <FiUsers size={20} /> },
-        { path: "orders", label: "Orders", icon: <FiShoppingCart size={20} /> },
-        {
-            path: "fabrics",
-            label: "fabrics",
-            icon: <GiClothes size={20} />,
-        },
-        {
-            path: "offers",
-            label: "offers",
-            icon: <BiSolidOffer size={20} />,
-        },
-    ];
+    const navItems = useMemo(() => {
+        return [
+            { path: "home-ui", label: "Home Ui", icon: <FiHome size={20} /> },
+            { path: "overview", label: "Overview", icon: <FiHome size={20} /> },
+            { path: "products", label: "Products", icon: <FiBox size={20} /> },
+            {
+                path: "categories",
+                label: "Categories",
+                icon: <FiGrid size={20} />,
+            },
+            { path: "users", label: "Users", icon: <FiUsers size={20} /> },
+            {
+                path: "orders",
+                label: "Orders",
+                icon: <FiShoppingCart size={20} />,
+            },
+            {
+                path: "fabrics",
+                label: "fabrics",
+                icon: <GiClothes size={20} />,
+            },
+            {
+                path: "offers",
+                label: "offers",
+                icon: <BiSolidOffer size={20} />,
+            },
+            {
+                path: "coupon",
+                label: "coupon",
+                icon: <BiSolidCoupon size={20} />,
+            },
+        ];
+    }, []);
 
     return (
         <motion.div
