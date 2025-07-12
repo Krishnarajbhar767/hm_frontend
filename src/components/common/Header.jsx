@@ -42,7 +42,8 @@ function Header() {
         });
         // Generate category links
         const navLinks = sorted.map((item) => {
-            const slug = slugify(item.name, { lower: true, strict: true });
+            console.log("item", item)
+            const slug = slugify(item?.name, { lower: true, strict: true });
             return {
                 title: item.name,
                 _id: item._id,
@@ -51,7 +52,7 @@ function Header() {
         });
         // Generate fabric links
         const fabLinks = fabrics?.map((item) => {
-            const slug = slugify(item.title, { lower: true, strict: true });
+            const slug = slugify(item?.title, { lower: true, strict: true });
             return {
                 title: item.title,
                 _id: item._id,

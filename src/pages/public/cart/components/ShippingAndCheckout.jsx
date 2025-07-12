@@ -51,7 +51,7 @@ function ShippingAndCheckout({ cartItems, setStepCount }) {
             offer: offer ? offer : 0,
             addressId: isNewAddress ? isNewAddress : data.addressId,
         });
-        console.log("Razor Pay Order ->", order);
+        // console.log("Razor Pay Order ->", order);
         const razorpay = new window.Razorpay({
             key,
             amount: order.amount,

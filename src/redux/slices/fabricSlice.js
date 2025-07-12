@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const fabricSlice = createSlice({
     name: "fabric",
-    initialState: [],
+    initialState: ["Silk"],
     reducers: {
         setFabrics: (state, action) => {
             return action.payload; // Replaces entire state with the new array

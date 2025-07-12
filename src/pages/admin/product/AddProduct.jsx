@@ -54,9 +54,18 @@ const AddProduct = () => {
             toast.error("Please upload at least one image.");
             return;
         }
+
         const toastId = toast.loading("Please wait...");
+
         try {
-            const imagesUrls = await uploadMedia(imageFiles);
+
+            const information = {
+                type: "products",
+                identifier: data.productId || data.name,
+            }
+
+            const imagesUrls = await uploadMedia(imageFiles, information );
+
             if (!imagesUrls) return;
             data.images = imagesUrls;
 
