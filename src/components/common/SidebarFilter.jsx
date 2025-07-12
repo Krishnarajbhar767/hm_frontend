@@ -288,11 +288,11 @@ const SidebarFilter = ({ onFilterChange, isOpen, toggleSidebar }) => {
                         <div className="space-y-2">
                             {[
                                 "All Techniques",
-                                "Handwoven",
-                                "Embroidered",
-                                "Printed",
-                                "Block Print",
-                                "Digital Print",
+                                // "Handwoven",
+                                // "Embroidered",
+                                // "Printed",
+                                // "Block Print",
+                                // "Digital Print",
                             ].map((techniqueOption) => (
                                 <label
                                     key={techniqueOption}

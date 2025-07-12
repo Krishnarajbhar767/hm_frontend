@@ -20,18 +20,18 @@ function HomeVideo() {
         <div className="boxedContainer w-full py-4 h-auto overflow-x-hidden">
             <div className="md:mb-14 mb-10 mt-4">
                 <div>
-                    <Heading text="Heading Require?" />
+                    <Heading text="Timeless charm in every  fold" />
                 </div>
                 <div className="mt-2">
                     <SubHeading
                         text="Where six yards tell a timeless tale,
 and every weave whispers elegance….From classic looms to graceful drapes,
-we bring you heritage reimagined."
+we bring you heritage reimagined"
                     />
                 </div>
             </div>
 
-            <div className="relative w-full h-[100vh] bg-black">
+            <div className="relative w-full h-[30vh] sm:h-[100vh] bg-black">
                 {showVideo ? (
                     <video
                         className="h-full w-full object-cover"

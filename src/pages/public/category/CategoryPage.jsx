@@ -45,7 +45,7 @@ function CategoryPage() {
                     ? `${
                           import.meta.env.VITE_BACKEND_URL
                       }/products/${fabric}/${id}`
-                    : `${import.meta.env.VITE_BACKEND_URL}/categories/${id}`;
+                    : `${import.meta.env.VITE_BACKEND_URL}categories/${id}`;
                 const res = await fetch(url, { signal: controller.signal });
                 if (!res.ok) throw new Error("Failed to fetch data");
                 const json = await res.json();

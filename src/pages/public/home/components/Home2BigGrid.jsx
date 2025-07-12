@@ -24,7 +24,7 @@ function Home2BigGrid() {
                 <div className="mt-2">
                     <SubHeading
                         text={
-                            "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem, quis!"
+                            "Step into the world where tradition meets trend,discover your perfect drape, again and again."
                         }
                     />
                 </div>

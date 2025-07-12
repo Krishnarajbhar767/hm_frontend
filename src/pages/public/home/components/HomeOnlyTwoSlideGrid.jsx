@@ -17,7 +17,7 @@ function HomeOnlyTwoSlideGrid() {
             image: Banner1,
         },
         {
-            heading: "Where Blue Whispers and Flowers Sing:",
+            heading: "Where Blue Whispers and Flowers Sing",
             subHeading:
                 "Blue like the morning sky, bright with florals in bloom—this pure Katan silk saree redefines elegance with a splash of vibrant heritage.",
             discoverLink: "href2",

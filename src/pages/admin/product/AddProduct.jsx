@@ -24,7 +24,7 @@ const AddProduct = () => {
     } = useForm();
     const navigate = useNavigate();
     const categories = useSelector((state) => state.category.categories || []);
-
+    const fabrics = useSelector((s) => s.fabrics);
     const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
     const dispatch = useDispatch();
@@ -58,13 +58,12 @@ const AddProduct = () => {
         const toastId = toast.loading("Please wait...");
 
         try {
-
             const information = {
                 type: "products",
                 identifier: data.productId || data.name,
-            }
+            };
 
-            const imagesUrls = await uploadMedia(imageFiles, information );
+            const imagesUrls = await uploadMedia(imageFiles, information);
 
             if (!imagesUrls) return;
             data.images = imagesUrls;
@@ -150,6 +149,7 @@ const AddProduct = () => {
                     options={categories.map((cat) => ({
                         value: cat._id || cat.value,
                         label: cat.name || cat.label,
+                        disabled: cat.name == "all" ? true : false,
                     }))}
                 />
 
@@ -235,6 +235,7 @@ const AddProduct = () => {
                     label="HSN Code"
                     name="hsnCode"
                     register={register}
+                    value="5507"
                     errors={errors}
                     rules={{
                         required: "HSN Code is required",

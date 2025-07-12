@@ -42,20 +42,26 @@ function Header() {
         });
         // Generate category links
         const navLinks = sorted.map((item) => {
-            console.log("item", item)
-            const slug = slugify(item?.name, { lower: true, strict: true });
+            console.log("item", item);
+            const slug = slugify(item?.name || "N/A", {
+                lower: true,
+                strict: true,
+            });
             return {
-                title: item.name,
-                _id: item._id,
+                title: item?.name || "N/A",
+                _id: item?._id,
                 path: `/products/${slug}/${item._id}`,
             };
         });
         // Generate fabric links
         const fabLinks = fabrics?.map((item) => {
-            const slug = slugify(item?.title, { lower: true, strict: true });
+            const slug = slugify(item?.title || "N/A", {
+                lower: true,
+                strict: true,
+            });
             return {
-                title: item.title,
-                _id: item._id,
+                title: item?.title || "N/A",
+                _id: item?._id,
                 path: `/collection/${slug}/${item._id}`,
             };
         });

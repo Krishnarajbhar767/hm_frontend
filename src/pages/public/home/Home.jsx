@@ -26,6 +26,7 @@ const HomeLetsExplore = React.lazy(() =>
 // const Loader = () => <div className="py-8 text-center">Loading section...</div>;
 
 function Home() {
+    // Regal & Elegant “”
     const sliderData1 = useMemo(
         () => [
             {
@@ -37,10 +38,10 @@ function Home() {
             },
             {
                 image: Banner2,
-                heading: "Drape Your Story",
+                heading: "Regal & Elegant",
                 subheading: "Modern Roots in Classic Weaves",
                 paragraph:
-                    "From boardrooms to banquets, our sarees blend contemporary chic with cultural richness, made for every woman’s journey.",
+                    "Woven like royalty, draped like destiny—this Katan silk saree is a crown passed down in threads.",
             },
             {
                 image: Banner3,
@@ -56,18 +57,18 @@ function Home() {
     const sliderData2 = useMemo(
         () => [
             {
-                image: Slide2Banner1,
-                heading: "Grace in Every Thread",
-                subheading: "Handwoven Elegance",
-                paragraph:
-                    "Celebrate timeless tradition with sarees that carry the legacy of skilled artisans. Every fold speaks of heritage.",
-            },
-            {
                 image: Slide2Banner2,
-                heading: "Drape Your Story",
+                heading: "Silk That Dances in Duo",
                 subheading: "Modern Roots in Classic Weaves",
                 paragraph:
-                    "From boardrooms to banquets, our sarees blend contemporary chic with cultural richness, made for every woman’s journey.",
+                    "Draped in pure Katan silk, two muses mirror grace and grandeur. Their synchronized style whispers tales of heritage in every fold",
+            },
+            {
+                image: Slide2Banner1,
+                heading: "Tie me to my roots,Dye me in drama",
+                subheading: "Handwoven Elegance",
+                paragraph:
+                    "A riot of color wrapped in centuries of tradition—Bandhej is your cultural comeback. Drape it, flaunt it, remix it—because heritage never goes out of style",
             },
         ],
         []
