@@ -7,13 +7,13 @@ import Banner2 from "../../../../assets/images/Home/Home3Grid/SF_1080x1350_2.jpg
 import Banner3 from "../../../../assets/images/Home/Home3Grid/SF_1080x1350_3.jpg";
 function Home3Grid() {
     const data = [
-        { image: Banner1, link: "#", title: "Product1" },
-        { image: Banner2, link: "#", title: "Product1" },
-        { image: Banner3, link: "#", title: "Product1" },
+        { image: Banner1, link: "#", title: "Pure khaddi georgette" },
+        { image: Banner2, link: "#", title: "pure katan silk" },
+        { image: Banner3, link: "#", title: "pure tissue silk" },
     ];
 
     return (
-        <div className="boxedContainer w-full py-4  h-auto  overflow-x-hidden  ">
+        <div className="boxedContainer lg:px-15 px-5 w-full py-4  h-auto  overflow-x-hidden  ">
             <div className="md:mb-14 mb-10 mt-4">
                 <div>
                     <Heading
@@ -38,8 +38,8 @@ function Home3Grid() {
                             alt="Sarees"
                             className="w-full h-[500px] object-cover object-top md:object-center  hover:scale-[101%] transition-all ease-linear duration-200 shadow-sm  border border-gray-200 "
                         />
-                        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4">
-                            <p className="text-white text-lg font-semibold text-center">
+                        <div class="absolute bottom-20 left-0 w-full bg-gradient-to-t   to-transparent p-4">
+                            <p className="text-white text-2xl font-semibold text-center capitalize">
                                 {item.title}
                             </p>
                         </div>

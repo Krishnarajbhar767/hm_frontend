@@ -126,6 +126,8 @@ function HomeHeroSlider({ textPosition = false, sliderData = [] }) {
         setImageLoaded((prev) => ({ ...prev, [index]: false }));
     };
 
+
+
     // Preload images and set initial loaded state
     useEffect(() => {
         sliderData.forEach((slide, index) => {
@@ -138,13 +140,26 @@ function HomeHeroSlider({ textPosition = false, sliderData = [] }) {
         });
     }, [sliderData]);
 
+    const autoSlideInterval = 5000; // 1 seconds
+
+    useEffect(() => {
+        if (isHovered) return; // Pause auto sliding on hover
+
+        const interval = setInterval(() => {
+            setActiveSlide((prev) => (prev === sliderLength ? 0 : prev + 1));
+        }, autoSlideInterval);
+
+        return () => clearInterval(interval); // Cleanup on unmount or hover
+    }, [isHovered, sliderLength]);
+
+
     // Get current background gradient
     const currentGradient =
         backgroundGradients[activeSlide % backgroundGradients.length];
 
     return (
         <div
-            className="relative overflow-hidden h-[80vh] sm:h-[70vh] md:h-[80vh] lg:h-[90vh] xl:h-screen"
+            className="relative overflow-hidden h-[80vh]  sm:h-[70vh] md:h-[80vh] lg:h-[90vh] xl:h-screen"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             role="region"
@@ -180,10 +195,10 @@ function HomeHeroSlider({ textPosition = false, sliderData = [] }) {
                 {/* Gradient Background (only show when image is not loaded or failed) */}
                 {(!imageLoaded[activeSlide] ||
                     imageLoaded[activeSlide] === false) && (
-                    <div
-                        className={`absolute inset-0 ${currentGradient} z-10`}
-                    />
-                )}
+                        <div
+                            className={`absolute inset-0 ${currentGradient} z-10`}
+                        />
+                    )}
 
                 {/* Overlay for better text readability - only when image is loaded */}
                 {imageLoaded[activeSlide] && (
@@ -252,62 +267,13 @@ function HomeHeroSlider({ textPosition = false, sliderData = [] }) {
             <div className="absolute inset-0 flex items-center justify-center px-16 sm:px-20 md:px-24 lg:px-32 xl:px-40 py-8">
                 <AnimatePresence mode="wait">
                     {sliderData[activeSlide] && (
-                        // <div className="relative w-full max-w-5xl mx-auto mt-[30vh] sm:mt-0">
-                        //     {/* Black overlay behind text but only within this content block */}
-                        //     <div className="absolute inset-0 bg-black/50 z-0 rounded-lg" />
 
-                        //     {/* Text content */}
-                        //     <motion.div
-                        //         key={`content-${activeSlide}`}
-                        //         className={`relative text-white z-10 ${
-                        //             textPosition
-                        //                 ? "text-center lg:text-right lg:ml-auto lg:mr-0"
-                        //                 : "text-center lg:text-left lg:mr-auto lg:ml-0"
-                        //         }`}
-                        //         variants={containerVariants}
-                        //         initial="hidden"
-                        //         animate="visible"
-                        //         exit="exit"
-                        //     >
-                        //         <motion.h1
-                        //             variants={textVariants}
-                        //             className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold mb-3 sm:mb-4 md:mb-6 leading-tight drop-shadow-lg"
-                        //         >
-                        //             {sliderData[activeSlide].heading}
-                        //         </motion.h1>
-
-                        //         <motion.p
-                        //             variants={textVariants}
-                        //             className={`text-sm sm:text-base md:text-lg lg:text-xl mb-4 sm:mb-6 md:mb-8 leading-relaxed text-white/95 drop-shadow-md ${
-                        //                 textPosition
-                        //                     ? "max-w-xl mx-auto lg:mx-0 lg:ml-auto"
-                        //                     : "max-w-xl mx-auto lg:mx-0 lg:mr-auto"
-                        //             }`}
-                        //         >
-                        //             {sliderData[activeSlide].paragraph}
-                        //         </motion.p>
-
-                        //         <motion.div
-                        //             variants={textVariants}
-                        //             className={`${
-                        //                 textPosition
-                        //                     ? "flex justify-center lg:justify-end"
-                        //                     : "flex justify-center lg:justify-start"
-                        //             }`}
-                        //         >
-                        //             <button className="inline-block px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 bg-white text-gray-800 font-semibold text-sm sm:text-base md:text-lg border-2 border-transparent hover:bg-transparent hover:text-white hover:border-white transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg">
-                        //                 Discover More
-                        //             </button>
-                        //         </motion.div>
-                        //     </motion.div>
-                        // </div>
                         <motion.div
                             key={`content-${activeSlide}`}
-                            className={`w-full max-w-5xl mx-auto text-white z-10 mt-[10vh] sm:mt-0 ${
-                                textPosition
-                                    ? "text-center lg:text-right lg:ml-auto lg:mr-0"
-                                    : "text-center lg:text-left lg:mr-auto lg:ml-0"
-                            }`}
+                            className={`w-full max-w-5xl mx-auto text-white z-10 mt-[10vh] sm:mt-0 ${textPosition
+                                ? "text-center lg:text-right lg:ml-auto lg:mr-0"
+                                : "text-center lg:text-left lg:mr-auto lg:ml-0"
+                                }`}
                             variants={containerVariants}
                             initial="hidden"
                             animate="visible"
@@ -324,11 +290,10 @@ function HomeHeroSlider({ textPosition = false, sliderData = [] }) {
                             {/* Paragraph - hidden on mobile */}
                             <motion.p
                                 variants={textVariants}
-                                className={`hidden sm:block text-sm sm:text-base md:text-lg lg:text-xl mb-4 sm:mb-6 md:mb-8 leading-relaxed text-white/95 drop-shadow-md ${
-                                    textPosition
-                                        ? "max-w-xl mx-auto lg:mx-0 lg:ml-auto"
-                                        : "max-w-xl mx-auto lg:mx-0 lg:mr-auto"
-                                }`}
+                                className={`hidden sm:block text-sm sm:text-base md:text-lg lg:text-xl mb-4 sm:mb-6 md:mb-8 leading-relaxed text-white/95 drop-shadow-md ${textPosition
+                                    ? "max-w-xl mx-auto lg:mx-0 lg:ml-auto"
+                                    : "max-w-xl mx-auto lg:mx-0 lg:mr-auto"
+                                    }`}
                             >
                                 {sliderData[activeSlide].paragraph}
                             </motion.p>
@@ -336,11 +301,10 @@ function HomeHeroSlider({ textPosition = false, sliderData = [] }) {
                             {/* Button - visible always, pushed down on mobile */}
                             <motion.div
                                 variants={textVariants}
-                                className={`${
-                                    textPosition
-                                        ? "flex justify-center lg:justify-end"
-                                        : "flex justify-center lg:justify-start"
-                                } mt-[40vh] sm:mt-0`} // 👈 Push button down on mobile only
+                                className={`${textPosition
+                                    ? "flex justify-center lg:justify-end"
+                                    : "flex justify-center lg:justify-start"
+                                    } mt-[40vh] sm:mt-0`} // 👈 Push button down on mobile only
                             >
                                 <button className="inline-block px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 bg-white text-gray-800 font-semibold text-sm sm:text-base md:text-lg border-2 border-transparent hover:bg-transparent hover:text-white hover:border-white transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg">
                                     Discover More
@@ -358,11 +322,10 @@ function HomeHeroSlider({ textPosition = false, sliderData = [] }) {
                         key={index}
                         onClick={() => goToSlide(index)}
                         disabled={isAnimating}
-                        className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full border border-white/50 cursor-pointer transition-all duration-300 hover:scale-110 disabled:cursor-not-allowed ${
-                            activeSlide === index
-                                ? "bg-white scale-110"
-                                : "bg-white/30 hover:bg-white/50"
-                        }`}
+                        className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full border border-white/50 cursor-pointer transition-all duration-300 hover:scale-110 disabled:cursor-not-allowed ${activeSlide === index
+                            ? "bg-white scale-110"
+                            : "bg-white/30 hover:bg-white/50"
+                            }`}
                         aria-label={`Go to slide ${index + 1}`}
                     />
                 ))}

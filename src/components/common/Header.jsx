@@ -81,9 +81,9 @@ function Header() {
             title: "Collection",
             path: "/collection",
             subLinks: optimisedFabricsLinks,
-        },
-        { title: "About Us", path: "/about" },
-        { title: "Contact", path: "/contact" },
+        }
+        // { title: "About Us", path: "/about" },
+        // { title: "Contact", path: "/contact" },
     ];
 
     // State for sidebars & mobile menu
@@ -160,7 +160,7 @@ function Header() {
                                     className="relative group"
                                 >
                                     {link.subLinks ? (
-                                        <div className="flex items-center gap-1 cursor-pointer">
+                                        <div className="flex items-center gap-1 cursor-pointer text-nowrap">
                                             <span className="hover:text-primary transition-colors">
                                                 {link.title}
                                             </span>
@@ -197,7 +197,7 @@ function Header() {
 
                                     {link.subLinks && (
                                         <div className="absolute left-0 top-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                                            <div className="bg-white shadow-sm border border-gray-200 rounded-md flex flex-col gap-2 p-4 w-48 text-sm">
+                                            <div className="bg-white shadow-sm border border-gray-200 rounded-md flex flex-col gap-2 p-4 w-fit text-sm">
                                                 {link.subLinks.map(
                                                     (sublink) => (
                                                         <NavLink
@@ -206,7 +206,7 @@ function Header() {
                                                             className={({
                                                                 isActive,
                                                             }) =>
-                                                                `hover:text-primary ${
+                                                                `hover:text-primary text-nowrap ${
                                                                     isActive
                                                                         ? "text-primary font-semibold"
                                                                         : ""
@@ -371,9 +371,9 @@ function Header() {
                         {/* Links */}
                         {Links.map((link) => (
                             <div key={link.title} className="py-2">
-                                <div className="flex justify-between items-center capitalize">
+                                <div className="flex justify-between items-center capitalize ">
                                     {link.subLinks ? (
-                                        <span className="text-foreground text-sm tracking-wider capitalize">
+                                        <span className="text-foreground text-sm tracking-wider capitalize text-nowrap">
                                             {link.title}
                                         </span>
                                     ) : (
@@ -381,7 +381,7 @@ function Header() {
                                             to={link.path}
                                             end
                                             className={({ isActive }) =>
-                                                `text-foreground text-sm tracking-wider capitalize ${
+                                                `text-foreground text-sm tracking-wider capitalize text-nowrap ${
                                                     isActive
                                                         ? "text-primary font-semibold"
                                                         : ""
@@ -429,7 +429,7 @@ function Header() {
                                                     key={sublink._id}
                                                     to={sublink.path}
                                                     className={({ isActive }) =>
-                                                        `capitalize text-xs text-foreground hover:text-primary px-3 py-2 rounded-md ${
+                                                        `capitalize text-xs text-nowrap text-foreground hover:text-primary px-3 py-2 rounded-md ${
                                                             isActive
                                                                 ? "text-primary font-semibold"
                                                                 : ""

@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { FaFacebook, FaLinkedin, FaPinterest } from "react-icons/fa";
 import axiosInstance from "../../../utils/apiConnector";
+import { BsInstagram } from "react-icons/bs";
 
 const ContactUs = () => {
     // react-hook-form setup
@@ -37,7 +38,7 @@ const ContactUs = () => {
             title: "Address",
             details: [
                 "2nd Floor, C.K 20/9",
-                "Shittla Katra Thatheri Bazar",
+                "Shetla Katra Thatheri Bazar",
                 "Varanasi, Uttar Pradesh 221010",
             ],
         },
@@ -49,14 +50,13 @@ const ContactUs = () => {
         {
             icon: Mail,
             title: "Email",
-            details: ["info@srijanfabrics.com", "support@srijanfabrics.com"],
+            details: ["srijanfabs@gmail.com", "support@srijanfabs.com"],
         },
         {
             icon: Clock,
             title: "Business Hours",
             details: [
-                "Monday - Friday: 9AM - 7PM",
-                "Saturday: 10AM - 6PM",
+                "Monday - Saturday: 10AM - 9PM",
                 "Sunday: Closed",
             ],
         },
@@ -298,19 +298,17 @@ const ContactUs = () => {
                                 question:
                                     "What are the dimensions of your sarees?",
                                 answer: `Standard dimensions are:
-• Length: 5.4 – 5.6 m (212 – 236″)  
-• Width: 1.1 – 1.17 m (44 – 46″)  
-• Blouse piece: 0.8 – 1 m (31 – 39″)  
-There may be minor variations. For exact measurements, send us a product photo and we’ll measure it for you.`,
+                                        • Length: 5.4 – 5.6 m (212 – 236″)  
+                                        • Width: 1.1 – 1.17 m (44 – 46″)  
+                                        • Blouse piece: 0.8 – 1 m (31 – 39″)  
+                                        There may be minor variations. For exact measurements, send us a product photo and we’ll measure it for you.`,
                             },
                             {
-                                question:
-                                    "How should I care for and store the sarees?",
+                                question:"How should I care for and store the sarees?",
                                 answer: "Our Banarasi sarees are pure handwoven silk. We recommend professional dry-cleaning only. Avoid moisture, direct heat on zari, and any contact with perfume.",
                             },
                             {
-                                question:
-                                    "What are the shipping charges in India?",
+                                question:"What are the shipping charges in India?",
                                 answer: "Shipping in India is free.",
                             },
                             {
@@ -318,13 +316,11 @@ There may be minor variations. For exact measurements, send us a product photo a
                                 answer: "Once your order ships, you’ll receive a tracking number via email or WhatsApp. You can also check its status in your order history on our site.",
                             },
                             {
-                                question:
-                                    "What if I have a requirement that’s not listed here?",
+                                question:"What if I have a requirement that’s not listed here?",
                                 answer: "We’re happy to help with custom needs! Call us at 8960500991 or 6307116564 and we’ll assist you.",
                             },
                             {
-                                question:
-                                    "Will my order take longer if I choose the Fall Pico and Tassel option?",
+                                question:"Will my order take longer if I choose the Fall Pico and Tassel option?",
                                 answer: "Yes—the Fall Pico & Tassel customization adds approximately 2–3 extra days, as each piece is finished with extra care.",
                             },
                         ].map((faq, index) => (
@@ -353,24 +349,40 @@ There may be minor variations. For exact measurements, send us a product photo a
                         offers
                     </p>
                     <div className="flex justify-center space-x-4">
-                        <a href="https://www.facebook.com/share/16oA9AL3Bn/">
+                        <a href="https://www.facebook.com/share/16oA9AL3Bn/" target="_blank">
                             <FaFacebook
                                 size={30}
                                 className="text-white cursor-pointer"
+                                
                             />
                         </a>
-                        <a href="https://www.linkedin.com/company/srijan-fabs/">
+                        <a href="https://www.linkedin.com/company/srijan-fabs/" target="_blank">
                             <FaLinkedin
                                 size={30}
                                 className="text-white cursor-pointer"
+                                
                             />
                         </a>
-                        <a href="https://pin.it/4Y8ChoBph">
+                        <a href="https://pin.it/4Y8ChoBph" target="_blank">
                             <FaPinterest
+                                size={30}
+                                className="text-white cursor-pointer"
+                                
+                            />
+                        </a>
+
+                        <a href="https://www.instagram.com/srijanfabs/" target="_blank">
+                            <BsInstagram
                                 size={30}
                                 className="text-white cursor-pointer"
                             />
                         </a>
+
+{/* 
+                        {
+                                   icon: BsInstagram,
+                                   link: "https://www.instagram.com/srijanfabs/"
+                                } */}
                     </div>
                 </div>
             </section>

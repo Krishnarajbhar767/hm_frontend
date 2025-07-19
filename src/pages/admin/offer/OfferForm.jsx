@@ -42,7 +42,7 @@ export default function OfferForm({ defaultValues, onSubmit, onCancel }) {
                 rules={{
                     required: "Discount is required",
                     min: { value: 0, message: "Min 0%" },
-                    max: { value: 100, message: "Max 100%" },
+                    max: { value: 51, message: "Max 51%" },
                 }}
             />
 

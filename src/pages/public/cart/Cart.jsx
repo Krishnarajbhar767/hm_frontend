@@ -16,6 +16,7 @@ function Cart() {
     const [localQty, setLocalQty] = useState(
         () => (buyNowItem && buyNowItem.quantity) || 1
     );
+    
 
     // ⬇ Choose items array based on mode
     const reduxItems = useSelector((state) => state.cart.cartItems);
@@ -35,6 +36,8 @@ function Cart() {
         (sum, item) => sum + item.finalPrice * item.quantity,
         0
     );
+
+    
 
     const Data = [
         {
@@ -106,6 +109,7 @@ function Cart() {
                             <h1 className="text-sm md:text-base lg:text-[18px] uppercase font-medium">
                                 0{item.id}
                             </h1>
+
                             <div>
                                 <h1 className="text-sm md:text-base lg:text-[18px] uppercase font-medium text-foreground">
                                     {item.heading}

@@ -7,11 +7,14 @@ import { useSelector } from "react-redux";
 import axiosInstance from "../../utils/apiConnector";
 import { handleAxiosError } from "../../utils/handleAxiosError";
 import LOGO from "../../assets/images/logo/SRIJAN FABS PNG VERTICAL.png";
+import { BsInstagram } from "react-icons/bs";
+
 import {
     FaFacebookF,
     FaLinkedin,
     FaPinterest,
     FaChevronUp,
+    
 } from "react-icons/fa";
 
 const primaryColor = "rgb(83, 62, 45)";
@@ -43,7 +46,14 @@ const Footer = () => {
             icon: FaLinkedin,
             link: "https://www.linkedin.com/company/srijan-fabs/",
         },
-        { icon: FaPinterest, link: "https://pin.it/4Y8ChoBph" },
+        { 
+            icon: FaPinterest,
+            link: "https://pin.it/4Y8ChoBph" 
+        },
+        {
+           icon: BsInstagram,
+           link: "https://www.instagram.com/srijanfabs/"
+        }
     ];
 
     return (
@@ -51,7 +61,7 @@ const Footer = () => {
             className="bg-[#E4E4E4] pt-12 pb-4"
             style={{ color: primaryColor }}
         >
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto px-2">
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
                     {/* Company Info */}
                     <div>
@@ -62,14 +72,14 @@ const Footer = () => {
                             className="mb-3 relative"
                         />
                         <p className="text-sm mb-2">
-                            2nd Floor, C.K 20/9 Shittla Katra Thatheri Bazar
+                            2nd Floor, C.K 20/9 Shetla Katra Thatheri Bazar
                             <br />
                             Varanasi, Uttar Pradesh 221010
                         </p>
-                        <p className="text-sm mb-2">srijanfabs@gmail.com</p>
-                        <p className="text-sm">+91 89605 00991</p>
-                        <p className="text-sm mb-6">+91 63071 16564</p>
-                        <div className="flex space-x-3">
+                        <p className="text-sm mb-2"><b>Email : </b> srijanfabs@gmail.com  / support@srijanfabs.in</p>
+                        <p className="text-sm"> <b>Phone :</b>+91 8960500991 / 6307116564</p>
+                        {/* <p className="text-sm mb-6">+91 </p> */}
+                        <div className="flex space-x-3 mt-7">
                             {socials.map((item, idx) => (
                                 <a
                                     href={item.link}
@@ -181,7 +191,13 @@ const Footer = () => {
                 </div>
 
                 <div className="border-t pt-4 text-sm flex flex-col sm:flex-row justify-between items-center">
-                    <p>© 2025 Srijan Fabrics. All rights reserved.</p>
+
+                    {/* <p href="https://mediafleetblue.com/">Made with ❤️ by Media Fleetblue.</p> */}
+
+                    <a href="https://mediafleetblue.com/" target="_block">
+                        Made with ❤️ by Media Fleetblue.
+                    </a>
+
                     <a
                         href="#top"
                         className="mt-4 sm:mt-0 flex items-center gap-1 hover:underline"

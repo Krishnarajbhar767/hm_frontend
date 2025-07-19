@@ -38,7 +38,7 @@ function HomeOnlyTwoSlideGrid() {
     };
 
     return (
-        <div className="grid md:grid-cols-2 gap-4 boxedContainer py-4">
+        <div className="grid md:grid-cols-2 gap-4 boxedContainer lg:px-15 px-5 py-4">
             {/* Image First on Mobile */}
             <AnimatePresence mode="wait">
                 <motion.img

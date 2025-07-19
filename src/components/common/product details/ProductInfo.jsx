@@ -328,7 +328,7 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                 </button>
                 {shippingOpen && (
                     <div className="mt-2 text-sm text-gray-600">
-                        2nd Floor, C.K 20/9 Shittla Katra Thatheri Bazar
+                        2nd Floor, C.K 20/9 Shetla Katra Thatheri Bazar
                         <br />
                         Varanasi, Uttar Pradesh 221010
                     </div>

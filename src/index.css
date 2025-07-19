@@ -96,8 +96,8 @@ select:-webkit-autofill {
 }
 
 .boxedContainer {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    /* padding-left: 1rem;
+    padding-right: 1rem; */
     max-width: 82rem;
     margin-left: auto;
     margin-right: auto;

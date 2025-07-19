@@ -17,7 +17,7 @@ function HomeVideo() {
     }, []);
 
     return (
-        <div className="boxedContainer w-full py-4 h-auto overflow-x-hidden">
+        <div className=" w-full py-4 h-auto  overflow-x-hidden">
             <div className="md:mb-14 mb-10 mt-4">
                 <div>
                     <Heading text="Timeless charm in every  fold" />
@@ -25,8 +25,8 @@ function HomeVideo() {
                 <div className="mt-2">
                     <SubHeading
                         text="Where six yards tell a timeless tale,
-and every weave whispers elegance….From classic looms to graceful drapes,
-we bring you heritage reimagined"
+                            and every weave whispers elegance .From classic looms to graceful drapes,
+                            we bring you heritage reimagined"
                     />
                 </div>
             </div>

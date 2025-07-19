@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
+import { ChevronLeft, ChevronRight, ZoomIn  } from "lucide-react";
 
 /**
  * ProductImageGallery Component
@@ -34,7 +34,7 @@ function ProductImageGallery({ images = [], productName = "", onZoom }) {
         <div className="flex flex-col md:flex-row gap-4">
             {/* Thumbnails - Vertical scrolling on left */}
             {images.length > 1 && (
-                <div className="order-2 md:order-1 flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto md:overflow-x-hidden   md:h-[500px] md:w-30 md:flex-shrink-0 pb-2 md:pb-0 md:pr-2">
+                <div className="order-2 md:order-1 flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto md:overflow-x-hidden md:h-[500px] md:w-30 md:flex-shrink-0 pb-2 md:pb-0 md:pr-2">
                     {images.map((image, index) => (
                         <button
                             key={index}

@@ -29,15 +29,14 @@ const ShippingPolicy = () => {
                             is available on all orders within India.
                         </li>
                         <li>
-                            If an item from the{" "}
+                            {/* If an item from the{" "}
                             <span className="font-semibold">Special Price</span>{" "}
                             or{" "}
                             <span className="font-semibold">
                                 Srijan Fabs Gifts
-                            </span>{" "}
-                            section is included in your order, a shipping charge
-                            of ₹2000 will be applied, regardless of the total
-                            order amount.
+                            </span>{" "} */}
+                            If fall pico, tassels, are requested, the delivery timeline may extend by 3–4 extra working days.
+
                         </li>
                         <li>
                             All sarees displayed on{" "}
@@ -99,7 +98,7 @@ const ShippingPolicy = () => {
                     <div className="text-base sm:text-lg text-foreground bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                         <p className="font-semibold">Srijan Fabs</p>
                         <p>2nd Floor, C.K 20/9,</p>
-                        <p>Shittla Katra Thatheri Bazar,</p>
+                        <p>Shetla Katra Thatheri Bazar,</p>
                         <p>Varanasi, Uttar Pradesh 221010,</p>
                         <p>India</p>
                         <p>

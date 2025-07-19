@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { Route } from "react-router-dom";
 import AdminLayout from "../layout/AdminLayout";
 import Loader from "../components/common/Loader";
+
 // Lazy load heavy components
 const AdminOverview = lazy(() =>
     import("../pages/admin/overview/AdminOverview")
@@ -25,7 +26,7 @@ const AdminHomeManagement = lazy(() =>
 const AdminFabrics = lazy(() => import("../pages/admin/fabrics/AdminFabrics"));
 const AdminOffers = lazy(() => import("../pages/admin/offer/AdminOffers"));
 const AdminCoupons = lazy(() => import("../pages/admin/coupon/AdminCoupons"));
-
+ const  AdminNewsletterEmails = lazy(()=>import("../pages/admin/newsletter/AdminNewsletterEmails"));
 // Fallback UI while components load
 
 const AdminRoutes = (
@@ -150,6 +151,15 @@ const AdminRoutes = (
                 </Suspense>
             }
         />
+        <Route
+            path="newsletters"
+            element={
+                <Suspense fallback={<Loader />}>
+                    <AdminNewsletterEmails />
+                </Suspense>
+            }
+        />
+        
     </Route>
 );
 

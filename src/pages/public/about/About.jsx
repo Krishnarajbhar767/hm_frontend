@@ -104,14 +104,27 @@ const AboutUs = () => {
                             A Legacy of Craftsmanship, A Future of Innovation
                         </h2>
                         <p className="text-foreground mb-6">
-                            Our story began over 40 years ago in the historic
-                            lanes of Chowk, Varanasi, with the founding of our
-                            parent company—Jeewan & Sons. Established by our
-                            grandfather, Jeewan & Sons was built on a foundation
-                            of integrity, quality, and a deep love for
-                            traditional Indian textiles.
+                            
+                            
+                            Our story began over 40 years ago in the historic lanes of Chowk, Varanasi, with the founding of our parent company—Jeewan & Sons. Established by our grandfather, Jeewan & Sons was built on a foundation of integrity, quality, and a deep love for traditional Indian textiles. What started as a small family-run business has grown into a trusted name in the clothing industry, passed down through generations.
+                            As the next generation stepped in, so did a new vision. To carry forward our legacy while embracing modern design sensibilities, we launched Srijan Fabs—a contemporary extension of our heritage. While Jeewan & Sons continues to uphold the timeless traditions of craftsmanship, Srijan Fabs brings a fresh perspective, blending cultural richness with modern aesthetics.
+                            <br/>
+                            <br/>
+                            Inspired by the Soul of Varanasi
+                            Our collections are born from the textures, colors, and stories of Varanasi. The old city’s charm, its rich cultural heritage, and its intricate artistry are woven into every design we create. From the delicate patterns to the thoughtful silhouettes, each piece reflects the beauty and depth of our roots.
+                            We don’t just make clothes—we craft experiences that honor tradition while speaking to the modern spirit.
+                            A Family-Driven Vision
+                             <br/>
+                            <br/>
+                            As a multi-generational business, we blend the wisdom of the past with the creativity of the present. The older generation brings decades of experience and a deep respect for craftsmanship, while the younger generation brings innovation, fresh design perspectives, and a passion for storytelling through fashion.
+                            Together, we are proud to build on the foundation laid by Jeewan & Sons, evolving with time while staying true to who we are.
+                            Our Commitment
+                             <br/>
+                            <br/>
+                            We are dedicated to delivering timeless clothing that reflects care, culture, and character. Every garment is a tribute to our heritage and a promise of quality to our customers.
+                            Thank you for being part of our story. When you wear our creations, you wear a piece of our family’s journey.
                         </p>
-                        <p className="text-foreground mb-6">
+                        {/* <p className="text-foreground mb-6">
                             As the next generation stepped in, so did a new
                             vision. To carry forward our legacy while embracing
                             modern design sensibilities, we launched Srijan
@@ -123,7 +136,7 @@ const AboutUs = () => {
                             Varanasi. We don’t just make clothes—we craft
                             experiences that honor tradition while speaking to
                             the modern spirit.
-                        </p>
+                        </p> */}
                     </div>
                 </div>
             </section>
@@ -222,21 +235,24 @@ const AboutUs = () => {
                         Our Journey
                     </h2>
                     <div className="max-w-3xl mx-auto space-y-6">
+
+
+
                         {[
                             {
                                 year: "1980",
-                                title: "Jeewan & Sons Founded in Varanasi",
-                                desc: "Our legacy begins in the historic lanes of Chowk, Varanasi.",
+                                title: "Where it all began",
+                                desc: "Rooted in the art of traditional craftsmanship, Jeewan & Sons was founded with a promise of trusted expertise and timeless style.",
                             },
                             {
-                                year: "2008",
-                                title: "Srijan Fabs Launches",
-                                desc: "A modern extension of our heritage focused on design-led fashion.",
+                                year: "2020 ",
+                                title: " A modern chapter",
+                                desc: "Srijan Fabs emerged as a bold new extension—bringing modern aesthetics and fresh ideas into the fold, while honoring our rich textile roots.",
                             },
                             {
-                                year: "2025",
-                                title: "Evolving Tradition",
-                                desc: "Continuing to blend craftsmanship with innovation for future generations.",
+                                year: "2025 ",
+                                title: "Legacy continues",
+                                desc: "Today, we carry forward a vision that seamlessly blends heritage and innovation, crafting sarees that speak to tradition and reflect tomorrow.",
                             },
                         ].map((event, i) => (
                             <div key={i} className="flex flex-col md:flex-row">
@@ -270,7 +286,7 @@ const AboutUs = () => {
                     </p>
                     <div className="space-y-4 md:space-y-0 md:space-x-4">
                         <a
-                            href="/products"
+                            href="/products/all/687241bbeb7c3a700afc8e4e"
                             className="inline-block bg-white text-[rgb(83,62,45)] px-6 py-2 font-medium"
                         >
                             Explore Products

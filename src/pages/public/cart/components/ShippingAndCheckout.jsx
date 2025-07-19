@@ -62,7 +62,7 @@ function ShippingAndCheckout({ cartItems, setStepCount }) {
             order_id: order.id,
             callback_url: `${
                 import.meta.env.VITE_BACKEND_URL
-            }/payment/verify-payment`,
+            }payment/verify-payment`,
             prefill: {
                 name: user?.name || "",
                 email: user?.email || "",
@@ -77,7 +77,7 @@ function ShippingAndCheckout({ cartItems, setStepCount }) {
                 lower: true,
                 strict: true,
             });
-            window.location.href = `/paymentFailed?reason=${slug}`;
+            window.location.href = `paymentFailed?reason=${slug}`;
         });
 
         razorpay.open();

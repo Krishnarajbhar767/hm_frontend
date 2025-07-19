@@ -77,7 +77,8 @@ export default function JoinNewsLetter() {
                         {/* Left Image */}
                         <div className="w-full md:w-1/2 hidden md:block">
                             <img
-                                src="https://demoapus-wp.com/uomo/wp-content/uploads/2020/12/banner-mail.jpg"
+                                // src="https://demoapus-wp.com/uomo/wp-content/uploads/2020/12/banner-mail.jpg"
+                                src="https://srijanfabsbucket-new.s3.ap-south-1.amazonaws.com/uploads/products/products_12345/1752651914675-434-3.jpg"
                                 alt="Join Newsletter"
                                 className="w-full h-full object-cover"
                             />

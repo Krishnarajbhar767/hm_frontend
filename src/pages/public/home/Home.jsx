@@ -1,12 +1,14 @@
 import React, { useMemo, Suspense } from "react";
 import HomeHeroSlider from "./components/HomeHeroSlider";
+import Second_Slider from "./components/Second_Slider";
 import Banner1 from "../../../assets/images/slider/SF_BNNR_1920X1080.jpg_1.jpg";
-import Banner2 from "../../../assets/images/slider/SF_BNNR_1920X1080.jpg_2.jpg";
+import Banner2 from "../../../assets/first_slider_images/2.jpg";
 import Banner3 from "../../../assets/images/slider/SF_BNNR_1920X1080.jpg_3.jpg";
 import Banner4 from "../../../assets/images/slider/SF_BNNR_1920X1080_4.jpg";
 import Slide2Banner1 from "../../../assets/images/slider2/SF_BNNR_1920X1080_5.jpg";
 import Slide2Banner2 from "../../../assets/images/slider2/SF_BNNR_1920X1080_6.jpg";
 import Loader from "../../../components/common/Loader";
+
 // Lazy-load heavy sections
 const HomeSection4 = React.lazy(() =>
     import("./components/HomeOnlyTwoSlideGrid")
@@ -75,21 +77,23 @@ function Home() {
     );
 
     return (
-        <div className="w-full h-full">
+        <div className="w-full h-full ">
             {/* Hero Slider */}
             <HomeHeroSlider sliderData={sliderData1} />
 
             {/* Sections */}
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loader />} >
                 <Home3Grid />
                 <HomeVideo />
                 <Home2BigGrid />
             </Suspense>
 
-            <div className="boxedContainer py-4">
-                <HomeHeroSlider textPosition={true} sliderData={sliderData2} />
+            <div className="py-4">
+                <Second_Slider textPosition={true} sliderData={sliderData2} />
             </div>
 
+
+            
             <Suspense fallback={<Loader />}>
                 <HomeOneImageOnly />
                 <HomeSection4 />

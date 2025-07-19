@@ -16,10 +16,10 @@ function Home2BigGrid() {
         },
     ];
     return (
-        <div className="boxedContainer w-full py-4  h-auto  overflow-x-hidden ">
+        <div className="boxedContainer lg:px-15 px-5 w-full py-4  h-auto  overflow-x-hidden ">
             <div className="md:mb-14 mb-10 mt-4">
                 <div>
-                    <Heading text={"Lorem ipsum dolor sit amet consectetur."} />
+                    <Heading text={"The art of draping, reimagined for you"} />
                 </div>
                 <div className="mt-2">
                     <SubHeading

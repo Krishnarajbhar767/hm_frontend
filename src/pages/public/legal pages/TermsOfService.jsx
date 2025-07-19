@@ -314,7 +314,7 @@ const TermsOfService = () => {
                     <div className="text-base sm:text-lg text-foreground bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                         <p className="font-semibold">Srijan Fabs</p>
                         <p>2nd Floor, C.K 20/9,</p>
-                        <p>Shittla Katra Thatheri Bazar,</p>
+                        <p>Shetla Katra Thatheri Bazar,</p>
                         <p>Varanasi, Uttar Pradesh 221010,</p>
                         <p>India</p>
                         <p>

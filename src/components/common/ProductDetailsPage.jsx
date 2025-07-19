@@ -101,6 +101,17 @@ function ProductDetailsPage() {
     // });
 
     const handleAddToCart = async (prod) => {
+
+        console.log("product", prod)
+        console.log("product stock", product.stock)
+        console.log("product stock", typeof product.stock)
+
+        if(product.stock === 1 ) {
+            alert("Currenlty This Product Not Available ")
+        } else{
+             alert("Availble Product in Stock ")
+        }
+
         const existing = JSON.parse(localStorage.getItem("cart")) || [];
         if (existing.find((i) => i._id === prod._id)) return;
 

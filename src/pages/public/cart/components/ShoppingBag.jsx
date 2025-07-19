@@ -106,11 +106,14 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
                     <div className="sm:hidden flex flex-col mt-2 gap-2">
                         <div className="flex justify-between items-center">
                             <span className="text-xs text-foreground">
-                                Price:
+                                Price: 
                             </span>
-                            <span className="text-xs text-foreground">
-                                ₹{item.finalPrice.toFixed(2)}
+                            <span className="text-xs text-foreground s">
+                                {/* ₹{item.basePrice} */}
+                                {/* const itemTotal = item.finalPrice * item.quantity; */}
+                                ₹{item.finalPrice.toFixed(2)} 
                             </span>
+                        
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-xs text-foreground">
@@ -250,13 +253,16 @@ function EmptyCart() {
                     />
                 </svg>
             </div>
+
             <p className="text-foreground text-sm sm:text-base mb-2">
                 Your cart is empty
             </p>
+
             <p className="text-foreground text-xs sm:text-sm mb-6">
                 Add items to your cart to continue shopping
             </p>
-            <button className="bg-foreground text-white px-4 py-2 text-xs sm:text-sm uppercase">
+
+            <button onClick={() => navigate("Navigate Products Page")} className="bg-foreground text-white px-4 py-2 text-xs sm:text-sm uppercase">
                 Continue Shopping
             </button>
         </motion.div>
@@ -408,11 +414,10 @@ function OrderSummary({
                 whileTap={{ scale: 0.98 }}
                 onClick={handleCheckout}
                 disabled={cartEmpty || isCheckingOut}
-                className={`hidden lg:flex group relative h-9 sm:h-10 md:h-12 items-center justify-center overflow-hidden px-3 sm:px-4 md:px-6 font-light text-neutral-200 text-xs sm:text-sm md:text-base tracking-wide w-full mt-2 sm:mt-4 uppercase ${
-                    cartEmpty
+                className={`hidden lg:flex group relative h-9 sm:h-10 md:h-12 items-center justify-center overflow-hidden px-3 sm:px-4 md:px-6 font-light text-neutral-200 text-xs sm:text-sm md:text-base tracking-wide w-full mt-2 sm:mt-4 uppercase ${cartEmpty
                         ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                         : "bg-foreground"
-                }`}
+                    }`}
             >
                 {isCheckingOut ? (
                     <motion.div
@@ -642,11 +647,10 @@ function ShoppingBag({
                     whileTap={{ scale: 0.98 }}
                     onClick={handleCheckout}
                     disabled={cartEmpty || isCheckingOut}
-                    className={`group relative flex h-12 items-center justify-center overflow-hidden font-light text-neutral-200 text-sm tracking-wide w-full uppercase ${
-                        cartEmpty
+                    className={`group relative flex h-12 items-center justify-center overflow-hidden font-light text-neutral-200 text-sm tracking-wide w-full uppercase ${cartEmpty
                             ? "bg-gray-200 text-gray-500"
                             : "bg-foreground"
-                    }`}
+                        }`}
                 >
                     {isCheckingOut ? (
                         <motion.div

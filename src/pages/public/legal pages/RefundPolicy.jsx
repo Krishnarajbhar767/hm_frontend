@@ -33,12 +33,10 @@ const RefundPolicy = () => {
                             section.
                         </li>
                         <li>
-                            Sarees cannot be exchanged if the fall, pico,
-                            tassels, or blouse have been altered, detached, or
-                            processed in any way.
+                            Sarees are not eligible for return or exchange if the fall, pico, or tassels have been added, or if they have been processed in any way.
                         </li>
                         <li>
-                            Returns are only accepted for{" "}
+                            Return & Exchange only accepted for{" "}
                             <span className="font-semibold">
                                 manufacturing defects
                             </span>{" "}
@@ -88,10 +86,12 @@ const RefundPolicy = () => {
                             must be provided with the exchange request.
                         </li>
                         <li>
-                            Returns must be shipped via{" "}
+                            {/* Returns must be shipped via{" "}
                             <span className="font-semibold">Blue Dart</span>{" "}
                             only. Packages from other couriers will not be
-                            accepted.
+                            accepted. */}
+
+                            Returns must be via Blue dart , DTDC only. Packages from other couries will be not be accepted.
                         </li>
                         <li>
                             Srijan Fabs reserves the right to determine if the
@@ -136,7 +136,7 @@ const RefundPolicy = () => {
                     <div className="text-base sm:text-lg text-foreground bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                         <p className="font-semibold">Srijan Fabs</p>
                         <p>2nd Floor, C.K 20/9,</p>
-                        <p>Shittla Katra Thatheri Bazar,</p>
+                        <p>Shetla Katra Thatheri Bazar,</p>
                         <p>Varanasi, Uttar Pradesh 221010,</p>
                         <p>India</p>
                         <p>

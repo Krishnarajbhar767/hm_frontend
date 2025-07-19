@@ -44,6 +44,7 @@ const OrderSummary = React.memo(function OrderSummary({
                                     {(basePrice * item.quantity).toFixed(2)}
                                 </p>
                                 {item.addons.withFallPico && (
+
                                     <p>
                                         With Fall Pico: +₹{FALLPICO_PRICE} ×{" "}
                                         {item.quantity} = ₹
@@ -83,7 +84,7 @@ const OrderSummary = React.memo(function OrderSummary({
                             transition={{ duration: 0.3 }}
                             className="flex justify-between text-green-600"
                         >
-                            <span>Discount</span>
+                            <span>Discount</span>....
                             <span>-₹{discount.toFixed(2)}</span>
                         </motion.div>
                     )}
