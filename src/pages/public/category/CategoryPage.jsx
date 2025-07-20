@@ -7,7 +7,7 @@ function CategoryPage() {
     const { id, category, fabric } = useParams();
     const displayCategory =
         (category || fabric)?.replace(/-/g, " ") || "Category";
-
+    console.log(displayCategory);
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [categoryDetails, setCategoryDetails] = useState(null);
@@ -130,7 +130,8 @@ function CategoryPage() {
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center space-y-4">
                             <h1 className="text-3xl md:text-4xl font-medium text-foreground capitalize tracking-tight">
-                                {categoryDetails?.name || displayCategory}
+                                {categoryDetails?.name.replace(/-/g, " ") ||
+                                    displayCategory.replace(/-/g, " ")}
                             </h1>
                             <p className="text-lg text-foreground max-w-2xl mx-auto leading-relaxed">
                                 {categoryDetails?.description}

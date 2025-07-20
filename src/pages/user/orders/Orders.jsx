@@ -150,14 +150,18 @@ function Orders() {
                 {item.withFallPico && (
                     <div className="flex justify-between items-center">
                         <span className="text-foreground/70">+ Fall Pico:</span>
-                        <span className="font-medium text-green-600">₹300</span>
+                        <span className="font-medium text-green-600">
+                            ₹{FALLPICO_PRICE}
+                        </span>
                     </div>
                 )}
 
                 {item.withTassels && (
                     <div className="flex justify-between items-center">
                         <span className="text-foreground/70">+ Tassels:</span>
-                        <span className="font-medium text-green-600">₹200</span>
+                        <span className="font-medium text-green-600">
+                            ₹{TASSELLS_PRICE}
+                        </span>
                     </div>
                 )}
 
@@ -189,12 +193,12 @@ function Orders() {
             <div className="flex gap-2 mt-3">
                 {item.withFallPico && (
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        Fall Pico (+₹300)
+                        Fall Pico (+₹{FALLPICO_PRICE})
                     </span>
                 )}
                 {item.withTassels && (
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                        Tassels (+₹200)
+                        Tassels (+₹{TASSELLS_PRICE})
                     </span>
                 )}
             </div>

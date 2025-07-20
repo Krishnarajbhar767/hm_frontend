@@ -36,8 +36,13 @@ const OrderSummary = React.memo(function OrderSummary({
                         const itemTotal = item.finalPrice * item.quantity;
 
                         return (
-                            <div key={index} className="mb-3 border-b pb-2">
-                                <p className="font-medium">{item.name}</p>
+                            <div
+                                key={index}
+                                className="mb-3 border-b pb-2 capitalize "
+                            >
+                                <p className="font-medium line-clamp-2">
+                                    {item.name}
+                                </p>
                                 <p>
                                     Base Price: ₹{basePrice.toFixed(2)} ×{" "}
                                     {item.quantity} = ₹

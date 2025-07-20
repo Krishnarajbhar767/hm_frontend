@@ -153,10 +153,10 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
 
             {/* Pricing */}
             <div className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-3">
-                ₹{finalPrice}
+                ₹{Math.round(discountedBase)}
                 {offer && isOfferAplied && (
                     <span className="text-lg sm:text-xl text-green-600 font-medium">
-                        <span className="line-through">₹{totalBefore}</span> (
+                        <span className="line-through">₹{basePrice}</span> (
                         {offer}% OFF)
                     </span>
                 )}

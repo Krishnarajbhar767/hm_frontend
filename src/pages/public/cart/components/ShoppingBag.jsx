@@ -311,7 +311,10 @@ function OrderSummary({
                             (item.addons.withTassels ? TASSELLS_PRICE : 0);
                         const itemTotal = item.finalPrice * item.quantity;
                         return (
-                            <div key={index} className="mb-3 border-b pb-2">
+                            <div
+                                key={index}
+                                className="mb-3 border-b pb-2 capitalize"
+                            >
                                 <p className="font-medium line-clamp-1 capitalize">
                                     {item.name}
                                 </p>

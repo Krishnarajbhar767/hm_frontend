@@ -154,17 +154,21 @@ const OrderOverview = ({ order, formatINR }) => (
 
 // Product Item Component
 const ProductItem = ({ item, index, formatINR, order }) => {
+    const navigate = useNavigate();
+
     const basePrice = item.product.price;
+    const isOfferAplied = item.product.isOfferAplied;
+    const offerPercent = order?.offer || 0;
+    const couponDiscountAmount = order?.discount || 0;
+
     const fallPicoPrice = item.withFallPico ? FALLPICO_PRICE : 0;
     const tasselsPrice = item.withTassels ? TASSELLS_PRICE : 0;
     const addonPrice = fallPicoPrice + tasselsPrice;
 
-    const offerPercent = order?.offer || 0;
-    const couponDiscountAmount = order?.discount || 0;
-
-    const baseOfferDiscount = (basePrice * offerPercent) / 100;
+    const baseOfferDiscount = isOfferAplied
+        ? (basePrice * offerPercent) / 100
+        : 0;
     const discountedBasePrice = basePrice - baseOfferDiscount;
-
     const finalUnitPrice = discountedBasePrice + addonPrice;
     const grossTotal = finalUnitPrice * item.quantity;
     const netPayableTotal = grossTotal - couponDiscountAmount;
@@ -172,7 +176,7 @@ const ProductItem = ({ item, index, formatINR, order }) => {
     const couponPercent = couponDiscountAmount
         ? ((couponDiscountAmount / grossTotal) * 100).toFixed(2)
         : 0;
-    const navigate = useNavigate();
+
     return (
         <motion.div
             key={index}
@@ -187,9 +191,12 @@ const ProductItem = ({ item, index, formatINR, order }) => {
                         onClick={() =>
                             navigate(`/product/${item.product?._id}`)
                         }
-                        src={item.product.images[0] || "/placeholder.svg"}
+                        src={
+                            item.product.images[0] ||
+                            "/Product_Placeholder.webp"
+                        }
                         alt={item.product.name}
-                        className="w-24 h-24 sm:w-28 sm:h-28 object-cover object-top rounded-sm cursor-pointer"
+                        className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-sm cursor-pointer"
                     />
                 </div>
 
@@ -223,7 +230,7 @@ const ProductItem = ({ item, index, formatINR, order }) => {
                                 <span>Base Price (per unit)</span>
                                 <span>₹{formatINR(basePrice)}</span>
                             </div>
-                            {offerPercent > 0 && (
+                            {isOfferAplied && offerPercent > 0 && (
                                 <>
                                     <div className="flex justify-between text-green-600">
                                         <span>
@@ -240,6 +247,15 @@ const ProductItem = ({ item, index, formatINR, order }) => {
                                         </span>
                                     </div>
                                 </>
+                            )}
+
+                            {!isOfferAplied && (
+                                <div className="flex justify-between font-medium text-gray-600">
+                                    <span>Offer Not Applied</span>
+                                    <span>
+                                        ₹{formatINR(discountedBasePrice)}
+                                    </span>
+                                </div>
                             )}
                         </div>
 
@@ -264,13 +280,13 @@ const ProductItem = ({ item, index, formatINR, order }) => {
                             </div>
                         )}
 
-                        {/* Step 3: Final Per Unit */}
+                        {/* Step 3: Final Unit Price */}
                         <div className="border-t pt-2 space-y-1">
                             <p className="font-semibold text-gray-700">
                                 Step 3: Final Price (Per Unit)
                             </p>
                             <div className="flex justify-between font-medium">
-                                <span>Per Unit Final Price</span>
+                                <span>Final Price per Unit</span>
                                 <span>₹{formatINR(finalUnitPrice)}</span>
                             </div>
                         </div>
@@ -306,9 +322,9 @@ const ProductItem = ({ item, index, formatINR, order }) => {
                             </div>
                         )}
 
-                        {/* Step 6: Final Payable */}
+                        {/* Step 6: Net Payable */}
                         <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-900">
-                            <span> Net Payable</span>
+                            <span>Net Payable</span>
                             <span>₹{formatINR(netPayableTotal)}</span>
                         </div>
                     </div>
