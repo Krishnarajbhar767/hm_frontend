@@ -52,6 +52,7 @@ const EditProduct = () => {
                 weight: product.weight,
                 assurance: product.assurance,
                 hsnCode: product.hsnCode,
+                isOfferAplied: product.isOfferAplied,
             };
             reset(init);
             setInitialData(init);
@@ -254,7 +255,7 @@ const EditProduct = () => {
                             value: cat._id || cat.value,
                             label: cat.title || cat.label,
                         }))}
-                        value={product.fabric._id}
+                        value={product.fabric}
                     />
 
                     <InputField
@@ -301,7 +302,23 @@ const EditProduct = () => {
                         },
                     }}
                 />
-
+                {/* Offer */}
+                <SelectField
+                    label="Offer"
+                    name="isOfferAplied"
+                    register={register}
+                    errors={errors}
+                    value={product.isOfferAplied}
+                    // rules={{ required: "Offer is required" }}
+                    options={[
+                        { name: "No", value: false },
+                        { name: "Yes", value: true },
+                    ].map((cat) => ({
+                        value: cat._id || cat.value,
+                        label: cat.name || cat.label,
+                        disabled: cat.name == "all" ? true : false,
+                    }))}
+                />
                 {/* Actions */}
                 <div className="flex flex-col sm:flex-row gap-3">
                     <button

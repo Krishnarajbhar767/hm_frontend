@@ -16,9 +16,8 @@ function Cart() {
     const [localQty, setLocalQty] = useState(
         () => (buyNowItem && buyNowItem.quantity) || 1
     );
-    
 
-    // ⬇ Choose items array based on mode
+    //  Choose items array based on mode
     const reduxItems = useSelector((state) => state.cart.cartItems);
     const cartItems = isBuyNow
         ? [{ ...buyNowItem, quantity: localQty }]
@@ -36,8 +35,6 @@ function Cart() {
         (sum, item) => sum + item.finalPrice * item.quantity,
         0
     );
-
-    
 
     const Data = [
         {

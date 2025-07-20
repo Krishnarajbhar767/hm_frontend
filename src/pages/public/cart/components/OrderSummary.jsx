@@ -13,7 +13,7 @@ const OrderSummary = React.memo(function OrderSummary({
         (state) => state?.cart?.discountPercentage
     );
     const discount = (subtotal * discountPercentage) / 100;
-    console.log("Discount ->", discount);
+
     return (
         <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -44,7 +44,6 @@ const OrderSummary = React.memo(function OrderSummary({
                                     {(basePrice * item.quantity).toFixed(2)}
                                 </p>
                                 {item.addons.withFallPico && (
-
                                     <p>
                                         With Fall Pico: +₹{FALLPICO_PRICE} ×{" "}
                                         {item.quantity} = ₹
@@ -76,8 +75,8 @@ const OrderSummary = React.memo(function OrderSummary({
                         <span>Subtotal</span>
                         <span>₹{subtotal.toFixed(2)}</span>
                     </div>
-
-                    {discount && (
+                    {}
+                    {discount > 0 && (
                         <motion.div
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}

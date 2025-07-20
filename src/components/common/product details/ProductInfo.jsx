@@ -36,14 +36,15 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
     const [withTassels, setWithTassels] = useState(false);
     const [faqOpen, setFaqOpen] = useState(false);
     const [shippingOpen, setShippingOpen] = useState(false);
-
+    const [isOfferAplied, setIsOfferAplied] = useState(product.isOfferAplied);
     const basePrice = product?.price || 0;
     const addonPrice =
         (withFallPico ? FALLPICO_PRICE : 0) +
         (withTassels ? TASSELLS_PRICE : 0);
 
     // Apply discount only to base price
-    const discountedBase = offer ? basePrice * (1 - offer / 100) : basePrice;
+    const discountedBase =
+        offer && isOfferAplied ? basePrice * (1 - offer / 100) : basePrice;
     const finalPrice = Math.round(discountedBase + addonPrice);
     const totalBefore = Math.round(basePrice + addonPrice);
 
@@ -113,10 +114,6 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                         <h1 className="text-2xl sm:text-3xl font-semibold">
                             {product?.name}
                         </h1>
-                        {/* <div className="flex items-center gap-2 text-sm mt-1">
-                            {renderStars(product?.rating)}
-                            <span>({product?.reviewCount || 0} Reviews)</span>
-                        </div> */}
                     </div>
                     <div className="flex gap-2">
                         <button
@@ -157,7 +154,7 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
             {/* Pricing */}
             <div className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-3">
                 ₹{finalPrice}
-                {offer && (
+                {offer && isOfferAplied && (
                     <span className="text-lg sm:text-xl text-green-600 font-medium">
                         <span className="line-through">₹{totalBefore}</span> (
                         {offer}% OFF)
@@ -277,7 +274,7 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                 <button
                     onClick={handleAddToCart}
                     disabled={!product.stock}
-                    className="w-full py-3 rounded border border-foreground text-foreground hover:bg-gray-50 disabled:bg-gray-100"
+                    className="w-full py-3 rounded border border-foreground text-foreground hover:bg-gray-50 disabled:bg-gray-300"
                 >
                     <ShoppingCart className="inline-block mr-2" />
                     {inCart ? "Go To Cart" : "Add To Cart"}

@@ -245,7 +245,23 @@ const AddProduct = () => {
                         },
                     }}
                 />
-
+                {/* Offer Section */}
+                <SelectField
+                    label="Offer"
+                    name="isOfferAplied"
+                    register={register}
+                    errors={errors}
+                    value={false}
+                    // rules={{ required: "Offer is required" }}
+                    options={[
+                        { name: "Yes", value: true },
+                        { name: "No", value: false },
+                    ].map((cat) => ({
+                        value: cat._id || cat.value,
+                        label: cat.name || cat.label,
+                        disabled: cat.name == "all" ? true : false,
+                    }))}
+                />
                 {/* Submit & Cancel Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
                     <button

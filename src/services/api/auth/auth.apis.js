@@ -13,7 +13,6 @@ import { clearCategory } from "../../../redux/slices/categorySlice";
 import { clearProducts } from "../../../redux/slices/productSlice";
 
 const authApis = {
-
     register: async (data) => {
         const res = await axiosInstance.post(authEndpoints.register, data);
         console.log("Register Api Call Res ->", res.data);
@@ -27,6 +26,10 @@ const authApis = {
 
     login: async (data) => {
         const res = await axiosInstance.post(authEndpoints.login, data);
+        // after Login Clear local Storege
+        if (res) {
+            localStorage.setItem("cart", JSON.stringify([]));
+        }
         return res?.data?.data;
     },
 
