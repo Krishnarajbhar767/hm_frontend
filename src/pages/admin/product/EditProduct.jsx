@@ -110,7 +110,7 @@ const EditProduct = () => {
         try {
             let uploadedUrls = [];
             if (imageFiles.length > 0) {
-                uploadedUrls = await uploadMedia(imageFiles);
+                uploadedUrls = await uploadMedia(imageFiles, data);
             }
             const newUrls = Array.isArray(uploadedUrls)
                 ? uploadedUrls

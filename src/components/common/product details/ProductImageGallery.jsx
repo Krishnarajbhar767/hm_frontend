@@ -70,10 +70,7 @@ function ProductImageGallery({ images = [], productName = "", stock }) {
                     onMouseMove={handleMouseMove}
                 >
                     <img
-                        src={
-                            "https://medias.utsavfashion.com/media/catalog/product/cache/1/image/500x/040ec09b1e35df139433887a97daa66f/b/a/banarasi-saree-in-royal-blue-v1-sskt675.jpg" ||
-                            "/Product_Placeholder.webp"
-                        }
+                        src={selectedImage || "/Product_Placeholder.webp"}
                         alt={productName}
                         className={`w-full h-full object-cover object-top transition-transform duration-300 ${
                             stock >= 1

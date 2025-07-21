@@ -50,6 +50,7 @@ const AddProduct = () => {
 
     // Form submit handler
     const onSubmit = async (data) => {
+        console.log(data);
         if (imageFiles.length === 0) {
             toast.error("Please upload at least one image.");
             return;
