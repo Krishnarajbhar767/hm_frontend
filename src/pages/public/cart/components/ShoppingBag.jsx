@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../../utils/apiConnector"; // Adjust path as needed
 import { FALLPICO_PRICE, TASSELLS_PRICE } from "../../../../Constant";
+import { handleAxiosError } from "../../../../utils/handleAxiosError";
 
 /** Sticky mobile summary bar (Cart Total + Checkout) */
 function MobileCartSummary({ total, onCheckout, isCheckingOut, cartEmpty }) {
@@ -458,7 +459,6 @@ function ShoppingBag({
     setBuyNowItem,
     setStepCount,
 }) {
-    console.log("is buy now from shopping Bag", isBuyNow);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -539,6 +539,7 @@ function ShoppingBag({
 
     // Quantity update
     const updateQuantityHandler = async (id, change, idx) => {
+        console.log(id);
         const item = cartItems[idx];
         if (!item || item._id !== id) return;
         if (isBuyNow) {
@@ -561,8 +562,7 @@ function ShoppingBag({
                 );
                 if (!res.data) return;
             } catch (error) {
-                toast.error("Something Went Wrong");
-                console.error(error);
+                handleAxiosError(error);
                 return;
             }
         }

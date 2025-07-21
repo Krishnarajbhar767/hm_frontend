@@ -1,17 +1,10 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-    FiArrowLeft,
-    FiPackage,
-    FiTruck,
-    FiCreditCard,
-    FiPlus,
-} from "react-icons/fi";
+import { FiArrowLeft, FiPackage, FiTruck, FiCreditCard } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { FALLPICO_PRICE, TASSELLS_PRICE } from "../../../../Constant";
 import ReceiptPreview from "../../../../components/common/ReceiptPreview";
 
-// Animation variants
 const sectionVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: (i) => ({
@@ -21,51 +14,35 @@ const sectionVariants = {
     }),
 };
 
-// Status Badge Component
 const StatusBadge = ({ status, type = "default" }) => {
-    const getStatusColor = (status, type) => {
-        const statusLower = status?.toLowerCase();
-
+    const color = status?.toLowerCase();
+    const getColor = () => {
         if (type === "payment") {
-            switch (statusLower) {
-                case "paid":
-                    return "bg-emerald-50 text-emerald-700 border-emerald-200";
-                case "failed":
-                case "pending":
-                    return "bg-red-50 text-red-700 border-red-200";
-                default:
-                    return "bg-gray-50 text-gray-700 border-gray-200";
-            }
-        }
-
-        switch (statusLower) {
-            case "delivered":
+            if (color === "paid")
                 return "bg-emerald-50 text-emerald-700 border-emerald-200";
-            case "shipped":
-            case "out for delivery":
-                return "bg-blue-50 text-blue-700 border-blue-200";
-            case "pending":
-                return "bg-amber-50 text-amber-700 border-amber-200";
-            case "canceled":
+            if (color === "failed" || color === "pending")
                 return "bg-red-50 text-red-700 border-red-200";
-            default:
-                return "bg-gray-50 text-gray-700 border-gray-200";
+            return "bg-gray-50 text-gray-700 border-gray-200";
         }
+        if (color === "delivered")
+            return "bg-emerald-50 text-emerald-700 border-emerald-200";
+        if (color === "shipped" || color === "out for delivery")
+            return "bg-blue-50 text-blue-700 border-blue-200";
+        if (color === "pending")
+            return "bg-amber-50 text-amber-700 border-amber-200";
+        if (color === "canceled")
+            return "bg-red-50 text-red-700 border-red-200";
+        return "bg-gray-50 text-gray-700 border-gray-200";
     };
-
     return (
         <span
-            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                status,
-                type
-            )}`}
+            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getColor()}`}
         >
             {status}
         </span>
     );
 };
 
-// Order Header Component
 const OrderHeader = ({ order }) => (
     <motion.div
         custom={0}
@@ -90,14 +67,12 @@ const OrderHeader = ({ order }) => (
                 to="/account/orders"
                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-foreground hover:text-blue-600 transition-colors"
             >
-                <FiArrowLeft size={16} />
-                Back to Orders
+                <FiArrowLeft size={16} /> Back to Orders
             </Link>
         </motion.div>
     </motion.div>
 );
 
-// Order Overview Component
 const OrderOverview = ({ order, formatINR }) => (
     <motion.div
         custom={1}
@@ -107,6 +82,7 @@ const OrderOverview = ({ order, formatINR }) => (
         className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-6"
     >
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {/* Order Date */}
             <div className="space-y-1">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                     Order Date
@@ -126,6 +102,7 @@ const OrderOverview = ({ order, formatINR }) => (
                 </p>
             </div>
 
+            {/* Total & Coupon */}
             <div className="space-y-1">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                     Total Amount
@@ -133,8 +110,14 @@ const OrderOverview = ({ order, formatINR }) => (
                 <p className="text-xl font-bold text-foreground">
                     ₹{formatINR(order.totalAmount)}
                 </p>
+                {order.discount > 0 && (
+                    <p className="text-sm font-semibold text-red-600">
+                        Coupon Discount: - ₹{formatINR(order.discount)}
+                    </p>
+                )}
             </div>
 
+            {/* Payment Status */}
             <div className="space-y-1">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                     Payment Status
@@ -142,6 +125,7 @@ const OrderOverview = ({ order, formatINR }) => (
                 <StatusBadge status={order.paymentStatus} type="payment" />
             </div>
 
+            {/* Delivery Status */}
             <div className="space-y-1">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                     Delivery Status
@@ -152,30 +136,18 @@ const OrderOverview = ({ order, formatINR }) => (
     </motion.div>
 );
 
-// Product Item Component
 const ProductItem = ({ item, index, formatINR, order }) => {
     const navigate = useNavigate();
-
     const basePrice = item.product.price;
-    const isOfferAplied = item.product.isOfferAplied;
-    const offerPercent = order?.offer || 0;
-    const couponDiscountAmount = order?.discount || 0;
-
-    const fallPicoPrice = item.withFallPico ? FALLPICO_PRICE : 0;
-    const tasselsPrice = item.withTassels ? TASSELLS_PRICE : 0;
-    const addonPrice = fallPicoPrice + tasselsPrice;
-
-    const baseOfferDiscount = isOfferAplied
-        ? (basePrice * offerPercent) / 100
-        : 0;
-    const discountedBasePrice = basePrice - baseOfferDiscount;
-    const finalUnitPrice = discountedBasePrice + addonPrice;
-    const grossTotal = finalUnitPrice * item.quantity;
-    const netPayableTotal = grossTotal - couponDiscountAmount;
-
-    const couponPercent = couponDiscountAmount
-        ? ((couponDiscountAmount / grossTotal) * 100).toFixed(2)
-        : 0;
+    const offerPct = order?.offer || 0;
+    const isOffer = item.product.isOfferAplied;
+    const offerDiscount = isOffer ? (basePrice * offerPct) / 100 : 0;
+    const priceAfterOffer = basePrice - offerDiscount;
+    const addons =
+        (item.withFallPico ? FALLPICO_PRICE : 0) +
+        (item.withTassels ? TASSELLS_PRICE : 0);
+    const finalUnit = priceAfterOffer + addons;
+    const grossTotal = finalUnit * item.quantity;
 
     return (
         <motion.div
@@ -185,12 +157,9 @@ const ProductItem = ({ item, index, formatINR, order }) => {
             className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md"
         >
             <div className="flex flex-col sm:flex-row gap-6">
-                {/* Image */}
                 <div className="flex-shrink-0">
                     <img
-                        onClick={() =>
-                            navigate(`/product/${item.product?._id}`)
-                        }
+                        onClick={() => navigate(`/product/${item.product._id}`)}
                         src={
                             item.product.images[0] ||
                             "/Product_Placeholder.webp"
@@ -199,8 +168,6 @@ const ProductItem = ({ item, index, formatINR, order }) => {
                         className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-sm cursor-pointer"
                     />
                 </div>
-
-                {/* Details */}
                 <div className="flex-1 space-y-4 text-sm text-gray-700">
                     <div>
                         <h4 className="text-lg font-semibold text-gray-800 capitalize">
@@ -218,114 +185,80 @@ const ProductItem = ({ item, index, formatINR, order }) => {
 
                     <div className="bg-gray-50 rounded-lg p-4 space-y-4">
                         <h5 className="text-sm font-bold text-gray-900">
-                            🧾 Price Calculation Summary
+                            🧾 Price Summary
                         </h5>
-
-                        {/* Step 1: Base Price */}
                         <div className="space-y-1">
                             <p className="font-semibold text-gray-700">
-                                Step 1: Base Price
+                                Base Price
                             </p>
                             <div className="flex justify-between">
-                                <span>Base Price (per unit)</span>
+                                <span>Price per unit</span>
                                 <span>₹{formatINR(basePrice)}</span>
                             </div>
-                            {isOfferAplied && offerPercent > 0 && (
+                            {isOffer ? (
                                 <>
                                     <div className="flex justify-between text-green-600">
                                         <span>
-                                            Offer Discount ({offerPercent}%)
+                                            Offer Discount ({offerPct}%)
                                         </span>
                                         <span>
-                                            -₹{formatINR(baseOfferDiscount)}
+                                            - ₹{formatINR(offerDiscount)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between font-medium">
                                         <span>Price After Offer</span>
                                         <span>
-                                            ₹{formatINR(discountedBasePrice)}
+                                            ₹{formatINR(priceAfterOffer)}
                                         </span>
                                     </div>
                                 </>
-                            )}
-
-                            {!isOfferAplied && (
+                            ) : (
                                 <div className="flex justify-between font-medium text-gray-600">
-                                    <span>Offer Not Applied</span>
-                                    <span>
-                                        ₹{formatINR(discountedBasePrice)}
-                                    </span>
+                                    <span>No Offer</span>
+                                    <span>₹{formatINR(priceAfterOffer)}</span>
                                 </div>
                             )}
                         </div>
 
-                        {/* Step 2: Add-ons */}
                         {(item.withFallPico || item.withTassels) && (
                             <div className="space-y-1 pt-2">
                                 <p className="font-semibold text-gray-700">
-                                    Step 2: Add-ons
+                                    Add-ons
                                 </p>
                                 {item.withFallPico && (
                                     <div className="flex justify-between">
                                         <span>+ Fall Pico</span>
-                                        <span>+₹{FALLPICO_PRICE}</span>
+                                        <span>+ ₹{FALLPICO_PRICE}</span>
                                     </div>
                                 )}
                                 {item.withTassels && (
                                     <div className="flex justify-between">
                                         <span>+ Tassels</span>
-                                        <span>+₹{TASSELLS_PRICE}</span>
+                                        <span>+ ₹{TASSELLS_PRICE}</span>
                                     </div>
                                 )}
                             </div>
                         )}
 
-                        {/* Step 3: Final Unit Price */}
                         <div className="border-t pt-2 space-y-1">
                             <p className="font-semibold text-gray-700">
-                                Step 3: Final Price (Per Unit)
+                                Final Unit Price
                             </p>
                             <div className="flex justify-between font-medium">
-                                <span>Final Price per Unit</span>
-                                <span>₹{formatINR(finalUnitPrice)}</span>
+                                <span>Final Price</span>
+                                <span>₹{formatINR(finalUnit)}</span>
                             </div>
                         </div>
-
-                        {/* Step 4: Gross Total */}
-                        <div className="space-y-1 pt-2">
+                        <div className="border-t pt-2 space-y-1">
                             <p className="font-semibold text-gray-700">
-                                Step 4: Gross Total
+                                Gross Total
                             </p>
                             <div className="flex justify-between font-bold text-gray-800">
                                 <span>
-                                    {item.quantity} × ₹
-                                    {formatINR(finalUnitPrice)}
+                                    {item.quantity} × ₹{formatINR(finalUnit)}
                                 </span>
                                 <span>₹{formatINR(grossTotal)}</span>
                             </div>
-                        </div>
-
-                        {/* Step 5: Coupon Discount */}
-                        {couponDiscountAmount > 0 && (
-                            <div className="space-y-1 pt-2 text-red-600">
-                                <p className="font-semibold text-red-700">
-                                    Step 5: Coupon Discount
-                                </p>
-                                <div className="flex justify-between">
-                                    <span>
-                                        Coupon Discount ({couponPercent}%)
-                                    </span>
-                                    <span>
-                                        -₹{formatINR(couponDiscountAmount)}
-                                    </span>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Step 6: Net Payable */}
-                        <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-900">
-                            <span>Net Payable</span>
-                            <span>₹{formatINR(netPayableTotal)}</span>
                         </div>
                     </div>
                 </div>
@@ -334,7 +267,6 @@ const ProductItem = ({ item, index, formatINR, order }) => {
     );
 };
 
-// Shipping Info Component
 const ShippingInfo = ({ order }) => (
     <motion.div
         custom={3}
@@ -344,10 +276,8 @@ const ShippingInfo = ({ order }) => (
         className="space-y-4"
     >
         <h3 className="flex items-center gap-2 text-xl font-semibold text-foreground">
-            <FiTruck size={20} />
-            Shipping Information
+            <FiTruck size={20} /> Shipping Information
         </h3>
-
         <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
             <div className="space-y-4">
                 <div>
@@ -355,31 +285,30 @@ const ShippingInfo = ({ order }) => (
                         Delivery Address
                     </p>
                     <div className="text-sm text-foreground space-y-1">
-                        <p className="text-sm text-foreground leading-relaxed">
-                            {order?.shippingAddress?.street ||
-                                order?.shippingAddressSnapshot?.street}
+                        <p className="leading-relaxed">
+                            {order.shippingAddress?.street ||
+                                order.shippingAddressSnapshot?.street}
                             <br />
-                            {order?.shippingAddress?.city ||
-                                order?.shippingAddressSnapshot?.city}
+                            {order.shippingAddress?.city ||
+                                order.shippingAddressSnapshot?.city}
                             ,{" "}
-                            {order?.shippingAddress?.state ||
-                                order?.shippingAddressSnapshot?.state}
+                            {order.shippingAddress?.state ||
+                                order.shippingAddressSnapshot?.state}
                             <br />
-                            {order?.shippingAddress?.postalCode ||
-                                order?.shippingAddressSnapshot?.postalCode}
+                            {order.shippingAddress?.postalCode ||
+                                order.shippingAddressSnapshot?.postalCode}
                             ,{" "}
-                            {order?.shippingAddress?.country ||
-                                order?.shippingAddressSnapshot?.country}
+                            {order.shippingAddress?.country ||
+                                order.shippingAddressSnapshot?.country}
                             <br />
                             <span className="font-medium">
                                 Phone:{" "}
-                                {order?.shippingAddress?.phone ||
-                                    order?.shippingAddressSnapshot?.phone}
+                                {order.shippingAddress?.phone ||
+                                    order.shippingAddressSnapshot?.phone}
                             </span>
                         </p>
                     </div>
                 </div>
-
                 {order.deliveredAt && (
                     <div className="pt-4 border-t">
                         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
@@ -397,7 +326,6 @@ const ShippingInfo = ({ order }) => (
     </motion.div>
 );
 
-// Payment Info Component
 const PaymentInfo = ({ order }) => (
     <motion.div
         custom={4}
@@ -407,10 +335,8 @@ const PaymentInfo = ({ order }) => (
         className="space-y-4"
     >
         <h3 className="flex items-center gap-2 text-xl font-semibold text-foreground">
-            <FiCreditCard size={20} />
-            Payment Information
+            <FiCreditCard size={20} /> Payment Information
         </h3>
-
         <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
@@ -421,14 +347,12 @@ const PaymentInfo = ({ order }) => (
                         {order.paymentMethod}
                     </p>
                 </div>
-
                 <div>
                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                         Payment Status
                     </p>
                     <StatusBadge status={order.paymentStatus} type="payment" />
                 </div>
-
                 {order.paidAt && (
                     <div className="sm:col-span-2 pt-4 border-t">
                         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
@@ -444,7 +368,6 @@ const PaymentInfo = ({ order }) => (
     </motion.div>
 );
 
-// Main Component
 function OrderDetails() {
     const { orderId } = useParams();
     const myOrders = useSelector((state) => state.order.orders) || [];
@@ -484,8 +407,7 @@ function OrderDetails() {
                             to="/account/orders"
                             className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
                         >
-                            <FiArrowLeft size={16} />
-                            Back to Orders
+                            <FiArrowLeft size={16} /> Back to Orders
                         </Link>
                     </motion.div>
                 </div>
@@ -505,7 +427,6 @@ function OrderDetails() {
                     <OrderHeader order={order} />
                     <OrderOverview order={order} formatINR={formatINR} />
 
-                    {/* Products Section */}
                     <motion.div
                         custom={2}
                         initial="hidden"
@@ -514,10 +435,9 @@ function OrderDetails() {
                         className="space-y-4"
                     >
                         <h3 className="flex items-center gap-2 text-xl font-semibold text-foreground">
-                            <FiPackage size={20} />
-                            Products ({order.items.length})
+                            <FiPackage size={20} /> Products (
+                            {order.items.length})
                         </h3>
-
                         <div className="space-y-4">
                             {order.items.map((item, idx) => (
                                 <ProductItem

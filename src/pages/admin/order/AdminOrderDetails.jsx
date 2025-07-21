@@ -215,60 +215,89 @@ const CustomerInfo = ({ user }) => (
 );
 
 // Admin Order Overview Component
-const AdminOrderOverview = ({ order, formatINR }) => (
-    <motion.div
-        custom={2}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-        className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-6"
-    >
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="space-y-1">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Order Date
-                </p>
-                <p className="text-sm font-medium text-gray-800">
-                    {new Date(order.createdAt).toLocaleDateString("en-IN", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                    })}
-                </p>
-                <p className="text-xs text-gray-500">
-                    {new Date(order.createdAt).toLocaleTimeString("en-IN", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                    })}
-                </p>
-            </div>
+const AdminOrderOverview = ({ order, formatINR }) => {
+    const totalBeforeDiscount = order.totalAmount + (order.discount || 0);
 
-            <div className="space-y-1">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Total Amount
-                </p>
-                {console.log("Details from checkout", order)}
-                <p className="text-xl font-bold text-gray-800">
-                    ₹{formatINR(order.totalAmount)}
-                </p>
-            </div>
+    return (
+        <motion.div
+            custom={2}
+            initial="hidden"
+            animate="visible"
+            variants={sectionVariants}
+            className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-6"
+        >
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                {/* Order Date */}
+                <div className="space-y-1">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                        Order Date
+                    </p>
+                    <p className="text-sm font-medium text-gray-800">
+                        {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                        })}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                        {new Date(order.createdAt).toLocaleTimeString("en-IN", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                        })}
+                    </p>
+                </div>
 
-            <div className="space-y-1">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Payment Status
-                </p>
-                <StatusBadge status={order.paymentStatus} type="payment" />
-            </div>
+                {/* Total Before Discount */}
+                <div className="space-y-1">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                        Gross Amount
+                    </p>
+                    <p className="text-sm font-medium text-gray-800">
+                        ₹{formatINR(totalBeforeDiscount)}
+                    </p>
+                </div>
 
-            <div className="space-y-1">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Delivery Status
-                </p>
-                <StatusBadge status={order.deliveryStatus} />
+                {/* Coupon Discount */}
+                {order.discount > 0 && (
+                    <div className="space-y-1">
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                            Coupon Discount
+                        </p>
+                        <p className="text-sm font-medium text-red-600">
+                            - ₹{formatINR(order.discount)}
+                        </p>
+                    </div>
+                )}
+
+                {/* Final Amount */}
+                <div className="space-y-1">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                        Net Payable
+                    </p>
+                    <p className="text-xl font-bold text-gray-800">
+                        ₹{formatINR(order.totalAmount)}
+                    </p>
+                </div>
+
+                {/* Payment Status */}
+                <div className="space-y-1">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                        Payment Status
+                    </p>
+                    <StatusBadge status={order.paymentStatus} type="payment" />
+                </div>
+
+                {/* Delivery Status */}
+                <div className="space-y-1">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                        Delivery Status
+                    </p>
+                    <StatusBadge status={order.deliveryStatus} />
+                </div>
             </div>
-        </div>
-    </motion.div>
-);
+        </motion.div>
+    );
+};
 
 const AdminProductItem = ({ item, index, formatINR, order }) => {
     const navigate = useNavigate();
@@ -276,7 +305,6 @@ const AdminProductItem = ({ item, index, formatINR, order }) => {
     const basePrice = item.product.price;
     const isOfferAplied = item.product.isOfferAplied;
     const offerPercent = order?.offer || 0;
-    const couponDiscountAmount = order?.discount || 0;
 
     const fallPicoPrice = item.withFallPico ? FALLPICO_PRICE : 0;
     const tasselsPrice = item.withTassels ? TASSELLS_PRICE : 0;
@@ -288,21 +316,15 @@ const AdminProductItem = ({ item, index, formatINR, order }) => {
     const discountedBasePrice = basePrice - baseOfferDiscount;
     const finalUnitPrice = discountedBasePrice + addonPrice;
     const grossTotal = finalUnitPrice * item.quantity;
-    const netPayableTotal = grossTotal - couponDiscountAmount;
-
-    const couponPercent = couponDiscountAmount
-        ? ((couponDiscountAmount / grossTotal) * 100).toFixed(2)
-        : 0;
 
     return (
         <motion.div
             key={index}
             whileHover={{ scale: 1.01 }}
             transition={{ duration: 0.2 }}
-            className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md"
+            className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm"
         >
             <div className="flex flex-col sm:flex-row gap-6">
-                {/* Image */}
                 <div className="flex-shrink-0">
                     <img
                         onClick={() =>
@@ -317,7 +339,6 @@ const AdminProductItem = ({ item, index, formatINR, order }) => {
                     />
                 </div>
 
-                {/* Details */}
                 <div className="flex-1 space-y-4 text-sm text-gray-700">
                     <div>
                         <h4 className="text-lg font-semibold text-gray-800 capitalize">
@@ -335,26 +356,26 @@ const AdminProductItem = ({ item, index, formatINR, order }) => {
 
                     <div className="bg-gray-50 rounded-lg p-4 space-y-4">
                         <h5 className="text-sm font-bold text-gray-900">
-                            🧾 Price Calculation Summary
+                            🧾 Price Summary
                         </h5>
 
-                        {/* Step 1: Base Price */}
                         <div className="space-y-1">
                             <p className="font-semibold text-gray-700">
-                                Step 1: Base Price
+                                Base Price
                             </p>
                             <div className="flex justify-between">
-                                <span>Base Price (per unit)</span>
+                                <span>Price per unit</span>
                                 <span>₹{formatINR(basePrice)}</span>
                             </div>
-                            {isOfferAplied && offerPercent > 0 && (
+
+                            {isOfferAplied && offerPercent > 0 ? (
                                 <>
                                     <div className="flex justify-between text-green-600">
                                         <span>
                                             Offer Discount ({offerPercent}%)
                                         </span>
                                         <span>
-                                            -₹{formatINR(baseOfferDiscount)}
+                                            - ₹{formatINR(baseOfferDiscount)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between font-medium">
@@ -364,9 +385,7 @@ const AdminProductItem = ({ item, index, formatINR, order }) => {
                                         </span>
                                     </div>
                                 </>
-                            )}
-
-                            {!isOfferAplied && (
+                            ) : (
                                 <div className="flex justify-between font-medium text-gray-600">
                                     <span>Offer Not Applied</span>
                                     <span>
@@ -376,31 +395,29 @@ const AdminProductItem = ({ item, index, formatINR, order }) => {
                             )}
                         </div>
 
-                        {/* Step 2: Add-ons */}
                         {(item.withFallPico || item.withTassels) && (
                             <div className="space-y-1 pt-2">
                                 <p className="font-semibold text-gray-700">
-                                    Step 2: Add-ons
+                                    Add-ons
                                 </p>
                                 {item.withFallPico && (
                                     <div className="flex justify-between">
                                         <span>+ Fall Pico</span>
-                                        <span>+₹{FALLPICO_PRICE}</span>
+                                        <span>+ ₹{FALLPICO_PRICE}</span>
                                     </div>
                                 )}
                                 {item.withTassels && (
                                     <div className="flex justify-between">
                                         <span>+ Tassels</span>
-                                        <span>+₹{TASSELLS_PRICE}</span>
+                                        <span>+ ₹{TASSELLS_PRICE}</span>
                                     </div>
                                 )}
                             </div>
                         )}
 
-                        {/* Step 3: Final Unit Price */}
                         <div className="border-t pt-2 space-y-1">
                             <p className="font-semibold text-gray-700">
-                                Step 3: Final Price (Per Unit)
+                                Final Unit Price
                             </p>
                             <div className="flex justify-between font-medium">
                                 <span>Final Price per Unit</span>
@@ -408,10 +425,9 @@ const AdminProductItem = ({ item, index, formatINR, order }) => {
                             </div>
                         </div>
 
-                        {/* Step 4: Gross Total */}
-                        <div className="space-y-1 pt-2">
+                        <div className="border-t pt-2 space-y-1">
                             <p className="font-semibold text-gray-700">
-                                Step 4: Gross Total
+                                Gross Total
                             </p>
                             <div className="flex justify-between font-bold text-gray-800">
                                 <span>
@@ -420,29 +436,6 @@ const AdminProductItem = ({ item, index, formatINR, order }) => {
                                 </span>
                                 <span>₹{formatINR(grossTotal)}</span>
                             </div>
-                        </div>
-
-                        {/* Step 5: Coupon Discount */}
-                        {couponDiscountAmount > 0 && (
-                            <div className="space-y-1 pt-2 text-red-600">
-                                <p className="font-semibold text-red-700">
-                                    Step 5: Coupon Discount
-                                </p>
-                                <div className="flex justify-between">
-                                    <span>
-                                        Coupon Discount ({couponPercent}%)
-                                    </span>
-                                    <span>
-                                        -₹{formatINR(couponDiscountAmount)}
-                                    </span>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Step 6: Net Payable */}
-                        <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-900">
-                            <span>Net Payable</span>
-                            <span>₹{formatINR(netPayableTotal)}</span>
                         </div>
                     </div>
                 </div>

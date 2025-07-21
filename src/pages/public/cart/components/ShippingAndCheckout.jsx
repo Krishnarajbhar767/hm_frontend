@@ -31,6 +31,11 @@ function ShippingAndCheckout({ cartItems, setStepCount }) {
     const total = discount ? subtotal - discount : subtotal;
 
     const onSubmit = async (data) => {
+        console.log(
+            "Order That I Have  Created While Making Payment",
+
+            cartItems
+        );
         let isNewAddress = false;
         if (data.addressId === "new") {
             const {
@@ -51,6 +56,7 @@ function ShippingAndCheckout({ cartItems, setStepCount }) {
             offer,
             addressId: isNewAddress ? isNewAddress : data.addressId,
         });
+
         // console.log("Razor Pay Order ->", order);
         const razorpay = new window.Razorpay({
             key,

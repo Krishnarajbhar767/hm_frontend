@@ -69,6 +69,7 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
         ));
 
     const handleAddToCart = async () => {
+        if (!user) return navigate("/login");
         if (inCart) return navigate("/cart");
         await onAddToCart?.({
             ...product,

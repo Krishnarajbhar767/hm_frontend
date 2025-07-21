@@ -1,10 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-const cartItems = localStorage.getItem("cart")
-    ? JSON.parse(localStorage.getItem("cart"))
-    : [];
+const cartItems = [];
 // Helper function to recalculate total items and subtotal
 const recalculateTotals = (state) => {
-    console.log(state.cartItems);
     state.totalItems = state?.cartItems?.reduce(
         (sum, item) => sum + item?.quantity,
         0
@@ -58,9 +55,7 @@ const cartSlice = createSlice({
             state.cartItems = state.cartItems.filter(
                 (item, index) => !(item._id == id && index == idx)
             );
-            const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-            const updatedCart = existingCart.filter((item) => item._id !== id);
-            localStorage.setItem("cart", JSON.stringify(updatedCart));
+
             recalculateTotals(state);
         },
 
