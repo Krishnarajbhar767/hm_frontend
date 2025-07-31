@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import React, { lazy, Suspense } from "react";
+import Loader from "../common/Loader";
+
 import { RxCross2 } from "react-icons/rx";
 import InputField from "./InputField";
 import Button from "./Button";
@@ -7,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { handleAxiosError } from "../../utils/handleAxiosError";
 import axiosInstance from "../../utils/apiConnector";
+
 
 export default function JoinNewsLetter() {
     const {
@@ -76,12 +80,13 @@ export default function JoinNewsLetter() {
                     >
                         {/* Left Image */}
                         <div className="w-full md:w-1/2 hidden md:block">
+
                             <img
-                                // src="https://demoapus-wp.com/uomo/wp-content/uploads/2020/12/banner-mail.jpg"
-                                src="https://srijanfabsbucket-new.s3.ap-south-1.amazonaws.com/uploads/products/products_12345/1752651914675-434-3.jpg"
+                                src="/7.jpg"
                                 alt="Join Newsletter"
                                 className="w-full h-full object-cover"
                             />
+
                         </div>
 
                         {/* Right Form */}

@@ -1,0 +1,1 @@
+import{j as e}from"./index-DRzNUvPi.js";const s="/assets/SF_1920x800-BxRKa1lK.jpg";function r(){return e.jsx("div",{className:"h-[300px] md:h-[550px] w-full boxedContainer py-4 sm:px-8 overflow-hidden",children:e.jsx("img",{src:s,className:"object-cover h-full w-full cursor-pointer sm:px-8",alt:"background"})})}export{r as default};

@@ -1,9 +1,11 @@
 import { FiGrid, FiEdit, FiTrash } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
+import categoryApis from "../../../services/api/admin/product/category.api";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { setCategories } from "../../../redux/slices/categorySlice";
+import { toast } from "react-hot-toast";
 
 //  Category Skeleton Component
 const CategorySkeleton = () => (
@@ -34,10 +36,32 @@ function AdminCategories() {
         return () => clearTimeout(timeout);
     }, [categories]);
 
-    const confirmDelete = (id) => {
-        dispatch(setCategories(categories.filter((cat) => cat.id !== id)));
-        setDeleteCategoryId(null);
-    };
+    // const confirmDelete = (id) => {
+    //     dispatch(setCategories(categories.filter((cat) => cat.id !== id)));
+    //     setDeleteCategoryId(null);
+    // };
+
+
+    // call api delete categories 
+    const confirmDelete = (async (id) => {
+            const toastId = toast.loading(`Please Wait ${id} Delete...`);
+    
+            try {
+                const updatedCategories = await categoryApis.deleteCategory(id);
+                toast.success("Category Delete successfully");
+                dispatch(setCategories(updatedCategories));
+                navigate("/admin/categories");
+            } catch (error) {
+                handleAxiosError(error);
+            } finally {
+                toast.dismiss(toastId);
+            }
+            
+        });
+
+
+
+
 
     return (
         <motion.div
@@ -128,10 +152,10 @@ function AdminCategories() {
                         </p>
                         <div className="flex flex-wrap gap-3">
                             <button
-                                onClick={() => confirmDelete(deleteCategoryId)}
+                                onClick={() => alert(deleteCategoryId)}
                                 className="bg-red-600 text-white px-4 py-2 text-sm uppercase hover:bg-red-700 transition-colors duration-200 shadow-md w-full sm:w-auto"
                             >
-                                Delete
+                                Delete..
                             </button>
                             <button
                                 onClick={() => setDeleteCategoryId(null)}

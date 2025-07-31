@@ -90,10 +90,10 @@ function Orders() {
                         Order Date
                     </p>
                     <p className="text-sm text-foreground font-medium">
-                        {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                        {new Date(order?.createdAt).toLocaleDateString("en-IN", {
                             day: "2-digit",
                             month: "short",
-                            year: "numeric",
+                            year: "numeric"
                         })}
                     </p>
                 </div>
@@ -104,7 +104,7 @@ function Orders() {
                         Total Amount
                     </p>
                     <p className="text-lg font-bold text-foreground">
-                        ₹{formatINR(order.totalAmount)}
+                        ₹{formatINR(order?.totalAmount)}
                     </p>
                 </div>
 
@@ -113,13 +113,13 @@ function Orders() {
                     <p className="text-xs uppercase text-foreground font-semibold tracking-wider mb-1">
                         Status
                     </p>
-                    <StatusBadge status={order.deliveryStatus} />
+                    <StatusBadge status={order?.deliveryStatus} />
                 </div>
 
                 {/* Actions */}
                 <div className="flex items-center justify-end">
                     <Link
-                        to={`/account/orders/${order._id}`}
+                        to={`/account/orders/${order?._id}`}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-foreground text-white text-sm font-medium rounded-lg hover:bg-foreground/90 transition-colors duration-200"
                     >
                         <FiEye className="w-4 h-4" />
@@ -133,8 +133,8 @@ function Orders() {
     // Price Breakdown Component
     const PriceBreakdown = ({ item }) => {
         const basePrice = item?.product?.price;
-        const fallPicoPrice = item.withFallPico ? FALLPICO_PRICE : 0;
-        const tasselsPrice = item.withTassels ? TASSELLS_PRICE : 0;
+        const fallPicoPrice = item?.withFallPico ? FALLPICO_PRICE : 0;
+        const tasselsPrice = item?.withTassels ? TASSELLS_PRICE : 0;
         const unitPrice = basePrice + fallPicoPrice + tasselsPrice;
         const totalPrice = unitPrice * item?.quantity;
 
@@ -147,7 +147,7 @@ function Orders() {
                     </span>
                 </div>
 
-                {item.withFallPico && (
+                {item?.withFallPico && (
                     <div className="flex justify-between items-center">
                         <span className="text-foreground/70">+ Fall Pico:</span>
                         <span className="font-medium text-green-600">
@@ -156,7 +156,7 @@ function Orders() {
                     </div>
                 )}
 
-                {item.withTassels && (
+                {item?.withTassels && (
                     <div className="flex justify-between items-center">
                         <span className="text-foreground/70">+ Tassels:</span>
                         <span className="font-medium text-green-600">
@@ -174,7 +174,7 @@ function Orders() {
                     </div>
                     <div className="flex justify-between items-center text-foreground/70">
                         <span>Quantity:</span>
-                        <span>×{item.quantity}</span>
+                        <span>×{item?.quantity}</span>
                     </div>
                     <div className="flex justify-between items-center font-bold text-lg text-foreground">
                         <span>Subtotal:</span>
@@ -187,16 +187,16 @@ function Orders() {
 
     // Addon Tags Component
     const AddonTags = ({ item }) => {
-        if (!item.withFallPico && !item.withTassels) return null;
+        if (!item?.withFallPico && !item?.withTassels) return null;
 
         return (
             <div className="flex gap-2 mt-3">
-                {item.withFallPico && (
+                {item?.withFallPico && (
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                         Fall Pico (+₹{FALLPICO_PRICE})
                     </span>
                 )}
-                {item.withTassels && (
+                {item?.withTassels && (
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                         Tassels (+₹{TASSELLS_PRICE})
                     </span>
@@ -213,20 +213,21 @@ function Orders() {
                 <div className="flex-shrink-0 ">
                     <img
                         onClick={() =>
-                            navigate(`/product/${item.product?._id}`)
+                            navigate(`/product/${item?.product?._id}`)
                         }
                         src={
-                            item.product?.images[0] ||
+                            item?.product?.images[0] ||
                             "/Product_Placeholder.webp"
                         }
                         alt={item.product?.name}
                         className="w-30 h-30 object-cover rounded-sm  border-gray-200 shadow-sm object-top cursor-pointer"
                     />
                 </div>
+                
 
                 <div className="flex-1 min-w-0">
                     <h4 className="text-base font-semibold text-foreground mb-2">
-                        {item.product?.name}
+                        {item?.product?.name}
                     </h4>
 
                     {/* <PriceBreakdown item={item} /> */}
@@ -278,13 +279,13 @@ function Orders() {
                     </h5>
                     <div className="bg-white p-3 rounded-lg border border-gray-200">
                         <div className="space-y-2 text-sm">
-                            {order.paymentMethod && (
+                            {order?.paymentMethod && (
                                 <div className="flex justify-between">
                                     <span className="text-foreground/70">
                                         Method:
                                     </span>
                                     <span className="font-medium text-foreground capitalize">
-                                        {order.paymentMethod}
+                                        {order?.paymentMethod}
                                     </span>
                                 </div>
                             )}
@@ -293,7 +294,7 @@ function Orders() {
                                     Status:
                                 </span>
                                 <StatusBadge
-                                    status={order.paymentStatus}
+                                    status={order?.paymentStatus}
                                     type="payment"
                                 />
                             </div>
@@ -357,11 +358,11 @@ function Orders() {
                 <div className="flex items-center gap-2 mb-4">
                     <FiPackage className="w-4 h-4 text-foreground" />
                     <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
-                        Items ({order.items.length})
+                        Items ({order?.items?.length})
                     </h3>
                 </div>
                 <div className="space-y-4">
-                    {order.items.map((item) => (
+                    {order?.items?.map((item) => (
                         <OrderItem key={item._id} item={item} />
                     ))}
                 </div>
@@ -408,7 +409,7 @@ function Orders() {
                 <EmptyState />
             ) : (
                 <div className="space-y-6">
-                    {orders.map((order, index) => (
+                    {orders?.map((order, index) => (
                         <OrderCard
                             key={order?._id}
                             order={order}

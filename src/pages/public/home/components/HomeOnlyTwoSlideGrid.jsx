@@ -13,14 +13,14 @@ function HomeOnlyTwoSlideGrid() {
             heading: "Laal Raga",
             subHeading:
                 "Bold yet poised, this red silk drape is woven with elegance and dyed in the essence of classic Indian artistry.",
-            discoverLink: "href",
+            discoverLink: "products/saree-silk-saree/687649168f700c1b0a46e479",
             image: Banner1,
         },
         {
             heading: "Where Blue Whispers and Flowers Sing",
             subHeading:
                 "Blue like the morning sky, bright with florals in bloom—this pure Katan silk saree redefines elegance with a splash of vibrant heritage.",
-            discoverLink: "href2",
+            discoverLink: "collection/pure-katan-silk/687645658f700c1b0a46e381",
             image: Banner2,
         },
     ];

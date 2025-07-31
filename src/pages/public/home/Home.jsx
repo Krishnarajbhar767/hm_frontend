@@ -35,6 +35,7 @@ function Home() {
                 image: Banner1,
                 heading: "Bandhej Beauties",
                 subheading: "Handwoven Elegance",
+                slug:"/products/saree-silk-saree/687649168f700c1b0a46e479",
                 paragraph:
                     "Born from the hands of artisans, dyed with heritage, and draped in joy—discover Bandhej sarees that brighten every moment.",
             },
@@ -42,6 +43,7 @@ function Home() {
                 image: Banner2,
                 heading: "Regal & Elegant",
                 subheading: "Modern Roots in Classic Weaves",
+                slug:"/collection/pure-katan-silk/687645658f700c1b0a46e381",
                 paragraph:
                     "Woven like royalty, draped like destiny—this Katan silk saree is a crown passed down in threads.",
             },
@@ -49,6 +51,7 @@ function Home() {
                 image: Banner3,
                 heading: "Crafted with Heart",
                 subheading: "From Loom to Love",
+                slug:"/products/saree-silk-saree/687649168f700c1b0a46e479",
                 paragraph:
                     "Each piece is more than fabric — it’s an emotion. Woven by hands, worn with pride. Discover sarees that feel like home.",
             },
@@ -62,6 +65,7 @@ function Home() {
                 image: Slide2Banner2,
                 heading: "Silk That Dances in Duo",
                 subheading: "Modern Roots in Classic Weaves",
+                slug:"collection/pure-katan-silk/687645658f700c1b0a46e381",
                 paragraph:
                     "Draped in pure Katan silk, two muses mirror grace and grandeur. Their synchronized style whispers tales of heritage in every fold",
             },
@@ -69,6 +73,7 @@ function Home() {
                 image: Slide2Banner1,
                 heading: "Tie me to my roots,Dye me in drama",
                 subheading: "Handwoven Elegance",
+                slug:"products/saree-silk-saree/687649168f700c1b0a46e479",
                 paragraph:
                     "A riot of color wrapped in centuries of tradition—Bandhej is your cultural comeback. Drape it, flaunt it, remix it—because heritage never goes out of style",
             },

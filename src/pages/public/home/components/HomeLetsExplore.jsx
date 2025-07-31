@@ -30,7 +30,7 @@ function HomeLetsExplore() {
                         <button
                             onClick={() =>
                                 navigate(
-                                    "/products/all/687241bbeb7c3a700afc8e4e"
+                                    "collection/pure-katan-silk/687645658f700c1b0a46e381"
                                 )
                             }
                             className="text-lg md:text-xl bg-white text-gray-800 w-44 md:w-52 px-4 py-2 border border-transparent hover:border-white hover:bg-transparent hover:text-white transition-all duration-200"

@@ -162,7 +162,7 @@ const CustomerInfo = ({ user }) => (
                                 Customer Name
                             </p>
                             <p className="font-semibold text-gray-800 capitalize">
-                                {user.firstName} {user.lastName}
+                                {user?.firstName} {user?.lastName}
                             </p>
                         </div>
                     </div>
@@ -176,7 +176,7 @@ const CustomerInfo = ({ user }) => (
                                 Email Address
                             </p>
                             <p className="font-medium text-gray-800 lowercase">
-                                {user.email}
+                                {user?.email}
                             </p>
                         </div>
                     </div>
@@ -192,7 +192,7 @@ const CustomerInfo = ({ user }) => (
                                 Phone Number
                             </p>
                             <p className="font-semibold text-gray-800">
-                                {user.phone}
+                                {user?.phone}
                             </p>
                         </div>
                     </div>
@@ -204,7 +204,7 @@ const CustomerInfo = ({ user }) => (
                         <div>
                             <p className="text-sm text-gray-600">Customer ID</p>
                             <p className="font-mono text-sm text-gray-800">
-                                {user._id}
+                                {user?._id}
                             </p>
                         </div>
                     </div>
@@ -216,7 +216,7 @@ const CustomerInfo = ({ user }) => (
 
 // Admin Order Overview Component
 const AdminOrderOverview = ({ order, formatINR }) => {
-    const totalBeforeDiscount = order.totalAmount + (order.discount || 0);
+    const totalBeforeDiscount = order?.totalAmount + (order.discount || 0);
 
     return (
         <motion.div
@@ -258,13 +258,13 @@ const AdminOrderOverview = ({ order, formatINR }) => {
                 </div>
 
                 {/* Coupon Discount */}
-                {order.discount > 0 && (
+                {order?.discount > 0 && (
                     <div className="space-y-1">
                         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                             Coupon Discount
                         </p>
                         <p className="text-sm font-medium text-red-600">
-                            - ₹{formatINR(order.discount)}
+                            - ₹{formatINR(order?.discount)}
                         </p>
                     </div>
                 )}
@@ -275,7 +275,7 @@ const AdminOrderOverview = ({ order, formatINR }) => {
                         Net Payable
                     </p>
                     <p className="text-xl font-bold text-gray-800">
-                        ₹{formatINR(order.totalAmount)}
+                        ₹{formatINR(order?.totalAmount)}
                     </p>
                 </div>
 
@@ -284,7 +284,7 @@ const AdminOrderOverview = ({ order, formatINR }) => {
                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                         Payment Status
                     </p>
-                    <StatusBadge status={order.paymentStatus} type="payment" />
+                    <StatusBadge status={order?.paymentStatus} type="payment" />
                 </div>
 
                 {/* Delivery Status */}
@@ -292,7 +292,7 @@ const AdminOrderOverview = ({ order, formatINR }) => {
                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                         Delivery Status
                     </p>
-                    <StatusBadge status={order.deliveryStatus} />
+                    <StatusBadge status={order?.deliveryStatus} />
                 </div>
             </div>
         </motion.div>
@@ -302,12 +302,12 @@ const AdminOrderOverview = ({ order, formatINR }) => {
 const AdminProductItem = ({ item, index, formatINR, order }) => {
     const navigate = useNavigate();
 
-    const basePrice = item.product.price;
-    const isOfferAplied = item.product.isOfferAplied;
+    const basePrice = item?.product?.price;
+    const isOfferAplied = item?.product?.isOfferAplied;
     const offerPercent = order?.offer || 0;
 
-    const fallPicoPrice = item.withFallPico ? FALLPICO_PRICE : 0;
-    const tasselsPrice = item.withTassels ? TASSELLS_PRICE : 0;
+    const fallPicoPrice = item?.withFallPico ? FALLPICO_PRICE : 0;
+    const tasselsPrice = item?.withTassels ? TASSELLS_PRICE : 0;
     const addonPrice = fallPicoPrice + tasselsPrice;
 
     const baseOfferDiscount = isOfferAplied
@@ -315,7 +315,7 @@ const AdminProductItem = ({ item, index, formatINR, order }) => {
         : 0;
     const discountedBasePrice = basePrice - baseOfferDiscount;
     const finalUnitPrice = discountedBasePrice + addonPrice;
-    const grossTotal = finalUnitPrice * item.quantity;
+    const grossTotal = finalUnitPrice * item?.quantity;
 
     return (
         <motion.div
@@ -328,13 +328,13 @@ const AdminProductItem = ({ item, index, formatINR, order }) => {
                 <div className="flex-shrink-0">
                     <img
                         onClick={() =>
-                            navigate(`/product/${item.product?._id}`)
+                            navigate(`/product/${item?.product?._id}`)
                         }
                         src={
-                            item.product.images[0] ||
+                            item?.product?.images[0] ||
                             "/Product_Placeholder.webp"
                         }
-                        alt={item.product.name}
+                        alt={item?.product?.name}
                         className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-sm cursor-pointer"
                     />
                 </div>
@@ -342,14 +342,14 @@ const AdminProductItem = ({ item, index, formatINR, order }) => {
                 <div className="flex-1 space-y-4 text-sm text-gray-700">
                     <div>
                         <h4 className="text-lg font-semibold text-gray-800 capitalize">
-                            {item.product.name}
+                            {item?.product?.name}
                         </h4>
                         <div className="flex gap-4 mt-1 text-xs text-gray-500">
                             <span>
-                                Product ID: <code>{item.product._id}</code>
+                                Product ID: <code>{item?.product?._id}</code>
                             </span>
                             <span>
-                                Qty: <strong>{item.quantity}</strong>
+                                Qty: <strong>{item?.quantity}</strong>
                             </span>
                         </div>
                     </div>
@@ -490,13 +490,13 @@ const AdminShippingInfo = ({ order }) => (
                     </div>
                 </div>
 
-                {order.deliveredAt && (
+                {order?.deliveredAt && (
                     <div className="pt-4 border-t">
                         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                             Delivery Completed
                         </p>
                         <p className="text-sm font-medium text-gray-800">
-                            {new Date(order.deliveredAt).toLocaleString(
+                            {new Date(order?.deliveredAt).toLocaleString(
                                 "en-IN"
                             )}
                         </p>
@@ -546,7 +546,7 @@ const AdminPaymentInfo = ({ order }) => (
                         Payment Method
                     </p>
                     <p className="text-sm font-medium text-gray-800 capitalize">
-                        {order.paymentMethod}
+                        {order?.paymentMethod}
                     </p>
                 </div>
 
@@ -554,7 +554,7 @@ const AdminPaymentInfo = ({ order }) => (
                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                         Payment Status
                     </p>
-                    <StatusBadge status={order.paymentStatus} type="payment" />
+                    <StatusBadge status={order?.paymentStatus} type="payment" />
                 </div>
 
                 {order.razorpay_order_id && (
@@ -563,7 +563,7 @@ const AdminPaymentInfo = ({ order }) => (
                             Razorpay Order ID
                         </p>
                         <p className="text-sm font-mono text-gray-800">
-                            {order.razorpay_order_id}
+                            {order?.razorpay_order_id}
                         </p>
                     </div>
                 )}
@@ -731,11 +731,11 @@ function AdminOrderDetails() {
                     >
                         <h3 className="flex items-center gap-2 text-xl font-semibold text-gray-800">
                             <FiPackage size={20} />
-                            Order Items ({order.items.length})
+                            Order Items ({order?.items.length})
                         </h3>
 
                         <div className="space-y-4">
-                            {order.items.map((item, idx) => (
+                            {order?.items.map((item, idx) => (
                                 <AdminProductItem
                                     key={item._id}
                                     item={item}

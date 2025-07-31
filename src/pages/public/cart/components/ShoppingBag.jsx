@@ -85,7 +85,7 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
                     className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-cover object-top"
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}
-                    onClick={() => navigate(`/product/${item._id}`)}
+                    // onClick={() => navigate(`product/${item._id}`)}
                 />
                 <div className="flex-1">
                     <h2 className="text-xs sm:text-sm md:text-base font-medium text-foreground capitalize line-clamp-1">

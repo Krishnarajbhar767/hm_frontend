@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate  } from "react-router-dom";
 
 // Animation variants for text (improved with better responsiveness)
 const textVariants = {
@@ -75,11 +76,15 @@ const backgroundGradients = [
 ];
 
 function HomeHeroSlider({ textPosition = false, sliderData = [] }) {
+
+    
     const [activeSlide, setActiveSlide] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
     const [imageLoaded, setImageLoaded] = useState({});
     const [isAnimating, setIsAnimating] = useState(false);
     const sliderLength = sliderData.length - 1;
+
+    const navigate = useNavigate();
 
     // Prevent rapid slide changes
     const nextHandler = () => {
@@ -306,7 +311,10 @@ function HomeHeroSlider({ textPosition = false, sliderData = [] }) {
                                     : "flex justify-center lg:justify-start"
                                     } mt-[40vh] sm:mt-0`} // 👈 Push button down on mobile only
                             >
-                                <button className="inline-block px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 bg-white text-gray-800 font-semibold text-sm sm:text-base md:text-lg border-2 border-transparent hover:bg-transparent hover:text-white hover:border-white transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg">
+                                <button 
+                                onClick={()=> navigate(sliderData[activeSlide].slug)}
+                                // onClick={() => navigate("/products/saree-silk-saree/687649168f700c1b0a46e479")}
+                                className="inline-block px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 bg-white text-gray-800 font-semibold text-sm sm:text-base md:text-lg border-2 border-transparent hover:bg-transparent hover:text-white hover:border-white transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg">
                                     Discover More
                                 </button>
                             </motion.div>

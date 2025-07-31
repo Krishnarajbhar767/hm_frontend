@@ -138,9 +138,9 @@ const OrderOverview = ({ order, formatINR }) => (
 
 const ProductItem = ({ item, index, formatINR, order }) => {
     const navigate = useNavigate();
-    const basePrice = item.product.price;
+    const basePrice = item.product?.price;
     const offerPct = order?.offer || 0;
-    const isOffer = item.product.isOfferAplied;
+    const isOffer = item.product?.isOfferAplied;
     const offerDiscount = isOffer ? (basePrice * offerPct) / 100 : 0;
     const priceAfterOffer = basePrice - offerDiscount;
     const addons =
@@ -159,26 +159,26 @@ const ProductItem = ({ item, index, formatINR, order }) => {
             <div className="flex flex-col sm:flex-row gap-6">
                 <div className="flex-shrink-0">
                     <img
-                        onClick={() => navigate(`/product/${item.product._id}`)}
+                        // onClick={() => navigate(`/product/${item?.product?._id}`)}
                         src={
-                            item.product.images[0] ||
+                            item?.product?.images[0] ||
                             "/Product_Placeholder.webp"
                         }
-                        alt={item.product.name}
+                        alt={item?.product?.name}
                         className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-sm cursor-pointer"
                     />
                 </div>
                 <div className="flex-1 space-y-4 text-sm text-gray-700">
                     <div>
                         <h4 className="text-lg font-semibold text-gray-800 capitalize">
-                            {item.product.name}
+                            {item?.product?.name}
                         </h4>
                         <div className="flex gap-4 mt-1 text-xs text-gray-500">
                             <span>
-                                Product ID: <code>{item.product._id}</code>
+                                Product ID: <code>{item?.product?._id}</code>
                             </span>
                             <span>
-                                Qty: <strong>{item.quantity}</strong>
+                                Qty: <strong>{item?.quantity}</strong>
                             </span>
                         </div>
                     </div>
@@ -220,18 +220,18 @@ const ProductItem = ({ item, index, formatINR, order }) => {
                             )}
                         </div>
 
-                        {(item.withFallPico || item.withTassels) && (
+                        {(item?.withFallPico || item?.withTassels) && (
                             <div className="space-y-1 pt-2">
                                 <p className="font-semibold text-gray-700">
                                     Add-ons
                                 </p>
-                                {item.withFallPico && (
+                                {item?.withFallPico && (
                                     <div className="flex justify-between">
                                         <span>+ Fall Pico</span>
                                         <span>+ ₹{FALLPICO_PRICE}</span>
                                     </div>
                                 )}
-                                {item.withTassels && (
+                                {item?.withTassels && (
                                     <div className="flex justify-between">
                                         <span>+ Tassels</span>
                                         <span>+ ₹{TASSELLS_PRICE}</span>
@@ -255,7 +255,7 @@ const ProductItem = ({ item, index, formatINR, order }) => {
                             </p>
                             <div className="flex justify-between font-bold text-gray-800">
                                 <span>
-                                    {item.quantity} × ₹{formatINR(finalUnit)}
+                                    {item?.quantity} × ₹{formatINR(finalUnit)}
                                 </span>
                                 <span>₹{formatINR(grossTotal)}</span>
                             </div>
@@ -286,30 +286,30 @@ const ShippingInfo = ({ order }) => (
                     </p>
                     <div className="text-sm text-foreground space-y-1">
                         <p className="leading-relaxed">
-                            {order.shippingAddress?.street ||
-                                order.shippingAddressSnapshot?.street}
+                            {order?.shippingAddress?.street ||
+                                order?.shippingAddressSnapshot?.street}
                             <br />
-                            {order.shippingAddress?.city ||
-                                order.shippingAddressSnapshot?.city}
+                            {order?.shippingAddress?.city ||
+                                order?.shippingAddressSnapshot?.city}
                             ,{" "}
-                            {order.shippingAddress?.state ||
-                                order.shippingAddressSnapshot?.state}
+                            {order?.shippingAddress?.state ||
+                                order?.shippingAddressSnapshot?.state}
                             <br />
-                            {order.shippingAddress?.postalCode ||
-                                order.shippingAddressSnapshot?.postalCode}
+                            {order?.shippingAddress?.postalCode ||
+                                order?.shippingAddressSnapshot?.postalCode}
                             ,{" "}
-                            {order.shippingAddress?.country ||
-                                order.shippingAddressSnapshot?.country}
+                            {order?.shippingAddress?.country ||
+                                order?.shippingAddressSnapshot?.country}
                             <br />
                             <span className="font-medium">
                                 Phone:{" "}
-                                {order.shippingAddress?.phone ||
-                                    order.shippingAddressSnapshot?.phone}
+                                {order?.shippingAddress?.phone ||
+                                    order?.shippingAddressSnapshot?.phone}
                             </span>
                         </p>
                     </div>
                 </div>
-                {order.deliveredAt && (
+                {order?.deliveredAt && (
                     <div className="pt-4 border-t">
                         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                             Delivered At
@@ -344,14 +344,14 @@ const PaymentInfo = ({ order }) => (
                         Payment Method
                     </p>
                     <p className="text-sm font-medium text-foreground capitalize">
-                        {order.paymentMethod}
+                        {order?.paymentMethod}
                     </p>
                 </div>
                 <div>
                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                         Payment Status
                     </p>
-                    <StatusBadge status={order.paymentStatus} type="payment" />
+                    <StatusBadge status={order?.paymentStatus} type="payment" />
                 </div>
                 {order.paidAt && (
                     <div className="sm:col-span-2 pt-4 border-t">

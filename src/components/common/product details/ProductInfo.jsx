@@ -113,7 +113,7 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div className="flex-1">
                         <h1 className="text-2xl sm:text-3xl font-semibold">
-                            {product?.name}
+                            {product?.name}..
                         </h1>
                     </div>
                     <div className="flex gap-2">

@@ -56,6 +56,7 @@ const PublicRoutes = (
                 </Suspense>
             }
         />
+        
         <Route
             path="/sign-up"
             element={

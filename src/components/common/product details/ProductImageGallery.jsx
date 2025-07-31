@@ -63,7 +63,7 @@ function ProductImageGallery({ images = [], productName = "", stock }) {
             {/* Main Image */}
             <div className="order-1 md:order-2 flex-1 relative group">
                 <div
-                    className="h-[400px] sm:h-[500px] overflow-hidden bg-gray-50 border relative cursor-zoom-in"
+                    className="h-[400px] sm:h-[600px] overflow-hidden bg-gray-50 border relative cursor-zoom-in"
                     ref={containerRef}
                     onMouseEnter={() => setIsZooming(true)}
                     onMouseLeave={() => setIsZooming(false)}
@@ -77,7 +77,7 @@ function ProductImageGallery({ images = [], productName = "", stock }) {
                                 ? isZooming
                                     ? "scale-[2] cursor-zoom-out"
                                     : "group-hover:scale-105"
-                                : "blur-sm opacity-80"
+                                : ""
                         }`}
                         style={
                             isZooming

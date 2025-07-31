@@ -1,9 +1,12 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Renders a placeholder when the wishlist is empty.
  */
 function EmptyWishlist() {
+
+    const navigate = useNavigate();
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -33,7 +36,9 @@ function EmptyWishlist() {
             <p className="text-foreground text-xs sm:text-sm mb-6">
                 Browse products and tap the heart icon to add them.
             </p>
-            <button className="bg-foreground text-white px-4 py-2 text-xs sm:text-sm uppercase rounded hover:bg-foreground/90">
+            <button 
+            onClick={()=> navigate("/")}
+            className="bg-foreground text-white px-4 py-2 text-xs sm:text-sm uppercase rounded hover:bg-foreground/90">
                 Continue Shopping
             </button>
         </motion.div>
