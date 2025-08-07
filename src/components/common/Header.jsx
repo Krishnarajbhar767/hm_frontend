@@ -33,7 +33,7 @@ function Header() {
     const [optimisedCategoriesList, setOptimisedCategoriesList] = useState([]);
 
     useEffect(() => {
-        if (!categories || !fabrics) return;
+        if (!Array.isArray(categories) || !Array.isArray(fabrics)) return;
         // Sort to prioritize category named "All"
         const sorted = [...categories].sort((a, b) => {
             if (a.name.toLowerCase() === "all") return -1;
@@ -119,17 +119,22 @@ function Header() {
     const [showHeader, setShowHeader] = useState(true);
     const lastScrollY = useRef(0);
 
-    useEffect(() => {
-        return scrollY.onChange((currentY) => {
-            const diff = currentY - lastScrollY.current;
-            if (diff > 5 && currentY > HEADER_HEIGHT) {
-                setShowHeader(false);
-            } else if (diff < -5) {
-                setShowHeader(true);
-            }
-            lastScrollY.current = currentY;
-        });
-    }, [scrollY]);
+
+    // 30 july change this line
+   useEffect(() => {
+    const unsubscribe = scrollY.on("change", (currentY) => {
+        const diff = currentY - lastScrollY.current;
+        if (diff > 5 && currentY > HEADER_HEIGHT) {
+            setShowHeader(false);
+        } else if (diff < -5) {
+            setShowHeader(true);
+        }
+        lastScrollY.current = currentY;
+    });
+
+    return () => unsubscribe(); // clean up on unmount
+}, [scrollY]);
+
 
     // Motion variants for header animation
     const headerVariants = {
@@ -184,10 +189,9 @@ function Header() {
                                             to={link.path}
                                             end
                                             className={({ isActive }) =>
-                                                `hover:text-primary transition-colors ${
-                                                    isActive
-                                                        ? "text-primary"
-                                                        : ""
+                                                `hover:text-primary transition-colors ${isActive
+                                                    ? "text-primary"
+                                                    : ""
                                                 }`
                                             }
                                         >
@@ -206,10 +210,9 @@ function Header() {
                                                             className={({
                                                                 isActive,
                                                             }) =>
-                                                                `hover:text-primary text-nowrap ${
-                                                                    isActive
-                                                                        ? "text-primary font-semibold"
-                                                                        : ""
+                                                                `hover:text-primary text-nowrap ${isActive
+                                                                    ? "text-primary font-semibold"
+                                                                    : ""
                                                                 }`
                                                             }
                                                         >
@@ -381,10 +384,9 @@ function Header() {
                                             to={link.path}
                                             end
                                             className={({ isActive }) =>
-                                                `text-foreground text-sm tracking-wider capitalize text-nowrap ${
-                                                    isActive
-                                                        ? "text-primary font-semibold"
-                                                        : ""
+                                                `text-foreground text-sm tracking-wider capitalize text-nowrap ${isActive
+                                                    ? "text-primary font-semibold"
+                                                    : ""
                                                 }`
                                             }
                                             onClick={() => setIsMenuOpen(false)}
@@ -401,11 +403,10 @@ function Header() {
                                             aria-label={`Toggle ${link.title} submenu`}
                                         >
                                             <svg
-                                                className={`w-4 h-4 transition-transform duration-300 ${
-                                                    openSubmenu === link.title
+                                                className={`w-4 h-4 transition-transform duration-300 ${openSubmenu === link.title
                                                         ? "rotate-180"
                                                         : ""
-                                                }`}
+                                                    }`}
                                                 fill="none"
                                                 stroke="currentColor"
                                                 viewBox="0 0 24 24"
@@ -429,10 +430,9 @@ function Header() {
                                                     key={sublink._id}
                                                     to={sublink.path}
                                                     className={({ isActive }) =>
-                                                        `capitalize text-xs text-nowrap text-foreground hover:text-primary px-3 py-2 rounded-md ${
-                                                            isActive
-                                                                ? "text-primary font-semibold"
-                                                                : ""
+                                                        `capitalize text-xs text-nowrap text-foreground hover:text-primary px-3 py-2 rounded-md ${isActive
+                                                            ? "text-primary font-semibold"
+                                                            : ""
                                                         }`
                                                     }
                                                     onClick={() =>

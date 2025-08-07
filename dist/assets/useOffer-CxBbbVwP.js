@@ -1,1 +1,0 @@
-import{r as o,i as a}from"./index-DRzNUvPi.js";let e=null,n=null;function f(){const[u,c]=o.useState(e===null?!1:e);return o.useEffect(()=>{e===null&&(n||(n=a.get("/offer/").then(t=>{const s=typeof t.data.discount=="number"?t.data:!1;return e=s.discount,s.discount}).catch(()=>(e=!1,!1))),n.then(t=>{console.log(t),c(t)}))},[]),u}export{f as u};

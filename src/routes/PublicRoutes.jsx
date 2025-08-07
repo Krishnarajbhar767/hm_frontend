@@ -73,6 +73,15 @@ const PublicRoutes = (
                 </Suspense>
             }
         />
+
+        <Route
+            path="/reset-password/:token"
+            element={
+                <Suspense fallback={<Loader />}>
+                    <ResetPassword />
+                </Suspense>
+            }
+        />
         <Route
             path="/verify-otp"
             element={

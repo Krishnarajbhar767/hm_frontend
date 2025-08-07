@@ -32,7 +32,8 @@ function Home() {
     const sliderData1 = useMemo(
         () => [
             {
-                image: Banner1,
+                // image: Banner1,
+                image:"https://srijanfabs.co.in/images/products/Dark-purple-pure-katan-silk-handwoven-banarasi-saree-1754117651469-227701216.jpg",
                 heading: "Bandhej Beauties",
                 subheading: "Handwoven Elegance",
                 slug:"/products/saree-silk-saree/687649168f700c1b0a46e479",
@@ -40,7 +41,8 @@ function Home() {
                     "Born from the hands of artisans, dyed with heritage, and draped in joy—discover Bandhej sarees that brighten every moment.",
             },
             {
-                image: Banner2,
+                // image: Banner2,
+                image:"https://srijanfabs.co.in/images/products/Dark-purple-pure-katan-silk-handwoven-banarasi-saree-1754117651470-558170356.jpg",
                 heading: "Regal & Elegant",
                 subheading: "Modern Roots in Classic Weaves",
                 slug:"/collection/pure-katan-silk/687645658f700c1b0a46e381",
@@ -48,7 +50,8 @@ function Home() {
                     "Woven like royalty, draped like destiny—this Katan silk saree is a crown passed down in threads.",
             },
             {
-                image: Banner3,
+                // image: Banner3,
+                image: "https://srijanfabs.co.in/images/products/Dark-purple-pure-katan-silk-handwoven-banarasi-saree-1754117651470-583994614.jpg",
                 heading: "Crafted with Heart",
                 subheading: "From Loom to Love",
                 slug:"/products/saree-silk-saree/687649168f700c1b0a46e479",
@@ -62,7 +65,8 @@ function Home() {
     const sliderData2 = useMemo(
         () => [
             {
-                image: Slide2Banner2,
+                // image: Slide2Banner2,
+                image:"https://srijanfabs.co.in/images/products/Dark-purple-pure-katan-silk-handwoven-banarasi-saree-1754117651470-973276601.jpg",
                 heading: "Silk That Dances in Duo",
                 subheading: "Modern Roots in Classic Weaves",
                 slug:"collection/pure-katan-silk/687645658f700c1b0a46e381",
@@ -70,7 +74,8 @@ function Home() {
                     "Draped in pure Katan silk, two muses mirror grace and grandeur. Their synchronized style whispers tales of heritage in every fold",
             },
             {
-                image: Slide2Banner1,
+                // image: Slide2Banner1,
+                image:"https://srijanfabs.co.in/images/products/Dark-purple-pure-katan-silk-handwoven-banarasi-saree-1754117651470-673522574.jpg",
                 heading: "Tie me to my roots,Dye me in drama",
                 subheading: "Handwoven Elegance",
                 slug:"products/saree-silk-saree/687649168f700c1b0a46e479",

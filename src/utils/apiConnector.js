@@ -43,12 +43,12 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
 
     // Skip if it's logout or regenerate-token request
-if (
-  originalRequest.url.includes("/auth/regenerate-token") ||
-  originalRequest.url.includes("/auth/logout")
-) {
-  return Promise.reject(error);
-}
+    if (
+      originalRequest.url.includes("/auth/regenerate-token") ||
+      originalRequest.url.includes("/auth/logout")
+    ) {
+      return Promise.reject(error);
+    }
 
 
     if (!error.response || error.response.status !== 401) {
@@ -97,7 +97,7 @@ if (
         }
       } catch (err) {
         processQueue(err, null);
-        await authApis.logOut().catch(() => {});
+        await authApis.logOut().catch(() => { });
         store.dispatch(clearUser());
         localStorage.removeItem("token");
         reject(new Error("Session expired. Please log in again."));

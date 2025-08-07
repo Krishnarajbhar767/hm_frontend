@@ -162,7 +162,7 @@ function Profile() {
                             />
                             <InputField
                                 label="Last Name"
-                                name="lastName"
+                                name="lastName..."
                                 register={registerProfile}
                                 errors={profileErrors}
                                 rules={{ required: "Last name is required" }}

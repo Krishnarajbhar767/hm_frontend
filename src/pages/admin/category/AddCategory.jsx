@@ -21,6 +21,7 @@ function AddCategory() {
 
     const onSubmit = handleSubmit(async (data) => {
         const toastId = toast.loading("Please Wait...");
+
         try {
             const updatedCategories = await categoryApis.createCategory(data);
             toast.success("Category created successfully");
@@ -31,6 +32,7 @@ function AddCategory() {
         } finally {
             toast.dismiss(toastId);
         }
+        
     });
 
     return (

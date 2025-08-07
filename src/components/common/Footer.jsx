@@ -137,8 +137,9 @@ const Footer = () => {
                     {/* Our Products - Dynamic */}
                     <div>
                         <h3 className="font-bold text-lg mb-4">Our Products</h3>
+                        
                         <ul className="space-y-2 text-sm">
-                            {categories.map((cat) => {
+                            {Array.isArray(categories) && categories.map((cat) => {
                                 const slug = slugify(cat.name, { lower: true });
                                 return (
                                     <li key={cat._id}>
@@ -152,6 +153,8 @@ const Footer = () => {
                                 );
                             })}
                         </ul>
+
+
                     </div>
 
                     {/* Newsletter */}

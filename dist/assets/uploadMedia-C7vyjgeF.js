@@ -1,1 +1,0 @@
-import{i as s,h as t}from"./index-DRzNUvPi.js";const c=async(n,r)=>{var e;console.log("information-----------",r);const o=new FormData;n.forEach(a=>{o.append("files",a)}),o.append("name",r.name);try{return console.log("formData ------------- ",o),(e=(await s.post("/upload",o)).data)==null?void 0:e.data}catch(a){return console.error("Upload failed:",a),t(a),null}};export{c as u};

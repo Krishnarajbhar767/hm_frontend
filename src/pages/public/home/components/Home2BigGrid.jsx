@@ -7,11 +7,11 @@ import Banner2 from "../../../../assets/images/Home/Home2BigGrid/SF_772x772_2.jp
 function Home2BigGrid() {
     const data = [
         {
-            image: Banner1,
+            image: "https://srijanfabs.co.in/images/products/Burnt-Maroon-pure-double-katan-silk-handloom-banarasi-saree-1754118730892-876753721.jpg",
             text: "Saree",
         },
         {
-            image: Banner2,
+            image: "https://srijanfabs.co.in/images/products/Burnt-Maroon-pure-double-katan-silk-handloom-banarasi-saree-1754118730892-491009305.jpg",
             text: "Duppata",
         },
     ];

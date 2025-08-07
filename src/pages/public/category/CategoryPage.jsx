@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams , useNavigate } from "react-router-dom";
 import SidebarFilter from "../../../components/common/SidebarFilter";
 import { Star, Filter, Grid, List, ChevronDown } from "lucide-react";
+import { Img } from 'react-image';
 
 function CategoryPage() {
     const { id, category, fabric } = useParams();
@@ -17,21 +18,23 @@ function CategoryPage() {
     const [sortOption, setSortOption] = useState("default");
     const [viewMode, setViewMode] = useState("grid");
 
+    const navigate = useNavigate();
+
     const ProductSkeleton = useMemo(
         () => () =>
-            (
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm h-full flex flex-col">
-                    <div className="relative h-64 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
-                    <div className="p-4 space-y-3 flex-1 flex flex-col">
-                        <div className="h-5 bg-gray-200 rounded animate-pulse" />
-                        <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse" />
-                        <div className="flex justify-between items-center mt-auto">
-                            <div className="h-6 w-20 bg-gray-200 rounded animate-pulse" />
-                            <div className="h-4 w-16 bg-gray-200 rounded animate-pulse" />
-                        </div>
+        (
+            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm h-full flex flex-col">
+                <div className="relative h-64 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
+                <div className="p-4 space-y-3 flex-1 flex flex-col">
+                    <div className="h-5 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse" />
+                    <div className="flex justify-between items-center mt-auto">
+                        <div className="h-6 w-20 bg-gray-200 rounded animate-pulse" />
+                        <div className="h-4 w-16 bg-gray-200 rounded animate-pulse" />
                     </div>
                 </div>
-            ),
+            </div>
+        ),
         []
     );
 
@@ -42,9 +45,8 @@ function CategoryPage() {
             setError(null);
             try {
                 const url = fabric
-                    ? `${
-                          import.meta.env.VITE_BACKEND_URL
-                      }products/${fabric}/${id}`
+                    ? `${import.meta.env.VITE_BACKEND_URL
+                    }products/${fabric}/${id}`
                     : `${import.meta.env.VITE_BACKEND_URL}categories/${id}`;
                 const res = await fetch(url, { signal: controller.signal });
                 if (!res.ok) throw new Error("Failed to fetch data");
@@ -113,11 +115,10 @@ function CategoryPage() {
             Array.from({ length: 5 }, (_, i) => (
                 <Star
                     key={i}
-                    className={`w-3 h-3 ${
-                        i < Math.floor(rating || 0)
+                    className={`w-3 h-3 ${i < Math.floor(rating || 0)
                             ? "fill-yellow-400 text-yellow-400"
                             : "text-gray-300"
-                    }`}
+                        }`}
                 />
             )),
         []
@@ -157,21 +158,19 @@ function CategoryPage() {
                         <div className="hidden sm:flex items-center gap-1 bg-gray-100 p-1 rounded-lg">
                             <button
                                 onClick={() => setViewMode("grid")}
-                                className={`p-2 rounded-md transition-colors ${
-                                    viewMode === "grid"
+                                className={`p-2 rounded-md transition-colors ${viewMode === "grid"
                                         ? "bg-white shadow-sm text-foreground"
                                         : "text-foreground hover:text-foreground"
-                                }`}
+                                    }`}
                             >
                                 <Grid className="w-4 h-4" />
                             </button>
                             <button
                                 onClick={() => setViewMode("list")}
-                                className={`p-2 rounded-md transition-colors ${
-                                    viewMode === "list"
+                                className={`p-2 rounded-md transition-colors ${viewMode === "list"
                                         ? "bg-white shadow-sm text-foreground"
                                         : "text-foreground hover:text-foreground"
-                                }`}
+                                    }`}
                             >
                                 <List className="w-4 h-4" />
                             </button>
@@ -208,14 +207,15 @@ function CategoryPage() {
                         isOpen={isSidebarOpen}
                         toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
                     />
+
+
                     <div className="flex-1">
                         {loading ? (
                             <div
-                                className={`grid gap-6 ${
-                                    viewMode === "grid"
-                                        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
+                                className={`grid gap-6 ${viewMode === "grid"
+                                        ? "grid-cols-1 sm:grid-cols-3 lg:grid-cols-3"
                                         : "grid-cols-1"
-                                }`}
+                                    }`}
                             >
                                 {Array.from({ length: 6 }).map((_, i) => (
                                     <ProductSkeleton key={i} />
@@ -250,32 +250,31 @@ function CategoryPage() {
                             </div>
                         ) : (
                             <div
-                                className={`grid gap-6 ${
-                                    viewMode === "grid"
-                                        ? "grid-cols-1 sm:grid-cols-2 auto-rows-fr"
+                                className={`grid gap-6 ${viewMode === "grid"
+                                        ? "grid-cols-1 sm:grid-cols-3 auto-rows-fr"
                                         : "grid-cols-1"
-                                }`}
+                                    }`}
                             >
                                 {filteredProducts.map((product) => (
                                     <div
-                                        key={product._id}
-                                        className={`capitalize group bg-white border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-300 rounded-lg overflow-hidden h-full ${
-                                            viewMode === "list"
+                                        key={product?._id}
+                                        className={`capitalize group cursor-pointer bg-white border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-300 rounded-lg overflow-hidden h-full ${viewMode === "list"
                                                 ? "flex"
                                                 : "flex flex-col"
-                                        }`}
+                                            }`}
                                     >
                                         <div
-                                            className={`relative overflow-hidden bg-gray-50 ${
-                                                viewMode === "list"
+                                            className={`relative overflow-hidden bg-gray-50 ${viewMode === "list"
                                                     ? "w-48 flex-shrink-0"
                                                     : "aspect-[4/5] h-96"
-                                            }`}
+                                                }`}
                                         >
                                             <ProductImage
-                                                src={product.images?.[0]}
-                                                alt={product.name}
+                                                src={product?.images?.[0]}
+                                                alt={product?.name}
+                                                _id={product?._id}
                                             />
+
                                             {/* <img
                                                 loading="lazy"
                                                 src={
@@ -293,16 +292,18 @@ function CategoryPage() {
                                                     </div>
                                                 )}
                                             {product.stock === 0 && (
-                                                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                                                    <span className="bg-white text-foreground px-3 py-1 rounded-full text-sm font-medium">
-                                                        Out of Stock
-                                                    </span>
-                                                </div>
+                                                // <div className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                                                //     Out Of Stock
+                                                // </div>
+
+                                                <div className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                                                        Out Of stock
+                                                    </div>
                                             )}
                                         </div>
 
                                         <div className="p-4 flex flex-col flex-1 space-y-3">
-                                            <h3 className="text-lg font-semibold text-foreground line-clamp-2 group-hover:text-foreground transition-colors">
+                                            <h3 onClick={()=> navigate(`/product/${product._id}`)} className="text-lg font-semibold text-foreground line-clamp-2 group-hover:text-foreground transition-colors cursor-pointer">
                                                 {product.name}
                                             </h3>
                                             <p className="text-sm text-foreground line-clamp-2 leading-relaxed">
@@ -318,7 +319,7 @@ function CategoryPage() {
                                                     </p>
                                                     {product.originalPrice &&
                                                         product.originalPrice >
-                                                            product.price && (
+                                                        product.price && (
                                                             <p className="text-sm text-foreground line-through">
                                                                 ₹
                                                                 {product.originalPrice.toLocaleString()}
@@ -332,7 +333,7 @@ function CategoryPage() {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="grid grid-cols-2 gap-2 text-xs text-foreground bg-gray-50 p-3 rounded-lg">
+                                            <div className="grid grid-cols-3 gap-2 text-xs text-foreground bg-gray-50 p-3 rounded-lg">
                                                 <div>
                                                     <span className="font-medium">
                                                         Fabric:
@@ -367,11 +368,13 @@ function CategoryPage() {
 
 export default CategoryPage;
 
-const ProductImage = React.memo(function ProductImage({ src, alt }) {
+const ProductImage = React.memo(function ProductImage({ src, alt, _id }) {
     const [loaded, setLoaded] = useState(false);
 
+    const navigate = useNavigate();
+
     return (
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full cursor-pointer">
             {!loaded && (
                 <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse z-10" />
             )}
@@ -380,9 +383,16 @@ const ProductImage = React.memo(function ProductImage({ src, alt }) {
                 src={src}
                 alt={alt}
                 onLoad={() => setLoaded(true)}
-                className={`w-full h-full object-cover object-top transition-opacity duration-500 ${
-                    loaded ? "opacity-100" : "opacity-0"
-                }`}
+                onClick={()=> navigate(`/product/${_id}`)}
+                className={`w-full h-full object-cover object-top transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"
+                    }`}
+            />
+
+
+            <Img
+                src="https://example.com/image.jpg"
+                loader={<div>Loading...</div>}
+                unloader={<div>Image failed to load</div>}
             />
         </div>
     );

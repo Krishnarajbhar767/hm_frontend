@@ -115,7 +115,7 @@ function SignUp() {
                             register={register}
                             name={"lastName"}
                             type="text"
-                            label={"Enter your name*"}
+                            label={"Enter Your Last name*"}
                             errors={errors}
                             rules={{
                                 required: "Last name is required",

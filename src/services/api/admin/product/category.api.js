@@ -24,6 +24,15 @@ const categoryApis = {
         );
         return res?.data?.data;
     },
+
+    // deleteCategory: async (categoryId) => {
+    //     const res = await axiosInstance.delete(
+    //         categoryEndpoints.deleteCategory,
+    //         { data: { id: categoryId } }
+    //     );
+    //     return res?.data?.data;
+    // },
+
 };
 
 export default categoryApis;

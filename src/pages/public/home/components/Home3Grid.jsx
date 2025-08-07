@@ -11,9 +11,9 @@ function Home3Grid() {
 
     const navigate = useNavigate();
     const data = [
-        { image: Banner1, link: "#", title: "Pure khaddi georgette", slug:"collection/pure-khaddi-georgette/6876457b8f700c1b0a46e38b"},
-        { image: Banner2, link: "#", title: "pure katan silk" , slug:"collection/pure-katan-silk/687645658f700c1b0a46e381"},
-        { image: Banner3, link: "#", title: "pure tissue silk", slug:"collection/pure-tissue-silk/687645948f700c1b0a46e3a3" },
+        { image: "https://srijanfabs.co.in/images/products/Royal-blue-pure-khaddi-georgette-handbrush-handwoven-banarasi-saree-1754118507457-44017225.jpg", link: "#", title: "Pure khaddi georgette", slug:"collection/pure-khaddi-georgette/6876457b8f700c1b0a46e38b"},
+        { image: "https://srijanfabs.co.in/images/products/Royal-blue-pure-khaddi-georgette-handbrush-handwoven-banarasi-saree-1754118507463-364833347.jpg", link: "#", title: "pure katan silk" , slug:"collection/pure-katan-silk/687645658f700c1b0a46e381"},
+        { image: "https://srijanfabs.co.in/images/products/Royal-blue-pure-khaddi-georgette-handbrush-handwoven-banarasi-saree-1754118507463-718765608.jpg", link: "#", title: "pure tissue silk", slug:"collection/pure-tissue-silk/687645948f700c1b0a46e3a3" },
     ];
 
     return (
