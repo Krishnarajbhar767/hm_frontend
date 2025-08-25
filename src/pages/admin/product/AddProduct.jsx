@@ -90,6 +90,38 @@ const AddProduct = () => {
         navigate(-1);
     };
 
+
+
+
+
+    const textureOptions = [
+        { value: "Soft", label: "Soft" },
+        { value: "Medium", label: "Medium" },
+        { value: "Rough", label: "Rough" },
+    ];
+
+
+    const styleOptions = [
+
+
+        { value: "Modern", label: "Modern" },
+        { value: "Persian", label: "Persian" },
+        { value: "Traditional", label: "Traditional" },
+        { value: "Contemporary", label: "Contemporary" },
+
+
+    ];
+
+    // Example size options; you may also choose free text
+    const sizeOptions = [
+        { value: "3x5 ft", label: "3x5 ft" },
+        { value: "4x6 ft", label: "4x6 ft" },
+        { value: "5x8 ft", label: "5x8 ft" },
+        { value: "6x9 ft", label: "6x9 ft" },
+        { value: "8x10 ft", label: "8x10 ft" },
+        { value: 'others', label: "others" }
+    ];
+
     return (
         <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -117,17 +149,33 @@ const AddProduct = () => {
                     errors={errors}
                     rules={{ required: "Description is required" }}
                 />
+
+                {/* Price & Price per sqft */}
+
+
+
+                {/* Price */}
+                <InputField
+                    label="Price"
+                    name="price"
+                    type="number"
+                    register={register}
+                    errors={errors}
+                    rules={{
+                        required: "Price is required",
+                        min: { value: 0, message: "Must be positive" },
+                    }}
+                />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
                     <InputField
-                        label="Price"
-                        name="price"
+                        label="Price per sqft (e.g., 700)"
                         type="number"
+                        name="psft"
+                        min={0}
                         register={register}
                         errors={errors}
-                        rules={{
-                            required: "Price is required",
-                            min: { value: 0, message: "Must be positive" },
-                        }}
+                        rules={{ required: "Price per sqft is required" }}
                     />
                     <InputField
                         label="Stock"
@@ -188,10 +236,51 @@ const AddProduct = () => {
                     )}
                 </div>
 
+
+
+                {/*  */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <SelectField
+                        label="Texture"
+                        name="texture"
+                        register={register}
+                        errors={errors}
+                        rules={{ required: "Texture is required" }}
+                        options={textureOptions}
+                    />
+                    <InputField
+                        label="Pile Thickness (e.g., 2/7 inch)"
+                        name="pileThickness"
+                        register={register}
+                        errors={errors}
+                        rules={{ required: "Pile thickness is required" }}
+                    />
+                </div>
+
+                {/* Size & Style */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* You can switch to InputField if sizes vary too much */}
+                    <SelectField
+                        label="Size"
+                        name="size"
+                        register={register}
+                        errors={errors}
+                        rules={{ required: "Size is required" }}
+                        options={sizeOptions}
+                    />
+                    <SelectField
+                        label="Style"
+                        name="style"
+                        register={register}
+                        errors={errors}
+                        rules={{ required: "Style is required" }}
+                        options={styleOptions}
+                    />
+                </div>
                 {/* Additional Details */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <SelectField
-                        label="Fabric"
+                        label="Meterial"
                         name="fabric"
                         register={register}
                         errors={errors}

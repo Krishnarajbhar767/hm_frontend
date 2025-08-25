@@ -9,7 +9,7 @@ import {
 import Button from "../../../../components/common/Button"; // Adjust path as needed
 import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../../../utils/apiConnector"; // Adjust path as needed
 import { FALLPICO_PRICE, TASSELLS_PRICE } from "../../../../Constant";
 import { handleAxiosError } from "../../../../utils/handleAxiosError";
@@ -85,7 +85,7 @@ function CartItemRow({ item, idx, onIncrement, onDecrement, onRemove }) {
                     className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-cover object-top"
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}
-                    // onClick={() => navigate(`product/${item._id}`)}
+                // onClick={() => navigate(`product/${item._id}`)}
                 />
                 <div className="flex-1">
                     <h2 className="text-xs sm:text-sm md:text-base font-medium text-foreground capitalize line-clamp-1">
@@ -265,12 +265,12 @@ function EmptyCart() {
                 Add items to your cart to continue shopping
             </p>
 
-            <button
-                onClick={() => navigate("Navigate Products Page")}
+            <Link
+                to={'/products/all/685a6381e6c33dcf91fa54d0'}
                 className="bg-foreground text-white px-4 py-2 text-xs sm:text-sm uppercase"
             >
                 Continue Shopping
-            </button>
+            </Link>
         </motion.div>
     );
 }
@@ -423,11 +423,10 @@ function OrderSummary({
                 whileTap={{ scale: 0.98 }}
                 onClick={handleCheckout}
                 disabled={cartEmpty || isCheckingOut}
-                className={`hidden lg:flex group relative h-9 sm:h-10 md:h-12 items-center justify-center overflow-hidden px-3 sm:px-4 md:px-6 font-light text-neutral-200 text-xs sm:text-sm md:text-base tracking-wide w-full mt-2 sm:mt-4 uppercase ${
-                    cartEmpty
-                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                        : "bg-foreground"
-                }`}
+                className={`hidden lg:flex group relative h-9 sm:h-10 md:h-12 items-center justify-center overflow-hidden px-3 sm:px-4 md:px-6 font-light text-neutral-200 text-xs sm:text-sm md:text-base tracking-wide w-full mt-2 sm:mt-4 uppercase ${cartEmpty
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : "bg-foreground"
+                    }`}
             >
                 {isCheckingOut ? (
                     <motion.div
@@ -656,11 +655,10 @@ function ShoppingBag({
                     whileTap={{ scale: 0.98 }}
                     onClick={handleCheckout}
                     disabled={cartEmpty || isCheckingOut}
-                    className={`group relative flex h-12 items-center justify-center overflow-hidden font-light text-neutral-200 text-sm tracking-wide w-full uppercase ${
-                        cartEmpty
-                            ? "bg-gray-200 text-gray-500"
-                            : "bg-foreground"
-                    }`}
+                    className={`group relative flex h-12 items-center justify-center overflow-hidden font-light text-neutral-200 text-sm tracking-wide w-full uppercase ${cartEmpty
+                        ? "bg-gray-200 text-gray-500"
+                        : "bg-foreground"
+                        }`}
                 >
                     {isCheckingOut ? (
                         <motion.div

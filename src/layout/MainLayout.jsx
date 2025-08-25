@@ -5,11 +5,13 @@ import Footer from "../components/common/Footer";
 import JoinNewsLetter from "../components/common/JoinNewsLetter";
 import { AnimatePresence } from "motion/react";
 import WhatsAppChatIcon from "../components/common/WhatsAppChatIcon";
+import TopBar from "../components/common/TopBar";
 function MainLayout() {
     // When This Public Route Mount Then Render JoinNewsLetter Component
 
     return (
         <div className="flex flex-col min-h-screen overflow-hidden">
+
             <Header />
 
             <main className="flex-1 overflow-x-hidden  place-content-center  overflow-y-auto ">
@@ -21,9 +23,9 @@ function MainLayout() {
                 <JoinNewsLetter />
             </AnimatePresence>
             <WhatsAppChatIcon
-                phoneNumber={918960500991}
+                phoneNumber={919918022212}
                 message={
-                    "Hello Team Srijan Fabs, I hope you're doing well. I would like to get in touch regarding your services."
+                    "Hello Team Himalaya Carpets, I hope you're doing well. I would like to get in touch regarding your services."
                 }
             />
         </div>

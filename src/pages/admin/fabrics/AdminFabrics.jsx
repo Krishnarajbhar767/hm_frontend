@@ -62,13 +62,13 @@ const AdminFabrics = () => {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-                    Fabrics
+                    Meterial
                 </h2>
                 <button
                     onClick={openAdd}
                     className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 text-sm uppercase hover:bg-gray-700 transition"
                 >
-                    <FiPlus /> Add Fabric
+                    <FiPlus /> Add Meterial
                 </button>
             </div>
 
@@ -88,7 +88,7 @@ const AdminFabrics = () => {
                                     colSpan="2"
                                     className="text-center text-gray-600 py-6"
                                 >
-                                    No fabrics found.
+                                    No meterial found.
                                 </td>
                             </tr>
                         ) : (
@@ -182,7 +182,7 @@ const AdminFabrics = () => {
                             Confirm Delete
                         </h3>
                         <p className="text-sm text-gray-600 mb-5">
-                            Are you sure you want to delete this fabric?
+                            Are you sure you want to delete this meterial?
                         </p>
                         <div className="flex gap-3 justify-end">
                             <button

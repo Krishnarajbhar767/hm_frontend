@@ -19,6 +19,7 @@ const authApis = {
         return res?.data?.data;
     },
 
+
     sendOtp: async (data) => {
         const res = await axiosInstance.post(authEndpoints.sendOtp, data);
         return res?.data?.data;
@@ -50,7 +51,7 @@ const authApis = {
         return res;
     },
 
-    forgotPasswordToken: async (userId) => {},
+    forgotPasswordToken: async (userId) => { },
 
     getUser: async (token) => {
         const res = await axiosInstance.get(

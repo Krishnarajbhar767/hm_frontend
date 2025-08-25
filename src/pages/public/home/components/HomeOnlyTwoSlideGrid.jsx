@@ -2,25 +2,25 @@ import React, { useState } from "react";
 import Heading from "./Heading";
 import SubHeading from "./SubHeading";
 import { motion, AnimatePresence } from "framer-motion";
-import Banner1 from "../../../../assets/images/Home/HomeOnlyTwoSlideGrid/SF_640x640_1.jpg";
-import Banner2 from "../../../../assets/images/Home/HomeOnlyTwoSlideGrid/SF_640x640_2.jpg";
+import Banner1 from "../../../../assets/images/Home/HomeOnlyTwoSlideGrid/HC_640x640_1.jpg";
+import Banner2 from "../../../../assets/images/Home/HomeOnlyTwoSlideGrid/HC_640x640_2.jpg";
 
 function HomeOnlyTwoSlideGrid() {
     const [slideIndex, setSlideIndex] = useState(0);
 
     const slideData = [
         {
-            heading: "Laal Raga",
+            heading: "Heritage Weaves",
             subHeading:
-                "Bold yet poised, this red silk drape is woven with elegance and dyed in the essence of classic Indian artistry.",
-            discoverLink: "products/saree-silk-saree/687649168f700c1b0a46e479",
+                "Step into a world of tradition with our handcrafted carpets. Woven by skilled artisans, each design reflects timeless patterns, rich textures, and the soul of heritage craftsmanship — perfect for classic, warm interiors.",
+            discoverLink: "href",
             image: Banner1,
         },
         {
-            heading: "Where Blue Whispers and Flowers Sing",
+            heading: "Modern Elegance",
             subHeading:
-                "Blue like the morning sky, bright with florals in bloom—this pure Katan silk saree redefines elegance with a splash of vibrant heritage.",
-            discoverLink: "collection/pure-katan-silk/687645658f700c1b0a46e381",
+                "Discover sleek, contemporary carpet styles crafted for the modern home. Clean lines, minimalist tones, and refined details — where comfort meets cutting-edge design.",
+            discoverLink: "href2",
             image: Banner2,
         },
     ];
@@ -50,6 +50,7 @@ function HomeOnlyTwoSlideGrid() {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
+                    loading="lazy"
                 />
             </AnimatePresence>
 
@@ -84,9 +85,8 @@ function HomeOnlyTwoSlideGrid() {
                         <div
                             key={i}
                             onClick={() => setSlideIndex(i)}
-                            className={`h-4 w-4 rounded-full border border-white cursor-pointer transition-all duration-300 hover:bg-gray-600 ${
-                                slideIndex === i ? "bg-gray-800" : "bg-gray-400"
-                            }`}
+                            className={`h-4 w-4 rounded-full border border-white cursor-pointer transition-all duration-300 hover:bg-gray-600 ${slideIndex === i ? "bg-gray-800" : "bg-gray-400"
+                                }`}
                         ></div>
                     ))}
                 </div>

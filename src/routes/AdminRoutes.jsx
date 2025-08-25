@@ -26,7 +26,7 @@ const AdminHomeManagement = lazy(() =>
 const AdminFabrics = lazy(() => import("../pages/admin/fabrics/AdminFabrics"));
 const AdminOffers = lazy(() => import("../pages/admin/offer/AdminOffers"));
 const AdminCoupons = lazy(() => import("../pages/admin/coupon/AdminCoupons"));
- const  AdminNewsletterEmails = lazy(()=>import("../pages/admin/newsletter/AdminNewsletterEmails"));
+const AdminNewsletterEmails = lazy(() => import("../pages/admin/newsletter/AdminNewsletterEmails"));
 // Fallback UI while components load
 
 const AdminRoutes = (
@@ -128,7 +128,7 @@ const AdminRoutes = (
             }
         />
         <Route
-            path="fabrics"
+            path="meterials"
             element={
                 <Suspense fallback={<Loader />}>
                     <AdminFabrics />
@@ -159,7 +159,7 @@ const AdminRoutes = (
                 </Suspense>
             }
         />
-        
+
     </Route>
 );
 

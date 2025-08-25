@@ -9,6 +9,7 @@ const InputField = ({
     value = "",
     type = "text",
     readOnly = false,
+
 }) => {
     return (
         <div className="input-wrapper capitalize">
@@ -21,6 +22,7 @@ const InputField = ({
                 placeholder=" "
                 className="input-field capitalize"
                 readOnly={readOnly}
+
             />
             <label htmlFor={name} className="input-label capitalize">
                 {label}

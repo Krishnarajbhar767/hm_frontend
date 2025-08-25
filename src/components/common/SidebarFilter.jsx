@@ -25,18 +25,24 @@ const FilterSection = ({ title, isOpen, onToggle, children }) => (
 // Main SidebarFilter component
 const SidebarFilter = ({ onFilterChange, isOpen, toggleSidebar }) => {
     const fabrics = useSelector((s) => s.fabrics);
-    const fabricTitles = ["All Fabrics", ...fabrics.map((f) => f.title)];
+    const fabricTitles = ["All Meterial", ...fabrics.map((f) => f.title)];
     const [minInput, setMinInput] = useState("0");
     const [maxInput, setMaxInput] = useState("200000");
     const [priceRange, setPriceRange] = useState([0, 200000]);
     const [fabric, setFabric] = useState("");
     const [color, setColor] = useState("");
     const [technique, setTechnique] = useState("");
+    const [size, setSize] = useState("");
+    const [style, setStyle] = useState("");
+    const [texture, setTexture] = useState('');
     const [openSections, setOpenSections] = useState({
         price: true,
         fabric: true,
         color: true,
-        technique: true,
+        size: true,
+        style: true,
+        technique: false,
+        texture: false
     });
 
     // Calculate active filter count
@@ -45,6 +51,9 @@ const SidebarFilter = ({ onFilterChange, isOpen, toggleSidebar }) => {
         fabric !== "",
         color !== "",
         technique !== "",
+        size !== "",
+        style !== '',
+        texture !== ''
     ].filter(Boolean).length;
 
     // Toggle accordion section
@@ -60,7 +69,7 @@ const SidebarFilter = ({ onFilterChange, isOpen, toggleSidebar }) => {
         setPriceRange([min, max]);
         setMinInput(min.toString());
         setMaxInput(max.toString());
-        onFilterChange({ priceRange: [min, max], fabric, color, technique });
+        onFilterChange({ priceRange: [min, max], fabric, color, technique, size, style, texture });
         if (isOpen && toggleSidebar) toggleSidebar();
     };
 
@@ -72,11 +81,17 @@ const SidebarFilter = ({ onFilterChange, isOpen, toggleSidebar }) => {
         setFabric("");
         setColor("");
         setTechnique("");
+        setSize('')
+        setStyle('')
+        setTexture('')
         onFilterChange({
             priceRange: [0, 200000],
             fabric: "",
             color: "",
             technique: "",
+            size: '',
+            style: '',
+            texture: ''
         });
     };
 
@@ -92,9 +107,8 @@ const SidebarFilter = ({ onFilterChange, isOpen, toggleSidebar }) => {
 
             {/* Sidebar */}
             <div
-                className={`fixed inset-y-0 left-0 w-80 bg-white z-40 transform transition-transform duration-300 shadow-xl lg:relative lg:translate-x-0 lg:w-72 lg:shadow-none lg:border-r lg:border-gray-200 ${
-                    isOpen ? "translate-x-0" : "-translate-x-full"
-                }`}
+                className={`fixed inset-y-0 left-0 w-80 bg-white z-40 transform transition-transform duration-300 shadow-xl lg:relative lg:translate-x-0 lg:w-72 lg:shadow-none lg:border-r lg:border-gray-200 ${isOpen ? "translate-x-0" : "-translate-x-full"
+                    }`}
             >
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
@@ -197,13 +211,13 @@ const SidebarFilter = ({ onFilterChange, isOpen, toggleSidebar }) => {
                                         type="radio"
                                         name="fabric"
                                         value={
-                                            fabricOption === "All Fabrics"
+                                            fabricOption === "All Meterial"
                                                 ? ""
                                                 : fabricOption
                                         }
                                         checked={
                                             fabric ===
-                                            (fabricOption === "All Fabrics"
+                                            (fabricOption === "All Meterial"
                                                 ? ""
                                                 : fabricOption)
                                         }
@@ -279,47 +293,148 @@ const SidebarFilter = ({ onFilterChange, isOpen, toggleSidebar }) => {
                         </div>
                     </FilterSection>
 
-                    {/* Technique Filter */}
+                    {/* Size Filter Section */}
                     <FilterSection
-                        title="Technique"
-                        isOpen={openSections.technique}
-                        onToggle={() => toggleSection("technique")}
+                        title="Size"
+                        isOpen={openSections.size}
+                        onToggle={() => toggleSection("size")}
                     >
+
                         <div className="space-y-2">
                             {[
-                                "All Techniques",
-                                // "Handwoven",
-                                // "Embroidered",
-                                // "Printed",
-                                // "Block Print",
-                                // "Digital Print",
-                            ].map((techniqueOption) => (
+                                "All Size",
+                                "3x5 ft",
+                                "4x6 ft",
+                                "5x8 ft",
+                                "6x9 ft",
+                                "8x10 ft",
+                                "others"
+                            ].map((sizeOption) => (
                                 <label
-                                    key={techniqueOption}
+                                    key={sizeOption}
                                     className="flex items-center space-x-3 cursor-pointer"
                                 >
                                     <input
                                         type="radio"
-                                        name="technique"
+                                        name="size"
                                         value={
-                                            techniqueOption === "All Techniques"
+                                            sizeOption === "All Size"
                                                 ? ""
-                                                : techniqueOption
+                                                : sizeOption
                                         }
                                         checked={
-                                            technique ===
-                                            (techniqueOption ===
-                                            "All Techniques"
+                                            size ===
+                                            (sizeOption ===
+                                                "All Size"
                                                 ? ""
-                                                : techniqueOption)
+                                                : sizeOption)
                                         }
                                         onChange={(e) =>
-                                            setTechnique(e.target.value)
+                                            setSize(e.target.value)
                                         }
                                         className="w-4 h-4 text-foreground border-gray-300 focus:ring-foreground"
                                     />
                                     <span className="text-sm text-gray-700">
-                                        {techniqueOption}
+                                        {sizeOption}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </FilterSection>
+
+                    {/* STyle Filter */}
+                    <FilterSection
+                        title="Style"
+                        isOpen={openSections.style}
+                        onToggle={() => toggleSection("style")}
+                    >
+
+
+                        <div className="space-y-2">
+                            {[
+                                "All Style",
+                                "Modern",
+                                "Persian",
+                                "Traditional",
+                                "Contemporary",
+
+                            ].map((styleOption) => (
+                                <label
+                                    key={styleOption}
+                                    className="flex items-center space-x-3 cursor-pointer"
+                                >
+                                    <input
+                                        type="radio"
+                                        name="style"
+                                        value={
+                                            styleOption === "All Style"
+                                                ? ""
+                                                : styleOption
+                                        }
+                                        checked={
+                                            style ===
+                                            (styleOption ===
+                                                "All Style"
+                                                ? ""
+                                                : styleOption)
+                                        }
+                                        onChange={(e) =>
+                                            setStyle(e.target.value)
+                                        }
+                                        className="w-4 h-4 text-foreground border-gray-300 focus:ring-foreground"
+                                    />
+                                    <span className="text-sm text-gray-700">
+                                        {styleOption}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </FilterSection>
+
+                    {/* Texture  */}
+                    {/* STyle Filter */}
+                    <FilterSection
+                        title="Texture"
+                        isOpen={openSections.texture}
+                        onToggle={() => toggleSection("texture")}
+                    >
+
+
+                        <div className="space-y-2">
+                            {[
+                                "All Texture",
+                                "Soft",
+                                "Medium",
+                                "Rough",
+
+
+                            ].map((textureOption) => (
+                                <label
+                                    key={textureOption}
+                                    className="flex items-center space-x-3 cursor-pointer"
+                                >
+                                    <input
+                                        type="radio"
+                                        name="texture"
+                                        value={
+                                            textureOption === "All Texture"
+                                                ? ""
+                                                : textureOption
+                                        }
+                                        checked={
+                                            texture ===
+                                            (textureOption ===
+                                                "All Texture"
+                                                ? ""
+                                                : textureOption)
+                                        }
+                                        onChange={(e) =>
+                                            setTexture(e.target.value)
+                                        }
+                                        className="w-4 h-4 text-foreground border-gray-300 focus:ring-foreground"
+                                    />
+                                    <span className="text-sm text-gray-700">
+                                        {textureOption}
                                     </span>
                                 </label>
                             ))}

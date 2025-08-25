@@ -8,34 +8,34 @@ function ProductFeatures({ product }) {
     const features = [
         {
             icon: Sparkles,
-            title: "Premium Quality Fabric",
-            description: `Made from the finest silk sourced from traditional artisans, ensuring exceptional comfort and durability.`,
+            title: "Exceptional Craftsmanship",
+            description: `Each carpet is meticulously handcrafted by skilled artisans, blending traditional techniques with modern product innovation for superior quality.`,
         },
         {
-            icon: Scissors,
-            title: "Expert Craftsmanship",
+            icon: Award, // Changed icon from Scissors to Award for recognition/quality
+            title: "Government Recognized Export House",
             description:
-                "Each piece is meticulously crafted by skilled artisans with decades of experience in traditional techniques.",
+                "As an Indian government-recognized export house, we ensure compliance and timely exports to global markets, including Europe and the Americas.",
         },
 
         {
             icon: Leaf,
-            title: "Eco-Friendly",
+            title: "Ethical & Sustainable Practices",
             description:
-                "Produced using sustainable practices that minimize environmental impact and support ethical manufacturing.",
+                "We are committed to responsible sourcing and production processes to limit environmental impact and ensure ethical manufacturing.",
         },
         {
-            icon: Zap,
-            title: "Versatile Styling",
+            icon: Gift, // Changed icon from Zap to Gift for bespoke/customized solutions
+            title: "Bespoke & Series Production",
             description:
-                "Perfect for both traditional occasions and contemporary settings, offering versatile styling options.",
+                "Our in-house R&D and design teams work closely with clients to develop and deliver customized and series-production carpets.",
         },
     ];
 
     return (
         <div className="bg-white rounded-lg overflow-hidden mb-8 p-6 lg:p-8">
             <h2 className="text-2xl font-semibold text-foreground mb-6">
-                Product Features
+                Why Choose Himalaya Carpets?
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {features.map((feature, index) => (

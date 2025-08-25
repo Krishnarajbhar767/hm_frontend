@@ -11,11 +11,11 @@ const ShippingPolicy = () => {
 
                 {/* Introduction */}
                 <p className="text-base sm:text-lg text-foreground mb-6">
-                    Srijan Fabs is committed to delivering your order with
-                    high-quality packaging within the promised time frame. We
-                    ship throughout the week, except Sundays and public
-                    holidays. To ensure your order reaches you in good
-                    condition, we use only reputed courier agencies.
+                    Himalaya Carpets India is committed to delivering your order
+                    with high-quality packaging and within the promised time
+                    frame. We ship throughout the week, except Sundays and
+                    public holidays. To ensure your carpet reaches you in perfect
+                    condition, we use only reputed courier and logistics partners.
                 </p>
 
                 {/* Shipping Details */}
@@ -25,45 +25,36 @@ const ShippingPolicy = () => {
                     </h2>
                     <ul className="list-disc pl-6 text-base sm:text-lg text-foreground space-y-2">
                         <li>
-                            <span className="font-semibold">Free Shipping</span>{" "}
-                            is available on all orders within India.
+                            <span className="font-semibold">Free Shipping</span> is
+                            available on all orders within India.
                         </li>
                         <li>
-                            {/* If an item from the{" "}
-                            <span className="font-semibold">Special Price</span>{" "}
-                            or{" "}
-                            <span className="font-semibold">
-                                Srijan Fabs Gifts
-                            </span>{" "} */}
-                            If fall pico, tassels, are requested, the delivery timeline may extend by 3–4 extra working days.
-
+                            If a custom carpet design or special finishing is
+                            requested, the delivery timeline may extend by 5–7
+                            additional working days.
                         </li>
                         <li>
-                            All sarees displayed on{" "}
+                            All carpets displayed on{" "}
                             <a
-                                href="https://srijanfabs.com"
+                                href="https://himalayacarpetsindia.com"
                                 className="text-foreground hover:text-primary"
                             >
-                                srijanfabs.com
+                                himalayacarpetsindia.com
                             </a>{" "}
-                            are stocked in our warehouses and ready to ship.
+                            are stocked in our warehouses or made-to-order, depending
+                            on the product description.
                         </li>
                         <li>
-                            Orders are dispatched within{" "}
-                            <span className="font-semibold">
-                                3-5 working days
-                            </span>
-                            .
+                            Ready stock orders are dispatched within{" "}
+                            <span className="font-semibold">3-5 working days</span>.
                         </li>
                         <li>
-                            You will receive an email with tracking information
-                            once your order is shipped.
+                            You will receive an email with tracking information once
+                            your order is shipped.
                         </li>
                         <li>
                             Once shipped, please allow{" "}
-                            <span className="font-semibold">
-                                5-7 business days
-                            </span>{" "}
+                            <span className="font-semibold">5-10 business days</span>{" "}
                             for delivery within India.
                         </li>
                     </ul>
@@ -73,22 +64,22 @@ const ShippingPolicy = () => {
                     </h2>
                     <ul className="list-disc pl-6 text-base sm:text-lg text-foreground space-y-2">
                         <li>
-                            If there is a delay in dispatch due to natural
-                            calamities, public holidays, or unforeseen
-                            circumstances, Srijan Fabs shall not be liable for
-                            returns or exchanges.
+                            If there is a delay in dispatch due to natural calamities,
+                            public holidays, or unforeseen circumstances, Himalaya
+                            Carpets India shall not be liable for cancellations or
+                            exchanges.
                         </li>
                         <li>
-                            If a delay occurs due to a product being out of
-                            stock, we will contact you via email at{" "}
+                            If a delay occurs due to a product being out of stock or
+                            production delays, we will contact you via email at{" "}
                             <a
-                                href="mailto:srijanfabs@gmail.com"
+                                href="mailto:himalayacarpetsindia@gmail.com"
                                 className="text-foreground hover:text-primary"
                             >
-                                srijanfabs@gmail.com
+                                himalayacarpetsindia@gmail.com
                             </a>
-                            . You may choose to wait, select alternate products,
-                            or opt for a store credit or refund.
+                            . You may choose to wait, select alternate products, or
+                            opt for a store credit or refund.
                         </li>
                     </ul>
 
@@ -96,7 +87,7 @@ const ShippingPolicy = () => {
                         Contact Information
                     </h2>
                     <div className="text-base sm:text-lg text-foreground bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <p className="font-semibold">Srijan Fabs</p>
+                        <p className="font-semibold">Himalaya Carpets India</p>
                         <p>2nd Floor, C.K 20/9,</p>
                         <p>Shetla Katra Thatheri Bazar,</p>
                         <p>Varanasi, Uttar Pradesh 221010,</p>
@@ -107,7 +98,7 @@ const ShippingPolicy = () => {
                                 href="tel:+918960500991"
                                 className="text-foreground hover:text-primary"
                             >
-                                (+91) 89605 00991
+                                (+91)9918022212
                             </a>
                         </p>
                         <p>
@@ -122,10 +113,10 @@ const ShippingPolicy = () => {
                         <p>
                             Email:{" "}
                             <a
-                                href="mailto:srijanfabs@gmail.com"
+                                href="mailto:himalayacarpetsindia@gmail.com"
                                 className="text-foreground hover:text-primary"
                             >
-                                srijanfabs@gmail.com
+                                himalayacarpetsindia@gmail.com
                             </a>
                         </p>
                     </div>
@@ -133,13 +124,13 @@ const ShippingPolicy = () => {
 
                 {/* Footer Note */}
                 <p className="text-sm text-foreground mt-8 text-center">
-                    For any questions about our Shipping Policy, please contact
-                    us at{" "}
+                    For any questions about our Shipping Policy, please contact us
+                    at{" "}
                     <a
-                        href="mailto:srijanfabs@gmail.com"
+                        href="mailto:himalayacarpetsindia@gmail.com"
                         className="text-foreground hover:text-primary"
                     >
-                        srijanfabs@gmail.com
+                        himalayacarpetsindia@gmail.com
                     </a>
                     .
                 </p>

@@ -11,6 +11,7 @@ import {
     ChevronDown,
     Sparkles,
     ChevronUp,
+    Box
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -60,11 +61,10 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
         Array.from({ length: 5 }).map((_, i) => (
             <Star
                 key={i}
-                className={`w-5 h-5 ${
-                    i < Math.floor(rating)
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "text-gray-300"
-                }`}
+                className={`w-5 h-5 ${i < Math.floor(rating)
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "text-gray-300"
+                    }`}
             />
         ));
 
@@ -119,11 +119,10 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                     <div className="flex gap-2">
                         <button
                             onClick={toggleWishlist}
-                            className={`p-2 rounded-full ${
-                                wishlisted
-                                    ? "bg-red-100 text-red-600"
-                                    : "bg-gray-100 text-foreground hover:text-red-600"
-                            }`}
+                            className={`p-2 rounded-full ${wishlisted
+                                ? "bg-red-100 text-red-600"
+                                : "bg-gray-100 text-foreground hover:text-red-600"
+                                }`}
                         >
                             <Heart
                                 className={wishlisted ? "fill-current" : ""}
@@ -181,65 +180,72 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
             {/* Product details */}
             <div className="space-y-1 text-md sm:text-lg text-gray-700">
                 <p>
-                    <strong>Overview:</strong> {product?.description}
+                    <strong>Overview:</strong> {product.description}
                 </p>
+
                 <p>
-                    <strong>Color:</strong> {product?.color}
+                    <strong>Color:</strong> {product.color ?? "N/A"}
                 </p>
+
                 <p>
-                    <strong>Technique:</strong> {product?.technique}
+                    <strong>Technique:</strong> {product.technique ?? "N/A"}
                 </p>
+
+
+
+                {/* Carpet-specific fields from your schema */}
                 <p>
-                    <strong>Fabric:</strong> {product?.fabric?.title || "N/A"}
+                    <strong>Price per sqft (psft):</strong> {product.psft ?? "N/A"}
                 </p>
-                {product?.note && (
+
+                <p>
+                    <strong>Material :</strong> {product?.fabric?.title ?? "N/A"}
+
+                </p>
+
+                <p>
+                    <strong>Texture:</strong> {product.texture ?? "N/A"}
+                </p>
+
+                <p>
+                    <strong>Pile Thickness:</strong> {product.pileThickness ?? "N/A"}
+                </p>
+
+                <p>
+                    <strong>Size:</strong> {product.size ?? "N/A"}
+                </p>
+
+                <p>
+                    <strong>Style:</strong> {product.style ?? "N/A"}
+                </p>
+
+                {product.note && (
                     <p>
                         <strong>Note:</strong> {product.note}
                     </p>
                 )}
-                {product?.assurance && (
+
+                {product.assurance && (
                     <p>
                         <strong>Assurance:</strong> {product.assurance}
                     </p>
                 )}
-                {product?.weight && (
+
+                {product.weight && (
                     <p>
-                        <strong>Weight:</strong> {product?.weight}
+                        <strong>Weight:</strong> {product.weight}
                     </p>
                 )}
-                {product?.hsnCode && (
+
+                {product.hsnCode && (
                     <p>
-                        <strong>HSN Code:</strong> {product?.hsnCode}
+                        <strong>HSN Code:</strong> {product.hsnCode}
                     </p>
                 )}
             </div>
 
-            {/* Customizations */}
-            <div className="border-t pt-4 space-y-3">
-                <h2 className="text-lg font-semibold">Customizations</h2>
-                <label className="flex justify-between items-center">
-                    <span>Fall & Pico</span>
-                    <div className="flex items-center gap-2">
-                        <span>+₹{FALLPICO_PRICE}</span>
-                        <input
-                            type="checkbox"
-                            checked={withFallPico}
-                            onChange={() => setWithFallPico(!withFallPico)}
-                        />
-                    </div>
-                </label>
-                <label className="flex justify-between items-center">
-                    <span>Tassels</span>
-                    <div className="flex items-center gap-2">
-                        <span>+₹{TASSELLS_PRICE}</span>
-                        <input
-                            type="checkbox"
-                            checked={withTassels}
-                            onChange={() => setWithTassels(!withTassels)}
-                        />
-                    </div>
-                </label>
-            </div>
+
+
 
             {/* Quantity */}
             <div className="space-y-2">
@@ -273,6 +279,14 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                     <CreditCard className="inline-block mr-2" /> Buy Now
                 </button>
                 <button
+                    onClick={() => navigate('/contact#contact-us-form')}
+                    disabled={!product.stock}
+                    className="w-full py-3 rounded text-foreground border border-foreground   disabled:bg-gray-300"
+                >
+
+                    <Box className="inline-block mr-2" /> Bulk Buy
+                </button>
+                <button
                     onClick={handleAddToCart}
                     disabled={!product.stock}
                     className="w-full py-3 rounded border border-foreground text-foreground hover:bg-gray-50 disabled:bg-gray-300"
@@ -295,7 +309,6 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                 </div>
             </div>
 
-            {/* FAQ */}
             <div className="pt-6 border-t">
                 <button
                     onClick={() => setFaqOpen(!faqOpen)}
@@ -306,11 +319,9 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                 </button>
                 {faqOpen && (
                     <div className="mt-2 text-sm text-gray-600">
-                        Color and Texture may have slight variation. This
-                        happens because of photography. Yarns and Slubs may have
-                        some uneven and missing contrasts. They are inherent
-                        chararcteristic of the fabric that make its style
-                        peculiar. Dry Clean only.
+                        Colors may vary slightly due to screen settings and the natural variations of dyes and materials used in handmade carpets. Each carpet is unique, and minor variations in weave or shade are inherent to its handcrafted nature, adding to its authenticity and charm.
+                        <br /><br />
+                        For care, we recommend professional dry cleaning only for all our handmade carpets to preserve their intricate details and material integrity. Avoid machine washing or harsh chemical cleaners. For daily maintenance, regular vacuuming with a low-power setting is advised. Immediately blot spills with a clean, dry cloth.
                     </div>
                 )}
             </div>
@@ -326,9 +337,8 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
                 </button>
                 {shippingOpen && (
                     <div className="mt-2 text-sm text-gray-600">
-                        2nd Floor, C.K 20/9 Shetla Katra Thatheri Bazar
-                        <br />
-                        Varanasi, Uttar Pradesh 221010
+                        <span>Himalaya Carpets Pvt. Ltd.</span> <br />
+                        C-101, Industrial Area, Bhadohi,  <br /> UP, India – 221401
                     </div>
                 )}
             </div>

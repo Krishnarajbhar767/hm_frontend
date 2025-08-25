@@ -52,8 +52,8 @@ function AdminAccountDashboard() {
                 icon: <FiShoppingCart size={20} />,
             },
             {
-                path: "fabrics",
-                label: "fabrics",
+                path: "meterials",
+                label: "meterial",
                 icon: <GiClothes size={20} />,
             },
             {
@@ -93,11 +93,10 @@ function AdminAccountDashboard() {
                     >
                         <Link
                             to={`/admin/${item.path}`}
-                            className={`relative flex items-center gap-2 px-4 py-3 text-sm font-medium uppercase transition-colors duration-300 whitespace-nowrap ${
-                                location.pathname === `/admin/${item.path}`
+                            className={`relative flex items-center gap-2 px-4 py-3 text-sm font-medium uppercase transition-colors duration-300 whitespace-nowrap ${location.pathname === `/admin/${item.path}`
                                     ? "text-gray-800"
                                     : "text-gray-600 hover:text-gray-800"
-                            }`}
+                                }`}
                         >
                             {item.icon}
                             {item.label}
@@ -131,12 +130,11 @@ function AdminAccountDashboard() {
                             >
                                 <Link
                                     to={`/admin/${item.path}`}
-                                    className={`flex items-center gap-3 px-4 py-3 text-base font-medium uppercase rounded-md transition-all duration-300 ${
-                                        location.pathname ===
-                                        `/admin/${item.path}`
+                                    className={`flex items-center gap-3 px-4 py-3 text-base font-medium uppercase rounded-md transition-all duration-300 ${location.pathname ===
+                                            `/admin/${item.path}`
                                             ? "bg-gray-800 text-white shadow-sm"
                                             : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
-                                    }`}
+                                        }`}
                                 >
                                     {item.icon}
                                     {item.label}

@@ -7,28 +7,31 @@ import { Check } from "lucide-react";
 function CareInstructions() {
     const careCategories = [
         {
-            title: "Washing",
+            title: "Cleaning & Washing",
             instructions: [
-                "Dry clean only for best results",
-                "Do not iron at home",
-                "No machine wash",
+                "Professional dry cleaning recommended for all handmade carpets to preserve integrity.",
+                "Avoid machine washing, steaming, or using harsh chemical cleaners.",
+                "Immediately blot spills with a clean, dry cloth; do not rub.",
+                "For minor spots, use a mild carpet cleaner and a soft brush, testing on an inconspicuous area first."
             ],
         },
         {
-            title: "Care",
+            title: "Daily Care & Maintenance",
             instructions: [
-                "Avoid direct contact with perfumes or deodorants to preserve the fabric's sheen and fragrance.",
-                "Refold every few months",
+                "Regularly vacuum your carpet with a low-power setting to remove dust and debris.",
+                "Rotate your carpet periodically to ensure even wear and exposure to light.",
+                "Place a rug pad underneath to prevent slipping and extend the life of your carpet.",
+                "Keep away from direct, prolonged sunlight to prevent fading."
             ],
         },
         {
             title: "Storage",
             instructions: [
-                "Store folded in a cool, dry place",
-                "Use cotton Or muslin cloth",
-                "Avoid hanging for long periods to maintain shape",
-                "Avoid plastic covers",
-                "Avoid  naphthalene balls ",
+                "Store in a cool, dry, and well-ventilated area, away from direct sunlight and humidity.",
+                "Roll the carpet tightly with the pile facing outwards to maintain its shape.",
+                "Wrap the rolled carpet in breathable cotton or muslin cloth; avoid plastic covers.",
+                "Ensure the carpet is clean and completely dry before storing to prevent mildew and odors.",
+                "Do not use mothballs directly on the carpet; consider natural repellents like cedar wood."
             ],
         },
     ];

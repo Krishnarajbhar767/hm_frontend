@@ -2,7 +2,7 @@ import React from "react";
 import { FiPhone } from "react-icons/fi"; // Feather Phone icon
 
 const PhoneCallIcon = () => {
-    const callLink = `tel:8960500991`;
+    const callLink = `tel:9918022212`;
 
     return (
         <a

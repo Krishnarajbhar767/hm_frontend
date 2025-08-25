@@ -1,19 +1,27 @@
 import React from "react";
 import { motion } from "motion/react";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Heading from "./Heading";
 import SubHeading from "./SubHeading";
-import Banner1 from "../../../../assets/images/Home/Home3Grid/SF_1080x1350_1.jpg";
-import Banner2 from "../../../../assets/images/Home/Home3Grid/SF_1080x1350_2.jpg";
-import Banner3 from "../../../../assets/images/Home/Home3Grid/SF_1080x1350_3.jpg";
+import dhurries_rugs from "../../../../assets/images/Home/Home3Grid/dhurries-rugs.avif";
+import flatweaves_rugs from "../../../../assets/images/Home/Home3Grid/flatweaves-rugs.jpg";
+import hand_knowtted_rugs from "../../../../assets/images/Home/Home3Grid/Hand-Knowtted-rugs.jpg";
+import hand_tufted_rugs from "../../../../assets/images/Home/Home3Grid/Hand-tufted-rugs.jpg";
+import hand_woven_rugs from "../../../../assets/images/Home/Home3Grid/hand-woven-rugs.webp";
+import handloom_rugs from "../../../../assets/images/Home/Home3Grid/handloom-rugs.jpg";
 function Home3Grid() {
 
     const navigate = useNavigate();
+
+
     const data = [
-        { image: "https://srijanfabs.co.in/images/products/Royal-blue-pure-khaddi-georgette-handbrush-handwoven-banarasi-saree-1754118507457-44017225.jpg", link: "#", title: "Pure khaddi georgette", slug:"collection/pure-khaddi-georgette/6876457b8f700c1b0a46e38b"},
-        { image: "https://srijanfabs.co.in/images/products/Royal-blue-pure-khaddi-georgette-handbrush-handwoven-banarasi-saree-1754118507463-364833347.jpg", link: "#", title: "pure katan silk" , slug:"collection/pure-katan-silk/687645658f700c1b0a46e381"},
-        { image: "https://srijanfabs.co.in/images/products/Royal-blue-pure-khaddi-georgette-handbrush-handwoven-banarasi-saree-1754118507463-718765608.jpg", link: "#", title: "pure tissue silk", slug:"collection/pure-tissue-silk/687645948f700c1b0a46e3a3" },
+        { image: hand_knowtted_rugs, link: "/products/hand-knotted/685a563f449f39b5d40bb9f1", title: "Hand knotted" },
+        { image: hand_woven_rugs, link: "#", title: "Indo Nepli" },
+        { image: hand_tufted_rugs, link: "#", title: "Hand tufted rugs" },
+        { image: handloom_rugs, link: "#", title: " Handloom rugs " },
+        { image: flatweaves_rugs, link: "#", title: "Flatweaves " },
+        { image: dhurries_rugs, link: "#", title: "Outdoor " },
     ];
 
     return (
@@ -21,29 +29,30 @@ function Home3Grid() {
             <div className="md:mb-14 mb-10 mt-4">
                 <div>
                     <Heading
-                        text={"A Heritage of Threads, A Legacy of Grace."}
+                        text={"Discover Signature Styles."}
                     />
                 </div>
                 <div className="mt-2">
                     <SubHeading
                         text={
-                            "At Srijan Fabs, every saree is more than fabric — it’s a story handwoven in tradition, artistry, and timeless beauty."
+                            "Handpicked Carpets That Define Elegance, Comfort, and Craftsmanship"
                         }
                     />
                 </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {data.map((item, index) => (
-                    <div className="relative cursor-pointer " onClick={()=> navigate(item.slug)}>
+                    <div className="relative cursor-pointer " onClick={() => navigate(item.slug)}>
                         <motion.img
                             whileTap={{ scale: 0.8 }}
                             key={index}
                             src={item.image}
                             alt="Sarees"
+                            loading='lazy'
                             className="w-full h-[500px] object-cover object-top md:object-center  hover:scale-[101%] transition-all ease-linear duration-200 shadow-sm  border border-gray-200 "
                         />
-                        <div class="absolute bottom-20 left-0 w-full bg-gradient-to-t to-transparent p-4">
-                            <p className="text-white text-2xl font-semibold text-center capitalize">
+                        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-8">
+                            <p class="text-white text-2xl font-medium">
                                 {item.title}
                             </p>
                         </div>

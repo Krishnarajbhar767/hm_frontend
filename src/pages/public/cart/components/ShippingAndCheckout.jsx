@@ -62,13 +62,12 @@ function ShippingAndCheckout({ cartItems, setStepCount }) {
             key,
             amount: order.amount,
             currency: "INR",
-            name: "Srijan Fabs",
+            name: "Himalaya Carpets Fabs",
             description: "",
             image: "LOGO.avif",
             order_id: order.id,
-            callback_url: `${
-                import.meta.env.VITE_BACKEND_URL
-            }payment/verify-payment`,
+            callback_url: `${import.meta.env.VITE_BACKEND_URL
+                }payment/verify-payment`,
             prefill: {
                 name: user?.name || "",
                 email: user?.email || "",

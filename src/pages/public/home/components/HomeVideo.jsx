@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import Heading from "./Heading";
 import SubHeading from "./SubHeading";
-import VIDEO from "../../../../assets/SB_1920x854_vdo.mp4";
-import POSTER from "../../../../assets/POSTER.png"; // optional, if you have a poster
+import VIDEO from "../../../../assets/carpet_video.mp4";
+import POSTER from "../../../../assets/POSTER.webp";
 
 function HomeVideo() {
     const [showVideo, setShowVideo] = useState(false);
@@ -20,18 +20,16 @@ function HomeVideo() {
         <div className=" w-full py-4 h-auto  overflow-x-hidden">
             <div className="md:mb-14 mb-10 mt-4">
                 <div>
-                    <Heading text="Timeless charm in every  fold" />
+                    <Heading text="Timeless Designs, Unmatched Craft" />
                 </div>
                 <div className="mt-2">
                     <SubHeading
-                        text="Where six yards tell a timeless tale,
-                            and every weave whispers elegance .From classic looms to graceful drapes,
-                            we bring you heritage reimagined"
+                        text="Explore Our Top Picks Woven to Perfection"
                     />
                 </div>
             </div>
 
-            <div className="relative w-full h-[30vh] sm:h-[100vh] bg-black">
+            <div className="relative w-full h-[35vh] sm:h-[100vh] bg-black">
                 {showVideo ? (
                     <video
                         className="h-full w-full object-cover"

@@ -1,10 +1,9 @@
-import { useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { FaFacebook, FaLinkedin, FaPinterest } from "react-icons/fa";
-import axiosInstance from "../../../utils/apiConnector";
 import { BsInstagram } from "react-icons/bs";
+import axiosInstance from "../../../utils/apiConnector";
 
 const ContactUs = () => {
     // react-hook-form setup
@@ -17,7 +16,7 @@ const ContactUs = () => {
 
     const [success, setSuccess] = useState(false);
 
-    // Submit handler with axios
+    // Submit handler with axiosInstance
     const onSubmit = async (data) => {
         try {
             const res = await axiosInstance.post("/contact", data);
@@ -31,44 +30,50 @@ const ContactUs = () => {
         }
     };
 
-    // Contact info cards data
+    // Contact info cards data (from your company)
     const contactInfo = [
         {
             icon: MapPin,
             title: "Address",
             details: [
-                "2nd Floor, C.K 20/9",
-                "Shetla Katra Thatheri Bazar",
-                "Varanasi, Uttar Pradesh 221010",
+                "HIG II, Plot 5-12, Jamunipur Colony",
+                "BHADOHI - 221401, U.P., INDIA",
             ],
         },
         {
             icon: Phone,
-            title: "Phone",
-            details: ["+91 89605 00991", "+91 63071 16564"],
+            title: "Sales Contact",
+            details: [
+                "Mr. Sandeep Jaiswal: +91-9335723032",
+                "Mr. Suryansh Jaiswal: +91-7007596907",
+                "Head Office: Ms. Varnika Jaiswal: +91-9918022212",
+            ],
         },
         {
             icon: Mail,
             title: "Email",
-            details: ["srijanfabs@gmail.com", "support@srijanfabs.com"],
+            details: ["himalayacarpetsindia@gmail.com"],
         },
         {
             icon: Clock,
             title: "Business Hours",
-            details: [
-                "Monday - Saturday: 10AM - 9PM",
-                "Sunday: Closed",
-            ],
+            details: ["Monday - Friday: 9AM - 7PM", "Saturday: 10AM - 6PM", "Sunday: Closed"],
         },
     ];
 
+    // use Effetc For Scroll 
+    useEffect(() => {
+        if (window.location.hash === "#contact-us-form") {
+            document.getElementById("contact-us-form")?.scrollIntoView({ behavior: "smooth" });
+        }
+    }, []);
     return (
         <div className="bg-white">
             {/* Header */}
             <section className="bg-[rgb(83,62,45)] py-12">
                 <div className="container mx-auto px-4">
                     <h1 className="text-3xl md:text-4xl font-bold text-white text-center">
-                        Contact Us
+                        Contact
                     </h1>
                 </div>
             </section>
@@ -78,22 +83,14 @@ const ContactUs = () => {
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {contactInfo.map((info, index) => (
-                            <div
-                                key={index}
-                                className="border border-gray-200 p-4"
-                            >
+                            <div key={index} className="border border-gray-200 p-4">
                                 <div className="flex items-center mb-3">
                                     <info.icon className="w-5 h-5 text-[rgb(83,62,45)] mr-2" />
-                                    <h3 className="font-bold text-[rgb(83,62,45)]">
-                                        {info.title}
-                                    </h3>
+                                    <h3 className="font-bold text-[rgb(83,62,45)]">{info.title}</h3>
                                 </div>
                                 <div>
                                     {info.details.map((detail, idx) => (
-                                        <p
-                                            key={idx}
-                                            className="text-foreground text-sm mb-1"
-                                        >
+                                        <p key={idx} className="text-foreground text-sm mb-1">
                                             {detail}
                                         </p>
                                     ))}
@@ -105,7 +102,7 @@ const ContactUs = () => {
             </section>
 
             {/* Contact Form */}
-            <section className="py-8 md:py-12 bg-gray-100">
+            <section className="py-8 md:py-12 bg-gray-100" id="contact-us-form">
                 <div className="container mx-auto px-4">
                     <div className="max-w-3xl mx-auto">
                         <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-6 text-center">
@@ -115,16 +112,12 @@ const ContactUs = () => {
                         {/* Success message */}
                         {success && (
                             <div className="bg-green-100 text-green-800 text-sm p-3 mb-4 rounded">
-                                Message sent successfully! We'll get back to you
-                                shortly.
+                                Message sent successfully! We'll get back to you shortly.
                             </div>
                         )}
 
                         {/* Form */}
-                        <form
-                            onSubmit={handleSubmit(onSubmit)}
-                            className="bg-white p-6 border border-gray-200"
-                        >
+                        <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-6 border border-gray-200">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 {/* Full Name */}
                                 <div>
@@ -138,11 +131,7 @@ const ContactUs = () => {
                                         className="w-full px-3 py-2 border border-gray-300 text-foreground"
                                         placeholder="Enter your full name"
                                     />
-                                    {errors.name && (
-                                        <p className="text-red-500 text-xs">
-                                            {errors.name.message}
-                                        </p>
-                                    )}
+                                    {errors.name && <p className="text-red-500 text-xs">{errors.name.message}</p>}
                                 </div>
 
                                 {/* Email */}
@@ -162,20 +151,14 @@ const ContactUs = () => {
                                         className="w-full px-3 py-2 border border-gray-300 text-foreground"
                                         placeholder="Enter your email"
                                     />
-                                    {errors.email && (
-                                        <p className="text-red-500 text-xs">
-                                            {errors.email.message}
-                                        </p>
-                                    )}
+                                    {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 {/* Phone */}
                                 <div>
-                                    <label className="block text-sm font-medium text-foreground mb-1">
-                                        Phone Number
-                                    </label>
+                                    <label className="block text-sm font-medium text-foreground mb-1">Phone Number</label>
                                     <input
                                         type="tel"
                                         {...register("phone")}
@@ -186,45 +169,29 @@ const ContactUs = () => {
 
                                 {/* Subject */}
                                 <div>
-                                    <label className="block text-sm font-medium text-foreground mb-1">
-                                        Subject *
-                                    </label>
+                                    <label className="block text-sm font-medium text-foreground mb-1">Subject *</label>
                                     <select
                                         {...register("subject", {
                                             required: "Subject is required",
                                         })}
                                         className="w-full px-3 py-2 border border-gray-300 text-foreground"
                                     >
-                                        <option value="">
-                                            Select a subject
-                                        </option>
-                                        <option value="general">
-                                            General Inquiry
-                                        </option>
-                                        <option value="support">
-                                            Customer Support
-                                        </option>
-                                        <option value="business">
-                                            Business Partnership
-                                        </option>
-                                        <option value="feedback">
-                                            Feedback
-                                        </option>
-                                        <option value="other">Other</option>
+                                        <option value="">Select a subject</option>
+                                        <option value="bulk-buy">Bulk Buy</option>
+                                        <option value="general">General Inquiry</option>
+                                        <option value="support">Customer Support</option>
+                                        <option value="business">Business / Export Enquiry</option>
+                                        <option value="sample-request">Sample / Design Request</option>
+                                        <option value="custom-order">Custom Order</option>
+                                        <option value="feedback">Feedback</option>
                                     </select>
-                                    {errors.subject && (
-                                        <p className="text-red-500 text-xs">
-                                            {errors.subject.message}
-                                        </p>
-                                    )}
+                                    {errors.subject && <p className="text-red-500 text-xs">{errors.subject.message}</p>}
                                 </div>
                             </div>
 
                             {/* Message */}
                             <div className="mb-4">
-                                <label className="block text-sm font-medium text-foreground mb-1">
-                                    Message *
-                                </label>
+                                <label className="block text-sm font-medium text-foreground mb-1">Message *</label>
                                 <textarea
                                     {...register("message", {
                                         required: "Message is required",
@@ -233,11 +200,7 @@ const ContactUs = () => {
                                     className="w-full px-3 py-2 border border-gray-300 text-foreground"
                                     placeholder="Tell us how we can help you..."
                                 />
-                                {errors.message && (
-                                    <p className="text-red-500 text-xs">
-                                        {errors.message.message}
-                                    </p>
-                                )}
+                                {errors.message && <p className="text-red-500 text-xs">{errors.message.message}</p>}
                             </div>
 
                             {/* Submit */}
@@ -253,84 +216,58 @@ const ContactUs = () => {
                 </div>
             </section>
 
-            {/* Google Map */}
-            <section className="py-8 md:py-12">
+            {/* Google Map (search by address) */}
+            <section className="py-8 md:py-12 ">
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3606.708686065877!2d83.0116613!3d25.313989799999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398e2f5d8c42cc95%3A0xa297ce88e3ca6c74!2sSrijan%20Fabs%20-%20Banarasi%20Sarees%2C%20Banarasi%20Dupattas%20%2C%20Banarasi%20Suits!5e0!3m2!1sen!2sin!4v1751363487509!5m2!1sen!2sin"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3604.6006584085976!2d82.59422917438361!3d25.384697024082673!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398fde78ffef9bd1%3A0x330b0009b0b2fc26!2sHimalaya%20Concepts!5e0!3m2!1sen!2sin!4v1750658104862!5m2!1sen!2sin"
                     allowFullScreen=""
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    className="border-0 w-full h-[300px]"
+                    className="w-full h-84"
                 ></iframe>
             </section>
 
             {/* FAQ */}
             <section className="py-8 md:py-12 bg-gray-100">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-6 text-center">
-                        Frequently Asked Questions
-                    </h2>
+                    <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-6 text-center">Frequently Asked Questions</h2>
                     <div className="max-w-3xl mx-auto space-y-4">
                         {[
                             {
                                 question: "What are your shipping options?",
-                                answer: "We offer standard shipping of 4-6 working days excluding holidays and festivals.",
+                                answer: "We offer standard shipping across India; timelines depend on the order size and destination. For international shipments, lead times vary — please contact sales for details.",
+                            },
+                            {
+                                question: "Do you accept custom carpet orders?",
+                                answer: "Yes — we specialise in custom designs, sizes and backing. Contact our sales team with your requirements and samples for a quote.",
                             },
                             {
                                 question: "What is your return policy?",
-                                answer: "We offer no return policy unless there is a manufacturing defect. Return or exchange is only done if the wrong product is received.",
+                                answer: "Returns are accepted only for manufacturing defects or if the wrong product was shipped. Please inspect items on arrival and contact us immediately if there's an issue.",
                             },
                             {
-                                question:
-                                    "Is the product the same as it looks on the website?",
-                                answer: "Yes—the products and fabrics are exactly as shown on the website. Some minor variations may occur due to lighting or photography.",
+                                question: "How can I request samples?",
+                                answer: "Sample requests are welcome. Please use the contact form (subject: 'Sample / Design Request') or call our sales contacts for faster assistance.",
                             },
                             {
-                                question:
-                                    "Do you have Banarasi sarees with real zari? What is the cost?",
-                                answer: "Yes, we do. Prices vary depending on weaving technique and fabric. For detailed options and pricing, please call us at 8960500991 or 6307116564.",
+                                question: "What are your monthly production capacities?",
+                                answer: "Approximate monthly capacity: Tufted carpets ~5000 sqm, Handloom rugs ~5000 sqm, Hand-knotted ~2000 sqm.",
                             },
                             {
-                                question: "Do sarees include the blouse piece?",
-                                answer: "Yes—every saree from Srijan Fabs includes a matching blouse piece.",
+                                question: "How should I care for my carpet?",
+                                answer: "Regular vacuuming, spot-cleaning with mild detergent, and professional cleaning for deep care. Avoid prolonged exposure to direct sunlight and moisture.",
                             },
                             {
-                                question:
-                                    "What are the dimensions of your sarees?",
-                                answer: `Standard dimensions are:
-                                        • Length: 5.4 – 5.6 m (212 – 236″)  
-                                        • Width: 1.1 – 1.17 m (44 – 46″)  
-                                        • Blouse piece: 0.8 – 1 m (31 – 39″)  
-                                        There may be minor variations. For exact measurements, send us a product photo and we’ll measure it for you.`,
-                            },
-                            {
-                                question:"How should I care for and store the sarees?",
-                                answer: "Our Banarasi sarees are pure handwoven silk. We recommend professional dry-cleaning only. Avoid moisture, direct heat on zari, and any contact with perfume.",
-                            },
-                            {
-                                question:"What are the shipping charges in India?",
-                                answer: "Shipping in India is free.",
+                                question: "How long does customization take?",
+                                answer: "Custom finishes (like special fringes or tassels) typically add 2–4 working days depending on order size. We'll confirm exact lead times when you place the order.",
                             },
                             {
                                 question: "How can I track my order?",
-                                answer: "Once your order ships, you’ll receive a tracking number via email or WhatsApp. You can also check its status in your order history on our site.",
-                            },
-                            {
-                                question:"What if I have a requirement that’s not listed here?",
-                                answer: "We’re happy to help with custom needs! Call us at 8960500991 or 6307116564 and we’ll assist you.",
-                            },
-                            {
-                                question:"Will my order take longer if I choose the Fall Pico and Tassel option?",
-                                answer: "Yes—the Fall Pico & Tassel customization adds approximately 2–3 extra days, as each piece is finished with extra care.",
+                                answer: "Once your order ships, you'll receive shipment/tracking details via email. For export shipments we provide AWB/BL details to track the consignment.",
                             },
                         ].map((faq, index) => (
-                            <div
-                                key={index}
-                                className="bg-white p-4 border border-gray-200"
-                            >
-                                <h3 className="font-bold text-[rgb(83,62,45)] mb-2">
-                                    {faq.question}
-                                </h3>
+                            <div key={index} className="bg-white p-4 border border-gray-200">
+                                <h3 className="font-bold text-[rgb(83,62,45)] mb-2">{faq.question}</h3>
                                 <p className="text-foreground">{faq.answer}</p>
                             </div>
                         ))}
@@ -341,48 +278,21 @@ const ContactUs = () => {
             {/* Social Links */}
             <section className="py-8 md:py-12 bg-[rgb(83,62,45)]">
                 <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-                        Connect With Us
-                    </h2>
-                    <p className="text-white mb-6">
-                        Follow us on social media for updates and exclusive
-                        offers
-                    </p>
+                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Connect With Us</h2>
+                    <p className="text-white mb-6">Follow us on social media for updates and export / product news</p>
                     <div className="flex justify-center space-x-4">
-                        <a href="https://www.facebook.com/share/16oA9AL3Bn/" target="_blank">
-                            <FaFacebook
-                                size={30}
-                                className="text-white cursor-pointer"
-                                
-                            />
+                        <a href="https://www.facebook.com/himalayacarpets" target="_blank" rel="noreferrer">
+                            <FaFacebook size={30} className="text-white cursor-pointer" />
                         </a>
-                        <a href="https://www.linkedin.com/company/srijan-fabs/" target="_blank">
-                            <FaLinkedin
-                                size={30}
-                                className="text-white cursor-pointer"
-                                
-                            />
+                        <a href="https://www.linkedin.com/company/himalayacarpets" target="_blank" rel="noreferrer">
+                            <FaLinkedin size={30} className="text-white cursor-pointer" />
                         </a>
-                        <a href="https://pin.it/4Y8ChoBph" target="_blank">
-                            <FaPinterest
-                                size={30}
-                                className="text-white cursor-pointer"
-                                
-                            />
+                        <a href="https://pin.it/" target="_blank" rel="noreferrer">
+                            <FaPinterest size={30} className="text-white cursor-pointer" />
                         </a>
-
-                        <a href="https://www.instagram.com/srijanfabs/" target="_blank">
-                            <BsInstagram
-                                size={30}
-                                className="text-white cursor-pointer"
-                            />
+                        <a href="https://www.instagram.com/himalaya.carpets/" target="_blank" rel="noreferrer">
+                            <BsInstagram size={30} className="text-white cursor-pointer" />
                         </a>
-
-{/* 
-                        {
-                                   icon: BsInstagram,
-                                   link: "https://www.instagram.com/srijanfabs/"
-                                } */}
                     </div>
                 </div>
             </section>

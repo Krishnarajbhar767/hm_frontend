@@ -63,7 +63,7 @@ function StylingTips() {
                             Tag us on Instagram with #YourBrandStyle to be
                             featured on our page
                         </p>
-                        <button href="https://www.instagram.com/srijanfabs/" className=" text-foreground px-6 py-2 rounded-lg font-medium  transition-colors bg-white border border-transparent hover:bg-transparent hover:border-white hover:text-white">
+                        <button href="https://www.instagram.com/himalayacarpetsindia/" className=" text-foreground px-6 py-2 rounded-lg font-medium  transition-colors bg-white border border-transparent hover:bg-transparent hover:border-white hover:text-white">
                             Follow Us
                         </button>
                     </div>

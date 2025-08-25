@@ -130,8 +130,8 @@ const PrintableComponent = ({ receipt, printRef }) => {
                     <p className="font-semibold text-base">
                         Thank you for shopping with us!
                     </p>
-                    <p className="text-gray-700">Srijan Fabs Pvt. Ltd.</p>
-                    <p className="text-gray-700">Contact: +91 89605 00991</p>
+                    <p className="text-gray-700">Himalaya Carpets Pvt. Ltd.</p>
+                    <p className="text-gray-700">Contact: +919918022212</p>
                 </div>
             </div>
         </div>

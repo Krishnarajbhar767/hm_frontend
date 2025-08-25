@@ -2,8 +2,11 @@ import React, { lazy, Suspense } from "react";
 import { Route } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import Loader from "../components/common/Loader";
+
 // Lazy load public pages
 const Home = lazy(() => import("../pages/public/home/Home"));
+const MakeYourOwnRugsPage = lazy(() => import("../pages/public/custom rug/MakeYourOwnRugsPage"));
+
 const SignUp = lazy(() => import("../pages/public/signup/SignUp"));
 const Login = lazy(() => import("../pages/public/login/Login"));
 const ResetPassword = lazy(() =>
@@ -56,7 +59,7 @@ const PublicRoutes = (
                 </Suspense>
             }
         />
-        
+
         <Route
             path="/sign-up"
             element={
@@ -171,6 +174,14 @@ const PublicRoutes = (
             element={
                 <Suspense fallback={<Loader />}>
                     <Cart />
+                </Suspense>
+            }
+        />
+        <Route
+            path="/make-your-own-rug"
+            element={
+                <Suspense fallback={<Loader />}>
+                    <MakeYourOwnRugsPage />
                 </Suspense>
             }
         />

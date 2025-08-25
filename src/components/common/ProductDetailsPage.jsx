@@ -42,9 +42,8 @@ const Breadcrumb = ({ product }) => (
         <Link to="/">Home</Link>
         <span>/</span>
         <Link
-            to={`/products/${slugify(product.category.name, { lower: true })}/${
-                product.category._id
-            }`}
+            to={`/products/${slugify(product.category.name, { lower: true })}/${product.category._id
+                }`}
         >
             {product.category.name}
         </Link>
@@ -150,7 +149,7 @@ function ProductDetailsPage() {
                 <ProductFeatures product={product} />
                 <CareInstructions />
                 {/* <SuggestedProducts products={relatedProducts} /> */}
-                <StylingTips />
+                {/* <StylingTips /> */}
                 <DeliveryTimeline />
 
                 {isZoomed && (

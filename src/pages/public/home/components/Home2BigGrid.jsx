@@ -2,29 +2,29 @@ import React from "react";
 import { motion } from "motion/react";
 import Heading from "./Heading";
 import SubHeading from "./SubHeading";
-import Banner1 from "../../../../assets/images/Home/Home2BigGrid/SF_772x772_1.jpg";
-import Banner2 from "../../../../assets/images/Home/Home2BigGrid/SF_772x772_2.jpg";
+import Banner1 from "../../../../assets/images/Home/Home2BigGrid/HC_772x772_2.jpg";
+import Banner2 from "../../../../assets/images/Home/Home2BigGrid/HC_772x772.jpg_1.jpg";
 function Home2BigGrid() {
     const data = [
         {
-            image: "https://srijanfabs.co.in/images/products/Burnt-Maroon-pure-double-katan-silk-handloom-banarasi-saree-1754118730892-876753721.jpg",
-            text: "Saree",
+            image: Banner1,
+            text: "Carpets",
         },
         {
-            image: "https://srijanfabs.co.in/images/products/Burnt-Maroon-pure-double-katan-silk-handloom-banarasi-saree-1754118730892-491009305.jpg",
-            text: "Duppata",
+            image: Banner2,
+            text: "Rugs",
         },
     ];
     return (
         <div className="boxedContainer lg:px-15 px-5 w-full py-4  h-auto  overflow-x-hidden ">
             <div className="md:mb-14 mb-10 mt-4">
                 <div>
-                    <Heading text={"The art of draping, reimagined for you"} />
+                    <Heading text={"Crafted for Every Corner"} />
                 </div>
                 <div className="mt-2">
                     <SubHeading
                         text={
-                            "Step into the world where tradition meets trend,discover your perfect drape, again and again."
+                            "Discover Our Dual Collections, Each Woven with Purpose and Personality."
                         }
                     />
                 </div>
@@ -37,6 +37,7 @@ function Home2BigGrid() {
                             key={index}
                             src={item.image}
                             alt="Sarees"
+                            loading='lazy'
                             className="w-full h-[50vh] md:h-[100vh] object-cover object-top  hover:scale-[101%] transition-all ease-linear duration-200 shadow-sm  border border-gray-200 "
                         />
                         {/* <h1 className="absolute top-[85%] md:top-[90%]  left-[5%] text-xl font-medium text-white uppercase">

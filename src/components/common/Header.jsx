@@ -7,7 +7,7 @@ import Search from "./Search";
 import LoginSidebar from "./LoginSidebar";
 import CartSidebar from "./CartSidebar";
 import { setStepCount } from "../../redux/slices/cartSlice";
-import LOGO from "../../assets/images/logo/SRIJAN FABS PNG VERTICAL.png";
+import LOGO from "../../assets/images/logo/HIMALAYA_CARPET_WHITE.png";
 
 const HEADER_HEIGHT = 80; // Matches Himalaya Carpet's height (h-20)
 
@@ -121,19 +121,19 @@ function Header() {
 
 
     // 30 july change this line
-   useEffect(() => {
-    const unsubscribe = scrollY.on("change", (currentY) => {
-        const diff = currentY - lastScrollY.current;
-        if (diff > 5 && currentY > HEADER_HEIGHT) {
-            setShowHeader(false);
-        } else if (diff < -5) {
-            setShowHeader(true);
-        }
-        lastScrollY.current = currentY;
-    });
+    useEffect(() => {
+        const unsubscribe = scrollY.on("change", (currentY) => {
+            const diff = currentY - lastScrollY.current;
+            if (diff > 5 && currentY > HEADER_HEIGHT) {
+                setShowHeader(false);
+            } else if (diff < -5) {
+                setShowHeader(true);
+            }
+            lastScrollY.current = currentY;
+        });
 
-    return () => unsubscribe(); // clean up on unmount
-}, [scrollY]);
+        return () => unsubscribe(); // clean up on unmount
+    }, [scrollY]);
 
 
     // Motion variants for header animation
@@ -231,7 +231,7 @@ function Header() {
                         <Link to="/" className="flex-shrink-0 mr-48">
                             <img
                                 src={LOGO}
-                                alt="Srijan Fab Logo"
+                                alt="Himalaya carpets Fab Logo"
                                 className="h-12 sm:h-16 w-auto object-contain"
                             />
                         </Link>
@@ -404,8 +404,8 @@ function Header() {
                                         >
                                             <svg
                                                 className={`w-4 h-4 transition-transform duration-300 ${openSubmenu === link.title
-                                                        ? "rotate-180"
-                                                        : ""
+                                                    ? "rotate-180"
+                                                    : ""
                                                     }`}
                                                 fill="none"
                                                 stroke="currentColor"

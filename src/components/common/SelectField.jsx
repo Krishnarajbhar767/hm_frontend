@@ -62,11 +62,10 @@ const SelectField = ({
             </select>
             <label
                 htmlFor={name}
-                className={`absolute capitalize px-2 z-10 bg-white left-3 transition-all duration-200 ${
-                    isFocused || hasValue
-                        ? "top-0 text-xs text-black"
-                        : "top-1/2 text-base text-gray-600"
-                } transform -translate-y-1/2`}
+                className={`absolute capitalize px-2 z-10 bg-white left-3 transition-all duration-200 ${isFocused || hasValue
+                    ? "top-0 text-xs text-black"
+                    : "top-1/2 text-base text-gray-600"
+                    } transform -translate-y-1/2`}
             >
                 {label}
             </label>

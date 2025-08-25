@@ -1,12 +1,11 @@
 import React, { useMemo, Suspense } from "react";
 import HomeHeroSlider from "./components/HomeHeroSlider";
 import Second_Slider from "./components/Second_Slider";
-import Banner1 from "../../../assets/images/slider/SF_BNNR_1920X1080.jpg_1.jpg";
-import Banner2 from "../../../assets/first_slider_images/2.jpg";
-import Banner3 from "../../../assets/images/slider/SF_BNNR_1920X1080.jpg_3.jpg";
-import Banner4 from "../../../assets/images/slider/SF_BNNR_1920X1080_4.jpg";
-import Slide2Banner1 from "../../../assets/images/slider2/SF_BNNR_1920X1080_5.jpg";
-import Slide2Banner2 from "../../../assets/images/slider2/SF_BNNR_1920X1080_6.jpg";
+import Banner1 from "../../../assets/images/slider/HC_1920X1080.jpg_1.jpg";
+import Banner2 from "../../../assets/images/slider/HC_1920X1080.jpg_2.jpg";
+import Banner3 from "../../../assets/images/slider/HC_1920X1080.jpg_3.jpg";
+import Slide2Banner1 from "../../../assets/images/slider2/HC_1920X1080_2_a.jpg";
+import Slide2Banner2 from "../../../assets/images/slider2/HC_1920X1080_2_b.jpg";
 import Loader from "../../../components/common/Loader";
 
 // Lazy-load heavy sections
@@ -17,46 +16,54 @@ const WhyChooseUs = React.lazy(() => import("./components/WhyChooseUs"));
 const Home3Grid = React.lazy(() => import("./components/Home3Grid"));
 const HomeVideo = React.lazy(() => import("./components/HomeVideo"));
 const Home2BigGrid = React.lazy(() => import("./components/Home2BigGrid"));
+const HomeAbout = React.lazy(() => import("./components/HomeAbout"));
 const HomeOneImageOnly = React.lazy(() =>
     import("./components/HomeOneImageOnly")
 );
 const HomeLetsExplore = React.lazy(() =>
     import("./components/HomeLetsExplore")
 );
+const LegalityPolicyPage = React.lazy(() =>
+    import("./components/LegalityPolicyPage")
+);
+
+const HomeTeam = React.lazy(() =>
+    import("./components/HomeTeam")
+);
+const HomeTestimonials = React.lazy(() =>
+    import("./components/HomeTestimonials")
+);
+const HomeMakeYourOwnRugs = React.lazy(() =>
+    import("./components/HomeMakeYourOwnRugs")
+);
 
 // Fallback loader
 // const Loader = () => <div className="py-8 text-center">Loading section...</div>;
 
 function Home() {
-    // Regal & Elegant “”
+    // Himalaya Carpets  Slider Data 
     const sliderData1 = useMemo(
         () => [
             {
-                // image: Banner1,
-                image:"https://srijanfabs.co.in/images/products/Dark-purple-pure-katan-silk-handwoven-banarasi-saree-1754117651469-227701216.jpg",
-                heading: "Bandhej Beauties",
-                subheading: "Handwoven Elegance",
-                slug:"/products/saree-silk-saree/687649168f700c1b0a46e479",
+                image: Banner1,
+                heading: "Elegance Beneath Your Feet",
+                subheading: "Handwoven Luxury Carpets",
                 paragraph:
-                    "Born from the hands of artisans, dyed with heritage, and draped in joy—discover Bandhej sarees that brighten every moment.",
+                    "Transform your home with artisanal carpets that blend tradition with timeless design. Every weave tells a story of heritage.",
             },
             {
-                // image: Banner2,
-                image:"https://srijanfabs.co.in/images/products/Dark-purple-pure-katan-silk-handwoven-banarasi-saree-1754117651470-558170356.jpg",
-                heading: "Regal & Elegant",
-                subheading: "Modern Roots in Classic Weaves",
-                slug:"/collection/pure-katan-silk/687645658f700c1b0a46e381",
+                image: Banner2,
+                heading: "Crafted for Comfort",
+                subheading: "Designs that Define Spaces",
                 paragraph:
-                    "Woven like royalty, draped like destiny—this Katan silk saree is a crown passed down in threads.",
+                    "From minimalist to majestic, our carpets are made to elevate your interiors — comfort and style woven together.",
             },
             {
-                // image: Banner3,
-                image: "https://srijanfabs.co.in/images/products/Dark-purple-pure-katan-silk-handwoven-banarasi-saree-1754117651470-583994614.jpg",
-                heading: "Crafted with Heart",
-                subheading: "From Loom to Love",
-                slug:"/products/saree-silk-saree/687649168f700c1b0a46e479",
+                image: Banner3,
+                heading: "Art You Can Walk On",
+                subheading: "Where Tradition Meets Innovation",
                 paragraph:
-                    "Each piece is more than fabric — it’s an emotion. Woven by hands, worn with pride. Discover sarees that feel like home.",
+                    "Our carpets are more than décor, they’re masterpieces made by skilled hands, tailored to the modern lifestyle.",
             },
         ],
         []
@@ -65,22 +72,18 @@ function Home() {
     const sliderData2 = useMemo(
         () => [
             {
-                // image: Slide2Banner2,
-                image:"https://srijanfabs.co.in/images/products/Dark-purple-pure-katan-silk-handwoven-banarasi-saree-1754117651470-973276601.jpg",
-                heading: "Silk That Dances in Duo",
-                subheading: "Modern Roots in Classic Weaves",
-                slug:"collection/pure-katan-silk/687645658f700c1b0a46e381",
+                image: Slide2Banner1,
+                heading: "Elegance Beneath Your Feet",
+                subheading: "Handwoven Luxury Carpets",
                 paragraph:
-                    "Draped in pure Katan silk, two muses mirror grace and grandeur. Their synchronized style whispers tales of heritage in every fold",
+                    "Transform your home with artisanal carpets that blend tradition with timeless design. Every weave tells a story of heritage.",
             },
             {
-                // image: Slide2Banner1,
-                image:"https://srijanfabs.co.in/images/products/Dark-purple-pure-katan-silk-handwoven-banarasi-saree-1754117651470-673522574.jpg",
-                heading: "Tie me to my roots,Dye me in drama",
-                subheading: "Handwoven Elegance",
-                slug:"products/saree-silk-saree/687649168f700c1b0a46e479",
+                image: Slide2Banner2,
+                heading: "Crafted for Comfort",
+                subheading: "Designs that Define Spaces",
                 paragraph:
-                    "A riot of color wrapped in centuries of tradition—Bandhej is your cultural comeback. Drape it, flaunt it, remix it—because heritage never goes out of style",
+                    "From minimalist to majestic, our carpets are made to elevate your interiors — comfort and style woven together.",
             },
         ],
         []
@@ -93,8 +96,13 @@ function Home() {
 
             {/* Sections */}
             <Suspense fallback={<Loader />} >
-                <Home3Grid />
+                <HomeAbout />
                 <HomeVideo />
+                <Home3Grid />  {/* Basically Its Hold 6 Cards Of Data*/}
+                <HomeMakeYourOwnRugs />
+                <LegalityPolicyPage />
+                <HomeTeam />
+                <HomeTestimonials />
                 <Home2BigGrid />
             </Suspense>
 
@@ -103,7 +111,7 @@ function Home() {
             </div>
 
 
-            
+
             <Suspense fallback={<Loader />}>
                 <HomeOneImageOnly />
                 <HomeSection4 />
