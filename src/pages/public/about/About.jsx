@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Certifications from "../../../components/common/Certification";
+
 
 const StatsSection = () => {
     const stats = [
@@ -10,15 +12,15 @@ const StatsSection = () => {
     ];
 
     return (
-        <section className="py-8 bg-gray-100">
+        <section className="py-12 bg-gray-100">
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {stats.map((stat, index) => (
-                        <div key={index} className="text-center p-4">
-                            <p className="text-3xl font-bold text-[rgb(83,62,45)]">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    {stats.map((stat, i) => (
+                        <div key={i} className="text-center">
+                            <p className="text-4xl font-extrabold text-[rgb(83,62,45)]">
                                 {stat.number}
                             </p>
-                            <p className="text-foreground">{stat.label}</p>
+                            <p className="text-gray-600">{stat.label}</p>
                         </div>
                     ))}
                 </div>
@@ -26,48 +28,56 @@ const StatsSection = () => {
         </section>
     );
 };
+
 
 const TeamSection = () => {
     const teamMembers = [
         {
             name: "Mr. Sandeep Jaiswal",
             role: "Sales Contact",
-            image: "https://source.unsplash.com/200x200/?person,1",
+            phone: "+91-9335723032",
+            image: "/team/sandeep.jpg", // Replace with actual image path
         },
         {
             name: "Mr. Suryansh Jaiswal",
             role: "Sales Contact",
-            image: "https://source.unsplash.com/200x200/?person,2",
+            phone: "+91-7007596907",
+            image: "/team/suryansh.jpg",
         },
         {
             name: "Ms. Varnika Jaiswal",
             role: "Head Office Contact",
-            image: "https://source.unsplash.com/200x200/?person,3",
+            phone: "+91-9918022212",
+            image: "/team/varnika.jpg",
         },
     ];
-
     return (
-        <section className="py-8 md:py-12">
+        <section className="py-16 bg-white">
             <div className="container mx-auto px-4">
-                <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-4 text-center">
-                    Our Team
+                <h2 className="text-3xl md:text-4xl font-bold text-[rgb(83,62,45)] mb-4 text-center">
+                    Meet Our Team
                 </h2>
-                <p className="text-center text-foreground mb-8 italic max-w-2xl mx-auto">
+                <p className="text-center text-gray-600 mb-12 italic max-w-2xl mx-auto">
                     “A family-led team combining deep domain expertise with modern
                     R&D to deliver high-quality handmade carpets for global markets.”
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                    {teamMembers.map((member, index) => (
-                        <div key={index} className="text-center">
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    {teamMembers.map((member, i) => (
+                        <div
+                            key={i}
+                            className="bg-gray-50 shadow-md rounded-xl p-6 text-center transform transition hover:-translate-y-2 hover:shadow-xl"
+                        >
                             <img
                                 src={member.image}
                                 alt={member.name}
-                                className="w-32 h-32 object-cover rounded-full mx-auto mb-4"
+                                className="w-32 h-32 object-cover rounded-full mx-auto mb-4 border-4 border-[rgb(83,62,45)]"
                             />
-                            <h3 className="font-bold text-[rgb(83,62,45)]">
+                            <h3 className="font-bold text-lg text-[rgb(83,62,45)]">
                                 {member.name}
                             </h3>
-                            <p className="text-foreground">{member.role}</p>
+                            <p className="text-gray-600">{member.role}</p>
+                            <p className="text-sm text-gray-500 mt-1">{member.phone}</p>
                         </div>
                     ))}
                 </div>
@@ -75,6 +85,11 @@ const TeamSection = () => {
         </section>
     );
 };
+
+
+
+
+
 
 const AboutUs = () => {
     return (
@@ -82,208 +97,132 @@ const AboutUs = () => {
             {/* Header */}
             <section className="bg-[rgb(83,62,45)] py-12">
                 <div className="container mx-auto px-4">
-                    <h1 className="text-3xl md:text-4xl font-bold text-white text-center">
+                    <h1 className="text-4xl font-bold text-white text-center">
                         About Himalaya Carpets
                     </h1>
                 </div>
             </section>
 
-            {/* Company Overview */}
-            <section className="py-8 md:py-12">
-                <div className="container mx-auto px-4">
-                    <div className="max-w-3xl mx-auto">
-                        <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-4">
-                            Indian Craftsmanship — Global Reach
-                        </h2>
-                        <p className="text-foreground mb-6">
-                            Himalaya Carpets is an Indian government-recognised export
-                            house engaged in the manufacture and export of all types of
-                            handmade carpets. Our promoters and management have a long
-                            track-record of delivering excellent quality carpets that
-                            reflect the latest trends in home décor.
-                            <br />
-                            <br />
-                            We have a strong in-house R&amp;D team and designers who work
-                            closely with clients to develop and deliver bespoke and
-                            series-production carpets. We strive for high customer
-                            satisfaction through stringent quality control, ethical
-                            production and competitive pricing.
-                        </p>
+            {/* About */}
+            <section className="py-12">
+                <div className="container mx-auto px-4 max-w-4xl">
+                    <h2 className="text-3xl font-bold text-[rgb(83,62,45)] mb-4">
+                        Who We Are
+                    </h2>
+                    <p className="text-gray-700 leading-relaxed mb-6">
+                        Himalaya Carpets is an Indian government-recognised export
+                        house engaged in the manufacture and export of all types of
+                        handmade carpets. With decades of experience, our promoters
+                        have built a reputation for delivering excellent quality
+                        products that reflect the latest trends in home décor.
+                    </p>
+                    <p className="text-gray-700 leading-relaxed">
+                        Backed by a strong R&D team and in-house designers, we work
+                        closely with clients to create both bespoke and series
+                        production carpets. Our commitment is to ensure high customer
+                        satisfaction through stringent quality control, ethical
+                        manufacturing, and competitive pricing.
+                    </p>
+                </div>
+            </section>
 
-                        <h3 className="text-lg font-semibold text-[rgb(83,62,45)] mb-3">
-                            Our Clients & Fairs
-                        </h3>
-                        <p className="text-foreground mb-4">
-                            Himalaya Carpets has an international presence — we exhibit
-                            regularly at prominent fairs including Domotex and CEPC,
-                            and serve wholesalers and multi-store retailers across
-                            Europe and the Americas. Notable clients include Jaunty
-                            Inc., Limited Edition, Afridi Gallery and Cabib Genova
-                            Saraswati Rugs.
-                        </p>
+            {/* Clients */}
+            <section className="py-12 bg-gray-100">
+                <div className="container mx-auto px-4 max-w-4xl">
+                    <h2 className="text-3xl font-bold text-[rgb(83,62,45)] mb-4">
+                        Our Clients & Fairs
+                    </h2>
+                    <p className="text-gray-700 mb-4">
+                        Himalaya Carpets has an international presence and actively
+                        participates in Indian Carpet Fairs and prestigious
+                        international events like Domotex and CEPC. Our primary
+                        markets include Europe and America, where we collaborate with
+                        wholesalers and multi-store retailers.
+                    </p>
+                    <ul className="list-disc list-inside text-gray-700">
+                        <li>Jaunty Inc.</li>
+                        <li>Limited Edition</li>
+                        <li>Afridi Gallery</li>
+                        <li>Cabib Genova Saraswati Rugs</li>
+                    </ul>
+                </div>
+            </section>
 
-                        <h3 className="text-lg font-semibold text-[rgb(83,62,45)] mb-3">
-                            Factory & Capabilities
-                        </h3>
-                        <p className="text-foreground">
-                            We operate large manufacturing campuses with in-house
-                            looms, processing, finishing and drying chambers to ensure
-                            consistent quality even during adverse weather. Our key
-                            production capacities (approx. monthly):
-                        </p>
-                        <ul className="list-disc list-inside text-foreground mt-3">
-                            <li>Tufted carpets: ~5000 sqm</li>
-                            <li>Handloom rugs: ~5000 sqm</li>
-                            <li>Hand-knotted carpets: ~2000 sqm</li>
-                        </ul>
-                    </div>
+            {/* Factory */}
+            <section className="py-12">
+                <div className="container mx-auto px-4 max-w-4xl">
+                    <h2 className="text-3xl font-bold text-[rgb(83,62,45)] mb-4">
+                        Our Factory & Capabilities
+                    </h2>
+                    <ul className="list-disc list-inside text-gray-700 space-y-2">
+                        <li>3 campuses spread over 2 acres for different carpet qualities</li>
+                        <li>In-house looms of multiple types</li>
+                        <li>Dedicated drying chambers for all-weather production</li>
+                        <li>In-house weaving, processing & finishing</li>
+                        <li>Strong R&D and design team</li>
+                    </ul>
+                    <h3 className="mt-6 text-xl font-semibold text-[rgb(83,62,45)]">
+                        Production Capacity (per month)
+                    </h3>
+                    <ul className="list-disc list-inside text-gray-700">
+                        <li>Tufted carpets – 5000 sqm</li>
+                        <li>Handloom rugs – 5000 sqm</li>
+                        <li>Hand-knotted carpets – 2000 sqm</li>
+                    </ul>
                 </div>
             </section>
 
             {/* Stats */}
             <StatsSection />
 
-            {/* Mission & Vision */}
-            <section className="py-8 md:py-12">
-                <div className="container mx-auto px-4">
-                    <div className="max-w-3xl mx-auto">
-                        <div className="mb-8">
-                            <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-4">
-                                Our Mission
-                            </h2>
-                            <p className="text-foreground">
-                                To craft and export high-quality handmade carpets by
-                                blending traditional techniques with modern product
-                                innovation — ensuring customer satisfaction through
-                                consistent quality and customised solutions.
-                            </p>
-                        </div>
-                        <div>
-                            <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-4">
-                                Our Vision
-                            </h2>
-                            <p className="text-foreground">
-                                To be a trusted global partner for premium handmade
-                                carpets—recognized for craftsmanship, timely delivery,
-                                ethical practices and design leadership.
-                            </p>
-                        </div>
-                    </div>
+            {/* Products */}
+            <section className="py-12 bg-gray-100">
+                <div className="container mx-auto px-4 max-w-4xl">
+                    <h2 className="text-3xl font-bold text-[rgb(83,62,45)] mb-4">
+                        Our Product Range
+                    </h2>
+                    <ul className="list-disc list-inside text-gray-700 space-y-1">
+                        <li>Hand knotted – 3/20 to 10/50 quality</li>
+                        <li>Hand woven rugs</li>
+                        <li>Hand tufted rugs</li>
+                        <li>Handloom rugs</li>
+                        <li>Flatweaves</li>
+                        <li>Dhurries</li>
+                        <li>Louri back & Gabbeh</li>
+                        <li>Indoor/Outdoor Polyester Rugs</li>
+                    </ul>
                 </div>
             </section>
 
-            {/* Core Values */}
-            <section className="py-8 md:py-12 bg-gray-100">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-6 text-center">
-                        Our Core Values
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                        {[
-                            {
-                                title: "Quality First",
-                                desc: "Stringent QC across weaving, processing and finishing to deliver products you can trust.",
-                            },
-                            {
-                                title: "Design & R&D",
-                                desc: "In-house designers and R&D focused on market-relevant collections and bespoke client requests.",
-                            },
-                            {
-                                title: "Sustainable Practices",
-                                desc: "Responsible sourcing and production processes to limit environmental impact.",
-                            },
-                            {
-                                title: "Customer Collaboration",
-                                desc: "Close client collaboration — from samples to final production and shipment.",
-                            },
-                            {
-                                title: "Scale & Reliability",
-                                desc: "Multiple production campuses and dedicated facilities for consistent output and delivery.",
-                            },
-                            {
-                                title: "Export Excellence",
-                                desc: "Focused on compliance and timely exports to European and American markets.",
-                            },
-                        ].map((val, i) => (
-                            <div key={i} className="bg-white p-6 border border-gray-200">
-                                <h3 className="font-bold text-lg text-[rgb(83,62,45)] mb-2">
-                                    {val.title}
-                                </h3>
-                                <p className="text-foreground">{val.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
+            {/* Certifications */}
+            <Certifications />
 
             {/* Team */}
             <TeamSection />
 
-            {/* Timeline & Factory Features */}
-            <section className="py-8 md:py-12 bg-gray-100">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-2xl md:text-3xl font-bold text-[rgb(83,62,45)] mb-6 text-center">
-                        Our Journey & Facilities
-                    </h2>
-                    <div className="max-w-3xl mx-auto space-y-6">
-                        {[
-                            {
-                                year: "Started",
-                                title: "Established as a family-led manufacturer",
-                                desc: "Built on traditional expertise, expanding over decades to serve international markets.",
-                            },
-                            {
-                                year: "Facilities",
-                                title: "Multiple production campuses",
-                                desc: "Three large campuses with dedicated looms, drying chambers and finishing godowns to ensure year-round production.",
-                            },
-                            {
-                                year: "Exports & Fairs",
-                                title: "Global participation",
-                                desc: "Regular participation in Domotex and other international fairs; strong client relationships in Europe & the USA.",
-                            },
-                        ].map((event, i) => (
-                            <div key={i} className="flex flex-col md:flex-row">
-                                <div className="md:w-1/4 font-bold text-[rgb(83,62,45)] mb-2 md:mb-0">
-                                    {event.year}
-                                </div>
-                                <div className="md:w-3/4">
-                                    <h3 className="font-bold text-foreground mb-1">
-                                        {event.title}
-                                    </h3>
-                                    <p className="text-foreground">{event.desc}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
             {/* CTA */}
-            <section className="py-8 md:py-12 bg-[rgb(83,62,45)]">
-                <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+            <section className="py-12 bg-[rgb(83,62,45)] text-center text-white">
+                <div className="container mx-auto px-4">
+                    <h2 className="text-3xl font-bold mb-4">
                         Partner with Himalaya Carpets
                     </h2>
-                    <p className="text-white mb-6 max-w-2xl mx-auto">
-                        For custom production, samples or export enquiries — our team
+                    <p className="mb-6 max-w-2xl mx-auto">
+                        For custom production, samples or export enquiries, our team
                         is ready to collaborate. We deliver quality, scale and
                         on-time exports.
                     </p>
-                    <div className="space-y-4 md:space-y-0 md:space-x-4">
+                    <div className="space-x-4">
                         <Link
-                            to={'/products/all/685a6381e6c33dcf91fa54d0'}
-                            className="inline-block bg-white text-[rgb(83,62,45)] px-6 py-2 font-medium"
+                            to="/products/all/685a6381e6c33dcf91fa54d0"
+                            className="bg-white text-[rgb(83,62,45)] px-6 py-2 font-medium rounded"
                         >
                             Explore Products
                         </Link>
-                        <Link to={'/contact'}>
-                            <a
-
-                                className="inline-block bg-transparent border border-white text-white px-6 py-2 font-medium"
-                            >
-                                Contact Us
-                            </a>
+                        <Link
+                            to="/contact"
+                            className="border border-white px-6 py-2 font-medium rounded"
+                        >
+                            Contact Us
                         </Link>
                     </div>
                 </div>

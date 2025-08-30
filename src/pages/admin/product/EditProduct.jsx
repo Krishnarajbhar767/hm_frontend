@@ -111,7 +111,7 @@ const EditProduct = () => {
             name: product.name ?? "",
             description: product.description ?? "",
             price: product.price ?? 0,
-            psft: product.psft ?? "",
+
             category: String(product.category?._id ?? product.category ?? ""),
             stock: product.stock ?? 0,
             fabric: String(product?.fabric?._id ?? product?.fabric ?? ""), // fabric as material
@@ -234,7 +234,6 @@ const EditProduct = () => {
             const prepared = {
                 ...data,
                 price: Number(data.price),
-                psft: data.psft === "" ? null : Number(data.psft),
                 stock: Number(data.stock),
                 offerDiscount: Number(data.offerDiscount ?? 0),
                 isOfferAplied: data.isOfferAplied === "true" || data.isOfferAplied === true,
@@ -326,14 +325,7 @@ const EditProduct = () => {
                 />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <InputField
-                        label="Price per sqft (e.g., 700)"
-                        type="number"
-                        name="psft"
-                        register={register}
-                        errors={errors}
-                        rules={{ required: "Price per sqft is required" }}
-                    />
+
                     <InputField
                         label="Stock"
                         name="stock"

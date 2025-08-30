@@ -489,8 +489,10 @@ function ShoppingBag({
             return;
         }
         try {
+
             const response = await axiosInstance.post("/user/coupon/apply", {
                 couponCode: coupon,
+                user_id: user._id
             });
             const discountPercent = response.data; // Assuming API returns a number (e.g., 10 for 10%)
             if (typeof discountPercent === "number" && discountPercent > 0) {

@@ -193,10 +193,7 @@ export default function ProductInfo({ product, onAddToCart, onShare }) {
 
 
 
-                {/* Carpet-specific fields from your schema */}
-                <p>
-                    <strong>Price per sqft (psft):</strong> {product.psft ?? "N/A"}
-                </p>
+
 
                 <p>
                     <strong>Material :</strong> {product?.fabric?.title ?? "N/A"}

@@ -1,5 +1,4 @@
-import React, { useRef } from "react";
-import { FALLPICO_PRICE, TASSELLS_PRICE } from "../../../Constant";
+import React from "react";
 
 const PrintableComponent = ({ receipt, printRef }) => {
     const formatINR = (amount) =>
@@ -11,13 +10,9 @@ const PrintableComponent = ({ receipt, printRef }) => {
 
     const calculateItemTotal = (item) => {
         const basePrice = item?.price || 0;
-        const addOns =
-            (item?.withFallPico ? FALLPICO_PRICE : 0) +
-            (item?.withTassels ? TASSELLS_PRICE : 0);
-        const finalPricePerUnit = basePrice + addOns;
         return {
-            finalPricePerUnit,
-            total: finalPricePerUnit * item?.quantity,
+            finalPricePerUnit: basePrice,
+            total: basePrice * (item?.quantity || 0),
         };
     };
 
@@ -32,6 +27,7 @@ const PrintableComponent = ({ receipt, printRef }) => {
                 ref={printRef}
                 className="mt-6 p-6 bg-white shadow-lg rounded text-sm font-sans"
             >
+                {/* Header */}
                 <div className="border-b pb-4 mb-4">
                     <h2 className="text-2xl font-bold mb-1">Order Receipt</h2>
                     <p className="text-gray-600">Order ID: {receipt?.id}</p>
@@ -40,6 +36,7 @@ const PrintableComponent = ({ receipt, printRef }) => {
                     </p>
                 </div>
 
+                {/* Customer Info */}
                 <div className="mb-6 capitalize">
                     <h3 className="text-lg font-semibold">Customer Info</h3>
                     <p>
@@ -54,22 +51,19 @@ const PrintableComponent = ({ receipt, printRef }) => {
                     <p>
                         <strong>Address:</strong>{" "}
                         {receipt?.shippingAddress
-                            ? `${receipt?.shippingAddress?.street}, ${receipt?.shippingAddress?.city}, ${receipt?.shippingAddress?.postalCode},${receipt?.shippingAddress?.state}, ${receipt?.shippingAddress?.country}`
+                            ? `${receipt?.shippingAddress?.street}, ${receipt?.shippingAddress?.city}, ${receipt?.shippingAddress?.postalCode}, ${receipt?.shippingAddress?.state}, ${receipt?.shippingAddress?.country}`
                             : "N/A"}
                     </p>
                 </div>
 
+                {/* Order Items */}
                 <div className="mb-6">
                     <h3 className="text-lg font-semibold mb-2">Order Items</h3>
                     <table className="min-w-full table-auto border border-gray-300 text-xs sm:text-sm">
                         <thead className="bg-gray-100">
                             <tr>
-                                <th className="border p-2 text-left">
-                                    Product
-                                </th>
+                                <th className="border p-2 text-left">Product</th>
                                 <th className="border p-2">Qty</th>
-                                <th className="border p-2">With Fall Pico</th>
-                                <th className="border p-2">With Tassels</th>
                                 <th className="border p-2">Unit Price</th>
                                 <th className="border p-2">Total</th>
                             </tr>
@@ -87,16 +81,6 @@ const PrintableComponent = ({ receipt, printRef }) => {
                                             {item?.quantity}
                                         </td>
                                         <td className="border p-2">
-                                            {item?.withFallPico
-                                                ? `Yes +₹${FALLPICO_PRICE}`
-                                                : "No"}
-                                        </td>
-                                        <td className="border p-2">
-                                            {item?.withTassels
-                                                ? `Yes +₹${TASSELLS_PRICE}`
-                                                : "No"}
-                                        </td>
-                                        <td className="border p-2">
                                             {formatINR(finalPricePerUnit)}
                                         </td>
                                         <td className="border p-2">
@@ -109,6 +93,7 @@ const PrintableComponent = ({ receipt, printRef }) => {
                     </table>
                 </div>
 
+                {/* Summary */}
                 <div className="text-right mb-6">
                     <p>
                         <strong>Amount (Inclusive of 5% GST):</strong>{" "}
@@ -126,6 +111,7 @@ const PrintableComponent = ({ receipt, printRef }) => {
                     </p>
                 </div>
 
+                {/* Footer */}
                 <div className="border-t pt-4 text-center text-sm">
                     <p className="font-semibold text-base">
                         Thank you for shopping with us!

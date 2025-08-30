@@ -8,8 +8,10 @@ import LoginSidebar from "./LoginSidebar";
 import CartSidebar from "./CartSidebar";
 import { setStepCount } from "../../redux/slices/cartSlice";
 import LOGO from "../../assets/images/logo/HIMALAYA_CARPET_WHITE.png";
-
+import { FaFacebookF, FaInstagram, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+import { IoMdCall } from "react-icons/io";
 const HEADER_HEIGHT = 80; // Matches Himalaya Carpet's height (h-20)
+const TOP_BAR_HEIGHT = 40; // Height for the top bar
 
 function Header() {
     // Refs & Redux selectors
@@ -81,8 +83,8 @@ function Header() {
             title: "Collection",
             path: "/collection",
             subLinks: optimisedFabricsLinks,
-        }
-        // { title: "About Us", path: "/about" },
+        },
+        { title: "Gallery", path: "/gallery " },
         // { title: "Contact", path: "/contact" },
     ];
 
@@ -119,12 +121,10 @@ function Header() {
     const [showHeader, setShowHeader] = useState(true);
     const lastScrollY = useRef(0);
 
-
-    // 30 july change this line
     useEffect(() => {
         const unsubscribe = scrollY.on("change", (currentY) => {
             const diff = currentY - lastScrollY.current;
-            if (diff > 5 && currentY > HEADER_HEIGHT) {
+            if (diff > 5 && currentY > HEADER_HEIGHT + TOP_BAR_HEIGHT) {
                 setShowHeader(false);
             } else if (diff < -5) {
                 setShowHeader(true);
@@ -135,18 +135,91 @@ function Header() {
         return () => unsubscribe(); // clean up on unmount
     }, [scrollY]);
 
-
     // Motion variants for header animation
     const headerVariants = {
         visible: { y: 0, transition: { duration: 0.3 } },
-        hidden: { y: `-100%`, transition: { duration: 0.3 } },
+        hidden: { y: `-${TOP_BAR_HEIGHT + HEADER_HEIGHT}px`, transition: { duration: 0.3 } },
     };
 
     return (
         <>
             {/* Spacer to prevent content overlap */}
-            <div style={{ height: HEADER_HEIGHT }} aria-hidden="true" />
+            <div style={{ height: HEADER_HEIGHT + TOP_BAR_HEIGHT }} aria-hidden="true" />
 
+            {/* Top Bar */}
+            <motion.div
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                variants={headerVariants}
+                className="fixed top-0 left-0 right-0 z-50 bg-foreground text-white h-10 flex items-center justify-between px-4 sm:px-10"
+            >
+                <div className="flex items-center gap-2">
+                    <a
+                        href="https://facebook.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Facebook"
+                        className="hover:text-primary transition-colors"
+                    >
+                        <FaFacebookF className="w-5 h-5" />
+                    </a>
+                    <a
+                        href="https://instagram.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Instagram"
+                        className="hover:text-primary transition-colors"
+                    >
+                        <FaInstagram className="w-5 h-5" />
+                    </a>
+                    <a
+                        href="https://twitter.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Twitter"
+                        className="hover:text-primary transition-colors"
+                    >
+                        <FaTwitter className="w-5 h-5" />
+                    </a>
+                    <a
+                        href="https://linkedin.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="LinkedIn"
+                        className="hover:text-primary transition-colors"
+                    >
+                        <FaLinkedin className="w-5 h-5" />
+                    </a>
+                </div>
+                {/* <div className="flex items-center gap-2">
+                    <Link to="/" className="text-white text-sm font-semibold">
+                        HIMALAYA CARPETS
+                    </Link>
+                </div> */}
+                <div className="flex items-center gap-2">
+                    <a
+                        href="tel:9918022212"
+                        aria-label="Call us"
+                        className="hover:text-primary transition-colors"
+                    >
+
+
+                        <IoMdCall className="w-5 h-5" />
+                    </a>
+                    <a
+                        href="https://wa.me/919918022212?text=Hello%20Team%20Himalaya%20Carpets%2C%20I%20hope%20you%27re%20doing%20well.%20I%20would%20like%20to%20get%20in%20touch%20regarding%20your%20services."
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="WhatsApp us"
+                        className="hover:text-primary transition-colors"
+                    >
+                        <FaWhatsapp className="w-5 h-5" />
+                    </a>
+                </div>
+            </motion.div>
+
+            {/* Main Header */}
             <AnimatePresence>
                 {showHeader && (
                     <motion.header
@@ -155,7 +228,7 @@ function Header() {
                         animate="visible"
                         exit="hidden"
                         variants={headerVariants}
-                        className="fixed top-0 left-0 right-0 z-50 bg-white text-foreground px-4 sm:px-10 h-20 shadow border-b border-gray-300 flex items-center justify-between"
+                        className="fixed top-[40px] left-0 right-0 z-50 bg-white text-foreground px-4 sm:px-10 h-20 shadow border-b border-gray-300 flex items-center justify-between"
                     >
                         {/* Desktop Nav (md and up) */}
                         <nav className="hidden md:flex gap-6 text-foreground font-medium text-sm lg:text-[14px] tracking-wide uppercase">

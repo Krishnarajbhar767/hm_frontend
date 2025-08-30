@@ -168,15 +168,7 @@ const AddProduct = () => {
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                    <InputField
-                        label="Price per sqft (e.g., 700)"
-                        type="number"
-                        name="psft"
-                        min={0}
-                        register={register}
-                        errors={errors}
-                        rules={{ required: "Price per sqft is required" }}
-                    />
+
                     <InputField
                         label="Stock"
                         name="stock"

@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiHome, FiBox, FiGrid, FiUsers, FiShoppingCart } from "react-icons/fi";
 import { GiClothes } from "react-icons/gi";
 import { BiSolidOffer, BiSolidCoupon } from "react-icons/bi";
+import { GiRolledCloth } from "react-icons/gi";
+import { FaRegNewspaper } from "react-icons/fa6";
 
 import { useMemo } from "react";
 
@@ -37,7 +39,7 @@ function AdminAccountDashboard() {
 
     const navItems = useMemo(() => {
         return [
-            { path: "home-ui", label: "Home Ui", icon: <FiHome size={20} /> },
+
             { path: "overview", label: "Overview", icon: <FiHome size={20} /> },
             { path: "products", label: "Products", icon: <FiBox size={20} /> },
             {
@@ -54,7 +56,7 @@ function AdminAccountDashboard() {
             {
                 path: "meterials",
                 label: "meterial",
-                icon: <GiClothes size={20} />,
+                icon: <GiRolledCloth size={20} />,
             },
             {
                 path: "offers",
@@ -69,7 +71,7 @@ function AdminAccountDashboard() {
             {
                 path: "newsletters",
                 label: "newsletters",
-                icon: <BiSolidCoupon size={20} />,
+                icon: <FaRegNewspaper size={20} />,
             },
         ];
     }, []);
@@ -94,8 +96,8 @@ function AdminAccountDashboard() {
                         <Link
                             to={`/admin/${item.path}`}
                             className={`relative flex items-center gap-2 px-4 py-3 text-sm font-medium uppercase transition-colors duration-300 whitespace-nowrap ${location.pathname === `/admin/${item.path}`
-                                    ? "text-gray-800"
-                                    : "text-gray-600 hover:text-gray-800"
+                                ? "text-gray-800"
+                                : "text-gray-600 hover:text-gray-800"
                                 }`}
                         >
                             {item.icon}
@@ -131,9 +133,9 @@ function AdminAccountDashboard() {
                                 <Link
                                     to={`/admin/${item.path}`}
                                     className={`flex items-center gap-3 px-4 py-3 text-base font-medium uppercase rounded-md transition-all duration-300 ${location.pathname ===
-                                            `/admin/${item.path}`
-                                            ? "bg-gray-800 text-white shadow-sm"
-                                            : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
+                                        `/admin/${item.path}`
+                                        ? "bg-gray-800 text-white shadow-sm"
+                                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
                                         }`}
                                 >
                                     {item.icon}

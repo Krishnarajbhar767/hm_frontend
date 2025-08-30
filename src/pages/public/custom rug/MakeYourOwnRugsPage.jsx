@@ -249,6 +249,25 @@ function MakeYourOwnRugsPage() {
                         {errors.material && <p className="text-red-500 text-xs mt-1 capitalize">{errors.material.message}</p>}
                     </div>
                     <div>
+
+                        {/* Using SelectField component for size preference */}
+                        <SelectField
+                            label="Shape"
+                            name="shape"
+                            register={register}
+                            errors={errors}
+                            rules={{ required: "shape is required" }}
+                            options={[
+                                { value: "", label: "Select a shape", disabled: true },
+                                { value: "rectangle", label: "Rectangle" },
+                                { value: "square", label: "Square" },
+                                { value: "round", label: "Round" },
+                                { value: "oval", label: "Oval" },
+                                { value: "runner", label: "Runner" },
+                                { value: "others", label: "Others Shape" },
+                            ]}
+                        />
+
                         {/* Using InputField component for color palette */}
                         <InputField
                             label="Preferred Color Palette"

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Quote, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Quote, ChevronLeft, ChevronRight } from "lucide-react";
 
 function HomeTestimonials() {
     const testimonials = [
@@ -30,12 +30,9 @@ function HomeTestimonials() {
     // Auto-play functionality
     useEffect(() => {
         const interval = setInterval(() => {
-            setCurrentIndex((prevIndex) =>
-                (prevIndex + 1) % testimonials.length
-            );
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
         }, 5000); // Change testimonial every 5 seconds
-
-        return () => clearInterval(interval); // Clean up on component unmount
+        return () => clearInterval(interval);
     }, [testimonials.length]);
 
     const goToPrevious = () => {
@@ -45,19 +42,18 @@ function HomeTestimonials() {
     };
 
     const goToNext = () => {
-        setCurrentIndex((prevIndex) =>
-            (prevIndex + 1) % testimonials.length
-        );
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
     };
 
     const currentTestimonial = testimonials[currentIndex];
 
     return (
-        <div className="container mx-auto px-4 py-0  max-w-7xl">
-            <div className="bg-white rounded-lg p-6 md:p-10 text-center relative"> {/* Added relative for positioning navigation */}
+        <div className="container mx-auto px-4 py-0 max-w-7xl">
+            <div className="bg-white rounded-lg p-6 md:p-10 text-center relative overflow-hidden">
                 <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-0 md:mb-8">
                     What Our Clients Say
                 </h2>
+
                 <div className="max-w-3xl mx-auto flex items-center justify-center">
                     {/* Previous Button */}
                     <button
@@ -69,7 +65,14 @@ function HomeTestimonials() {
                     </button>
 
                     {/* Testimonial Content */}
-                    <div className="bg-cream p-6 rounded-lg text-left flex flex-col items-center justify-center min-h-[250px] md:min-h-[200px] lg:min-h-[180px] w-full transition-opacity duration-500 ease-in-out">
+                    <div className="bg-cream p-6 rounded-lg flex flex-col items-center justify-center w-full transition-opacity duration-500 ease-in-out shadow-lg">
+                        {/* Image */}
+                        <img
+                            src={`https://picsum.photos/seed/${currentIndex}/120`} // Random image per testimonial
+                            alt={currentTestimonial.clientName}
+                            className="w-20 h-20 rounded-full object-cover mb-4 border-4 border-white shadow-md"
+                        />
+
                         <Quote className="w-8 h-8 text-foreground mb-4 opacity-70" />
                         <p className="text-foreground italic mb-4 leading-relaxed text-center">
                             "{currentTestimonial.quote}"
@@ -100,7 +103,7 @@ function HomeTestimonials() {
                         <button
                             key={index}
                             onClick={() => setCurrentIndex(index)}
-                            className={`w-3 h-3 rounded-full ${currentIndex === index ? 'bg-foreground' : 'bg-gray-300'
+                            className={`w-3 h-3 rounded-full ${currentIndex === index ? "bg-foreground" : "bg-gray-300"
                                 } transition-colors duration-300`}
                             aria-label={`Go to testimonial ${index + 1}`}
                         ></button>

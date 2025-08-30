@@ -1,48 +1,70 @@
 import React from "react";
 import { motion } from "motion/react";
+import { useNavigate } from "react-router-dom";
 import Heading from "./Heading";
 import SubHeading from "./SubHeading";
-import Banner1 from "../../../../assets/images/Home/Home2BigGrid/HC_772x772_2.jpg";
-import Banner2 from "../../../../assets/images/Home/Home2BigGrid/HC_772x772.jpg_1.jpg";
-function Home2BigGrid() {
-    const data = [
+
+// Example images (replace with your event banners)
+// import HumptexImg from "../../../../assets/images/events/humptex.jpg";
+// import CEPCImg from "../../../../assets/images/events/cepc.jpg";
+// import DomotexImg from "../../../../assets/images/events/domotex.jpg";
+
+function EventsSection() {
+    const navigate = useNavigate();
+
+    const events = [
         {
-            image: Banner1,
-            text: "Carpets",
+            image: 'https://picsum.photos/600/600',
+            text: "Humptex",
+            link: "/gallery",
         },
         {
-            image: Banner2,
-            text: "Rugs",
+            image: 'https://picsum.photos/600/600',
+            text: "CEPC",
+            link: "/gallery",
+        },
+        {
+            image: 'https://picsum.photos/600/600',
+            text: "Domotex",
+            link: "/gallery",
         },
     ];
+
     return (
-        <div className="boxedContainer lg:px-15 px-5 w-full py-4  h-auto  overflow-x-hidden ">
-            <div className="md:mb-14 mb-10 mt-4">
-                <div>
-                    <Heading text={"Crafted for Every Corner"} />
-                </div>
+        <div className="boxedContainer lg:px-15 px-5 w-full py-12 overflow-x-hidden">
+            {/* Heading */}
+            <div className="md:mb-14 mb-10 mt-4 text-center">
+                <Heading text={"Our Events"} />
                 <div className="mt-2">
                     <SubHeading
                         text={
-                            "Discover Our Dual Collections, Each Woven with Purpose and Personality."
+                            "Explore highlights from our major exhibitions and global showcases."
                         }
                     />
                 </div>
             </div>
-            <div className="grid md:grid-cols-2 grid-cols-1 gap-4 ">
-                {data.map((item, index) => (
-                    <div className="relative">
+
+            {/* Events Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {events.map((event, index) => (
+                    <div
+                        key={index}
+                        className="relative cursor-pointer group overflow-hidden border border-gray-200 shadow-sm"
+                        onClick={() => navigate(event.link)}
+                    >
                         <motion.img
-                            whileTap={{ scale: 0.95 }}
-                            key={index}
-                            src={item.image}
-                            alt="Sarees"
-                            loading='lazy'
-                            className="w-full h-[50vh] md:h-[100vh] object-cover object-top  hover:scale-[101%] transition-all ease-linear duration-200 shadow-sm  border border-gray-200 "
+                            whileTap={{ scale: 0.97 }}
+                            src={event.image}
+                            alt={event.text}
+                            loading="lazy"
+                            className="w-full h-[50vh] object-cover object-center transition duration-300 ease-in-out group-hover:scale-105"
                         />
-                        {/* <h1 className="absolute top-[85%] md:top-[90%]  left-[5%] text-xl font-medium text-white uppercase">
-                            {item.text}
-                        </h1> */}
+                        {/* Overlay */}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <h2 className="text-white text-2xl font-semibold uppercase tracking-wide">
+                                {event.text}
+                            </h2>
+                        </div>
                     </div>
                 ))}
             </div>
@@ -50,4 +72,4 @@ function Home2BigGrid() {
     );
 }
 
-export default Home2BigGrid;
+export default EventsSection;

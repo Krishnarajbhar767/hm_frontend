@@ -2,9 +2,11 @@ import React, { lazy, Suspense } from "react";
 import { Route } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import Loader from "../components/common/Loader";
+const GalleryPage = lazy(() => import("../pages/public/gallery/Gallery"))
 
 // Lazy load public pages
 const Home = lazy(() => import("../pages/public/home/Home"));
+
 const MakeYourOwnRugsPage = lazy(() => import("../pages/public/custom rug/MakeYourOwnRugsPage"));
 
 const SignUp = lazy(() => import("../pages/public/signup/SignUp"));
@@ -156,6 +158,14 @@ const PublicRoutes = (
             element={
                 <Suspense fallback={<Loader />}>
                     <ShippingPolicy />
+                </Suspense>
+            }
+        />
+        <Route
+            path="/gallery"
+            element={
+                <Suspense fallback={<Loader />}>
+                    <GalleryPage />
                 </Suspense>
             }
         />

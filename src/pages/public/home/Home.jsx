@@ -7,6 +7,7 @@ import Banner3 from "../../../assets/images/slider/HC_1920X1080.jpg_3.jpg";
 import Slide2Banner1 from "../../../assets/images/slider2/HC_1920X1080_2_a.jpg";
 import Slide2Banner2 from "../../../assets/images/slider2/HC_1920X1080_2_b.jpg";
 import Loader from "../../../components/common/Loader";
+import Certifications from "../../../components/common/Certification";
 
 // Lazy-load heavy sections
 const HomeSection4 = React.lazy(() =>
@@ -101,6 +102,7 @@ function Home() {
                 <Home3Grid />  {/* Basically Its Hold 6 Cards Of Data*/}
                 <HomeMakeYourOwnRugs />
                 <LegalityPolicyPage />
+                <Certifications />
                 <HomeTeam />
                 <HomeTestimonials />
                 <Home2BigGrid />
@@ -113,7 +115,7 @@ function Home() {
 
 
             <Suspense fallback={<Loader />}>
-                <HomeOneImageOnly />
+
                 <HomeSection4 />
                 <HomeLetsExplore />
                 <WhyChooseUs />
