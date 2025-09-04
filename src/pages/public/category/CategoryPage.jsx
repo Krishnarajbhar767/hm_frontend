@@ -2,111 +2,13 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import SidebarFilter from "../../../components/common/SidebarFilter";
 import { Star, Filter, Grid, List, ChevronDown } from "lucide-react";
+import ProductCard from "./ProductCard";
 // Removed: import { Img } from 'react-image';
 
 // Memoized ProductImage component for lazy loading
-const ProductImage = React.memo(({ src, alt, _id }) => {
-    return (
-        <div className="relative w-full h-full cursor-pointer">
-            <img
-                loading="lazy"
-                src={src || "/Product_Placeholder.webp"}
-                alt={alt}
 
-                className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-102"
-            />
-        </div>
-    );
-});
 
-// Memoized ProductCard component to prevent re-renders
-const ProductCard = React.memo(({ product, viewMode, navigate, renderStars }) => (
-    <Link
-        to={`/product/${product._id}`}
 
-        className={`capitalize group cursor-pointer bg-white border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-300 rounded-lg overflow-hidden h-full ${viewMode === "list" ? "flex" : "flex flex-col"
-            }`}
-    >
-        <div
-            className={`relative overflow-hidden bg-gray-50 ${viewMode === "list" ? "w-48 flex-shrink-0" : "aspect-[4/5] h-96"
-                }`}
-        >
-            <ProductImage
-                src={product?.images?.[0]}
-                alt={product?.name}
-                _id={product?._id}
-            />
-
-            {product.stock < 10 && product.stock > 0 && (
-                <div className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-medium">
-                    Only {product.stock} left
-                </div>
-            )}
-            {product.stock === 0 && (
-                <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium">
-                    Out Of stock
-                </div>
-            )}
-        </div>
-
-        <div className="p-4 flex flex-col flex-1 space-y-3">
-            <h3
-
-                className="text-lg font-semibold text-foreground line-clamp-2 group-hover:text-foreground transition-colors cursor-pointer"
-            >
-                {product.name}
-            </h3>
-            <p className="text-sm text-foreground line-clamp-2 leading-relaxed">
-                {product.description ||
-                    "Premium quality product with excellent craftsmanship."}
-            </p>
-            <div className="flex justify-between items-center">
-                <div className="space-y-1">
-                    <p className="text-xl font-bold text-foreground">
-                        ₹
-                        {product.price?.toLocaleString() ||
-                            "N/A"}
-                    </p>
-                    {product.originalPrice &&
-                        product.originalPrice >
-                        product.price && (
-                            <p className="text-sm text-foreground line-through">
-                                ₹
-                                {product.originalPrice.toLocaleString()}
-                            </p>
-                        )}
-                </div>
-                <div className="text-right">
-                    <p className="text-sm text-foreground">
-                        Stock:{" "}
-                        {product.stock || "N/A"}
-                    </p>
-                </div>
-            </div>
-            <div className="grid grid-cols-3 gap-2 text-xs text-foreground bg-gray-50 p-3 rounded-lg">
-                <div>
-                    <span className="font-medium">
-                        Fabric:
-                    </span>{" "}
-                    {product.fabric?.title ||
-                        "N/A"}
-                </div>
-                <div>
-                    <span className="font-medium capitalize">
-                        Color:
-                    </span>{" "}
-                    {product.color || "N/A"}
-                </div>
-            </div>
-            <Link
-                to={`/product/${product._id}`}
-                className="mt-auto block w-full text-center bg-foreground text-white py-3 px-4 rounded-lg hover:bg-foreground/90 transition-colors duration-200 font-medium"
-            >
-                View Details
-            </Link>
-        </div>
-    </Link>
-));
 
 
 function CategoryPage() {
@@ -250,7 +152,7 @@ function CategoryPage() {
                                 {categoryDetails?.name.replace(/-/g, " ") ||
                                     displayCategory.replace(/-/g, " ")}
                             </h1>
-                            <p className="text-lg text-foreground max-w-2xl mx-auto leading-relaxed">
+                            <p className="text-lg text-foreground max-w-2xl mx-auto leading-relaxed px-4  text-center sm:text-center ">
                                 {categoryDetails?.description}
                             </p>
                             <div className="flex items-center justify-center gap-2 text-sm text-foreground">
@@ -365,22 +267,10 @@ function CategoryPage() {
                                 </p>
                             </div>
                         ) : (
-                            <div
-                                className={`grid gap-6 ${viewMode === "grid"
-                                    ? "grid-cols-1 sm:grid-cols-3 auto-rows-fr"
-                                    : "grid-cols-1"
-                                    }`}
-                            >
-                                {filteredProducts.map((product) => (
-                                    <ProductCard
-                                        key={product._id}
-                                        product={product}
-                                        viewMode={viewMode}
-                                        navigate={navigate}
-                                        renderStars={renderStars}
-                                    />
-                                ))}
-                            </div>
+                            <ProductGrid
+                                products={filteredProducts}
+                                viewMode={viewMode}
+                                navigate={navigate} />
                         )}
                     </div>
                 </div>
@@ -390,3 +280,29 @@ function CategoryPage() {
 }
 
 export default CategoryPage;
+
+
+
+const ProductGrid = React.memo(({ products, viewMode, navigate }) => {
+
+
+
+    if (!products || products.length === 0) return null;
+
+
+    return (
+        <div className={`grid px-4  gap-6  ${viewMode === "grid"
+            ? "grid-cols-1 sm:grid-cols-3 auto-rows-fr px-4"
+            : "grid-cols-1"}`}>
+
+            {products.map((product) => (
+                <ProductCard
+                    key={product._id}
+                    product={product}
+                    viewMode={viewMode}
+                    navigate={navigate}
+                />
+            ))}
+        </div>
+    );
+});

@@ -10,12 +10,16 @@ import { setStepCount } from "../../redux/slices/cartSlice";
 import LOGO from "../../assets/images/logo/HIMALAYA_CARPET_WHITE.png";
 import { FaFacebookF, FaInstagram, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import { IoMdCall } from "react-icons/io";
+
 const HEADER_HEIGHT = 80; // Matches Himalaya Carpet's height (h-20)
 const TOP_BAR_HEIGHT = 40; // Height for the top bar
 
 function Header() {
     // Refs & Redux selectors
     const headerRef = useRef(null);
+    const menuRef = useRef(null); // mobile menu container ref
+    const menuButtonRef = useRef(null); // hamburger button ref
+
     const categories = useSelector(
         (state) => state?.category?.categories || []
     );
@@ -44,7 +48,6 @@ function Header() {
         });
         // Generate category links
         const navLinks = sorted.map((item) => {
-            console.log("item", item);
             const slug = slugify(item?.name || "N/A", {
                 lower: true,
                 strict: true,
@@ -141,6 +144,41 @@ function Header() {
         hidden: { y: `-${TOP_BAR_HEIGHT + HEADER_HEIGHT}px`, transition: { duration: 0.3 } },
     };
 
+    // --- Close mobile menu when clicking outside or scrolling ---
+    useEffect(() => {
+        if (!isMenuOpen) return;
+
+        const handleOutsideClick = (e) => {
+            const target = e.target;
+            // if click/touch is inside menu, do nothing
+            if (menuRef.current && menuRef.current.contains(target)) return;
+            // if click/touch is on the hamburger button, do nothing (button toggles)
+            if (menuButtonRef.current && menuButtonRef.current.contains(target)) return;
+            // otherwise close menu
+            setIsMenuOpen(false);
+        };
+
+        const handleScroll = () => {
+            if (isMenuOpen) setIsMenuOpen(false);
+        };
+
+        // listen for mouse and touch (mobile)
+        document.addEventListener("mousedown", handleOutsideClick);
+        document.addEventListener("touchstart", handleOutsideClick, { passive: true });
+        // close on any page scroll
+        window.addEventListener("scroll", handleScroll, { passive: true });
+
+        return () => {
+            document.removeEventListener("mousedown", handleOutsideClick);
+            document.removeEventListener("touchstart", handleOutsideClick);
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, [isMenuOpen]);
+
+    // computed spacing so menu sits below full header (top bar + header)
+    const menuTopPx = TOP_BAR_HEIGHT + HEADER_HEIGHT;
+    const menuMaxHeightCalc = `calc(100vh - ${menuTopPx}px)`;
+
     return (
         <>
             {/* Spacer to prevent content overlap */}
@@ -192,19 +230,13 @@ function Header() {
                         <FaLinkedin className="w-5 h-5" />
                     </a>
                 </div>
-                {/* <div className="flex items-center gap-2">
-                    <Link to="/" className="text-white text-sm font-semibold">
-                        HIMALAYA CARPETS
-                    </Link>
-                </div> */}
+
                 <div className="flex items-center gap-2">
                     <a
                         href="tel:9918022212"
                         aria-label="Call us"
                         className="hover:text-primary transition-colors"
                     >
-
-
                         <IoMdCall className="w-5 h-5" />
                     </a>
                     <a
@@ -414,9 +446,11 @@ function Header() {
 
                         {/* Hamburger (mobile only) */}
                         <button
+                            ref={menuButtonRef}
                             className="md:hidden p-1.5 focus:outline-none absolute right-4 top-1/2 -translate-y-1/2"
                             onClick={() => setIsMenuOpen((prev) => !prev)}
                             aria-label="Toggle menu"
+                            aria-expanded={isMenuOpen}
                         >
                             <svg
                                 className="w-6 h-6 text-foreground hover:text-primary transition-colors duration-300"
@@ -441,199 +475,233 @@ function Header() {
             </AnimatePresence>
 
             {/* Mobile Menu */}
-            {isMenuOpen && (
-                <nav className="fixed top-[80px] left-0 right-0 bg-white border-t border-gray-200 z-40 overflow-y-auto max-h-[calc(100vh-80px)]">
-                    <div className="flex flex-col px-4 py-3">
-                        {/* Links */}
-                        {Links.map((link) => (
-                            <div key={link.title} className="py-2">
-                                <div className="flex justify-between items-center capitalize ">
-                                    {link.subLinks ? (
-                                        <span className="text-foreground text-sm tracking-wider capitalize text-nowrap">
-                                            {link.title}
-                                        </span>
-                                    ) : (
-                                        <NavLink
-                                            to={link.path}
-                                            end
-                                            className={({ isActive }) =>
-                                                `text-foreground text-sm tracking-wider capitalize text-nowrap ${isActive
-                                                    ? "text-primary font-semibold"
-                                                    : ""
-                                                }`
-                                            }
-                                            onClick={() => setIsMenuOpen(false)}
-                                        >
-                                            {link.title}
-                                        </NavLink>
-                                    )}
-                                    {link.subLinks && (
-                                        <button
-                                            onClick={() =>
-                                                toggleSubmenu(link.title)
-                                            }
-                                            className="p-1"
-                                            aria-label={`Toggle ${link.title} submenu`}
-                                        >
-                                            <svg
-                                                className={`w-4 h-4 transition-transform duration-300 ${openSubmenu === link.title
-                                                    ? "rotate-180"
-                                                    : ""
-                                                    }`}
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth="2"
-                                                    d="M19 9l-7 7-7-7"
-                                                />
-                                            </svg>
-                                        </button>
-                                    )}
-                                </div>
+            <AnimatePresence>
+                {isMenuOpen && (
+                    <>
+                        {/* Backdrop - clicking it closes the mobile menu */}
+                        <motion.div
+                            key="mobile-backdrop"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 0.35 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="fixed inset-0 bg-black z-40"
+                            onClick={() => setIsMenuOpen(false)}
+                        />
 
-                                {link.subLinks &&
-                                    openSubmenu === link.title && (
-                                        <div className="mt-2 flex flex-col gap-2 pl-2">
-                                            {link.subLinks.map((sublink) => (
+                        <motion.nav
+                            key="mobile-menu"
+                            ref={menuRef}
+                            initial={{ y: "-6%", opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: "-6%", opacity: 0 }}
+                            transition={{ duration: 0.22, ease: "easeInOut" }}
+                            // position the menu BELOW the full header so it won't overlap logo
+                            style={{
+                                position: "fixed",
+                                left: 0,
+                                right: 0,
+                                top: `${menuTopPx}px`,
+                                maxHeight: menuMaxHeightCalc,
+                                zIndex: 50,
+                            }}
+                            className="bg-white border-t border-gray-200 overflow-y-auto"
+                        >
+                            <div className="flex flex-col px-4 py-3">
+                                {/* Links */}
+                                {Links.map((link) => (
+                                    <div key={link.title} className="py-2">
+                                        <div className="flex justify-between items-center capitalize ">
+                                            {link.subLinks ? (
+                                                <span className="text-foreground text-sm tracking-wider capitalize text-nowrap">
+                                                    {link.title}
+                                                </span>
+                                            ) : (
                                                 <NavLink
-                                                    key={sublink._id}
-                                                    to={sublink.path}
+                                                    to={link.path}
+                                                    end
                                                     className={({ isActive }) =>
-                                                        `capitalize text-xs text-nowrap text-foreground hover:text-primary px-3 py-2 rounded-md ${isActive
+                                                        `text-foreground text-sm tracking-wider capitalize text-nowrap ${isActive
                                                             ? "text-primary font-semibold"
                                                             : ""
                                                         }`
                                                     }
-                                                    onClick={() =>
-                                                        setIsMenuOpen(false)
-                                                    }
+                                                    onClick={() => setIsMenuOpen(false)}
                                                 >
-                                                    {sublink.title}
+                                                    {link.title}
                                                 </NavLink>
-                                            ))}
+                                            )}
+                                            {link.subLinks && (
+                                                <button
+                                                    onClick={() =>
+                                                        toggleSubmenu(link.title)
+                                                    }
+                                                    className="p-1"
+                                                    aria-label={`Toggle ${link.title} submenu`}
+                                                    aria-expanded={openSubmenu === link.title}
+                                                    aria-controls={`${link.title}-submenu`}
+                                                >
+                                                    <svg
+                                                        className={`w-4 h-4 transition-transform duration-300 ${openSubmenu === link.title
+                                                            ? "rotate-180"
+                                                            : ""
+                                                            }`}
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth="2"
+                                                            d="M19 9l-7 7-7-7"
+                                                        />
+                                                    </svg>
+                                                </button>
+                                            )}
                                         </div>
-                                    )}
+
+                                        {link.subLinks &&
+                                            openSubmenu === link.title && (
+                                                <div id={`${link.title}-submenu`} className="mt-2 flex flex-col gap-2 pl-2">
+                                                    {link.subLinks.map((sublink) => (
+                                                        <NavLink
+                                                            key={sublink._id}
+                                                            to={sublink.path}
+                                                            className={({ isActive }) =>
+                                                                `capitalize text-xs text-nowrap text-foreground hover:text-primary px-3 py-2 rounded-md ${isActive
+                                                                    ? "text-primary font-semibold"
+                                                                    : ""
+                                                                }`
+                                                            }
+                                                            onClick={() =>
+                                                                setIsMenuOpen(false)
+                                                            }
+                                                        >
+                                                            {sublink.title}
+                                                        </NavLink>
+                                                    ))}
+                                                </div>
+                                            )}
+                                    </div>
+                                ))}
+
+                                {/* Divider */}
+                                <div className="mt-4 border-t border-gray-200"></div>
+
+                                {/* Icons Section */}
+                                <div className="mt-4 flex flex-col gap-4">
+                                    <button
+                                        onClick={() => {
+                                            setIsSearching(true);
+                                            setIsMenuOpen(false);
+                                        }}
+                                        className="flex items-center gap-2 text-foreground hover:text-primary transition-colors"
+                                    >
+                                        <svg
+                                            className="w-5 h-5"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke="currentColor"
+                                                strokeLinecap="round"
+                                                strokeWidth="2"
+                                                d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
+                                            />
+                                        </svg>
+                                        <span className="text-sm">Search</span>
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            handleAccountClick();
+                                            setIsMenuOpen(false);
+                                        }}
+                                        className="flex items-center gap-2 text-foreground hover:text-primary transition-colors"
+                                    >
+                                        <svg
+                                            className="w-5 h-5"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke="currentColor"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0a8.949 8.949 0 0 0 4.951-1.488A3.987 3.987 0 0 0 13 16h-2a3.987 3.987 0 0 0-3.951 3.512A8.948 8.948 0 0 0 12 21Zm3-11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                            />
+                                        </svg>
+                                        <span className="text-sm">Account</span>
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            handleCartClick();
+                                            setIsMenuOpen(false);
+                                        }}
+                                        className="flex items-center gap-2 text-foreground hover:text-primary transition-colors relative"
+                                    >
+                                        <svg
+                                            className="w-5 h-5"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke="currentColor"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M9 10V6a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v4m3-2 .917 11.923A1 1 0 0 1 17.92 21H6.08a1 1 0 0 1-.997-1.077L6 8h12Z"
+                                            />
+                                        </svg>
+                                        {cartItems?.length > 0 && (
+                                            <div className="absolute top-0 right-0 -mt-1 -mr-1 h-4 w-4 rounded-full bg-primary text-xs text-white flex items-center justify-center">
+                                                {cartItems.length}
+                                            </div>
+                                        )}
+                                        <span className="text-sm">Cart</span>
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            if (location.pathname !== "/wishlist")
+                                                navigate("/wishlist");
+                                            setIsMenuOpen(false);
+                                        }}
+                                        className="flex items-center gap-2 text-foreground hover:text-primary transition-colors relative"
+                                    >
+                                        <svg
+                                            className="w-5 h-5"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke="currentColor"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"
+                                            />
+                                        </svg>
+                                        {wishlistItems?.length > 0 && (
+                                            <div className="absolute top-0 right-0 -mt-1 -mr-1 h-4 w-4 rounded-full bg-primary text-xs text-white flex items-center justify-center">
+                                                {wishlistItems.length}
+                                            </div>
+                                        )}
+                                        <span className="text-sm">Wishlist</span>
+                                    </button>
+                                </div>
                             </div>
-                        ))}
-
-                        {/* Divider */}
-                        <div className="mt-4 border-t border-gray-200"></div>
-
-                        {/* Icons Section */}
-                        <div className="mt-4 flex flex-col gap-4">
-                            <button
-                                onClick={() => {
-                                    setIsSearching(true);
-                                    setIsMenuOpen(false);
-                                }}
-                                className="flex items-center gap-2 text-foreground hover:text-primary transition-colors"
-                            >
-                                <svg
-                                    className="w-5 h-5"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeWidth="2"
-                                        d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
-                                    />
-                                </svg>
-                                <span className="text-sm">Search</span>
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    handleAccountClick();
-                                    setIsMenuOpen(false);
-                                }}
-                                className="flex items-center gap-2 text-foreground hover:text-primary transition-colors"
-                            >
-                                <svg
-                                    className="w-5 h-5"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0a8.949 8.949 0 0 0 4.951-1.488A3.987 3.987 0 0 0 13 16h-2a3.987 3.987 0 0 0-3.951 3.512A8.948 8.948 0 0 0 12 21Zm3-11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                    />
-                                </svg>
-                                <span className="text-sm">Account</span>
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    handleCartClick();
-                                    setIsMenuOpen(false);
-                                }}
-                                className="flex items-center gap-2 text-foreground hover:text-primary transition-colors relative"
-                            >
-                                <svg
-                                    className="w-5 h-5"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M9 10V6a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v4m3-2 .917 11.923A1 1 0 0 1 17.92 21H6.08a1 1 0 0 1-.997-1.077L6 8h12Z"
-                                    />
-                                </svg>
-                                {cartItems?.length > 0 && (
-                                    <div className="absolute top-0 right-0 -mt-1 -mr-1 h-4 w-4 rounded-full bg-primary text-xs text-white flex items-center justify-center">
-                                        {cartItems.length}
-                                    </div>
-                                )}
-                                <span className="text-sm">Cart</span>
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    if (location.pathname !== "/wishlist")
-                                        navigate("/wishlist");
-                                    setIsMenuOpen(false);
-                                }}
-                                className="flex items-center gap-2 text-foreground hover:text-primary transition-colors relative"
-                            >
-                                <svg
-                                    className="w-5 h-5"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"
-                                    />
-                                </svg>
-                                {wishlistItems?.length > 0 && (
-                                    <div className="absolute top-0 right-0 -mt-1 -mr-1 h-4 w-4 rounded-full bg-primary text-xs text-white flex items-center justify-center">
-                                        {wishlistItems.length}
-                                    </div>
-                                )}
-                                <span className="text-sm">Wishlist</span>
-                            </button>
-                        </div>
-                    </div>
-                </nav>
-            )}
+                        </motion.nav>
+                    </>
+                )}
+            </AnimatePresence>
 
             {/* Sidebars */}
             <AnimatePresence>

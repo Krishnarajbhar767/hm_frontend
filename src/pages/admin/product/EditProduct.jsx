@@ -324,20 +324,20 @@ const EditProduct = () => {
                     }}
                 />
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                    <InputField
-                        label="Stock"
-                        name="stock"
-                        type="number"
-                        register={register}
-                        errors={errors}
-                        rules={{
-                            required: "Stock is required",
-                            min: { value: 0, message: "Must be positive" },
-                        }}
-                    />
-                </div>
+
+                <InputField
+                    label="Stock"
+                    name="stock"
+                    type="number"
+                    register={register}
+                    errors={errors}
+                    rules={{
+                        required: "Stock is required",
+                        min: { value: 0, message: "Must be positive" },
+                    }}
+                />
+
 
                 {/* Category select (options built above) */}
                 <SelectField

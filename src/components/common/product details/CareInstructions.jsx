@@ -37,7 +37,7 @@ function CareInstructions() {
     ];
 
     return (
-        <div className="bg-white rounded-lg overflow-hidden mb-8 p-6 lg:p-8">
+        <div className="bg-white rounded-lg overflow-hidden mb-8 p-0 lg:p-8">
             <h2 className="text-2xl font-bold text-foreground mb-6">
                 Care Instructions
             </h2>

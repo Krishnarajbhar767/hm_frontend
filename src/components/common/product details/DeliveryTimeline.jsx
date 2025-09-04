@@ -26,7 +26,7 @@ function DeliveryTimeline() {
     ];
 
     return (
-        <div className="bg-white p-6 lg:p-10 rounded-lg max-w-5xl mx-auto">
+        <div className="bg-white p-0 lg:p-10 rounded-lg max-w-5xl mx-auto">
             <h2
                 className="text-2xl font-bold mb-10 text-center"
                 style={{ color: primaryColor }}
