@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Certifications from "../../../components/common/Certification";
+import HomeTeam from "../home/components/HomeTeam";
 
 
 const StatsSection = () => {
@@ -30,61 +31,7 @@ const StatsSection = () => {
 };
 
 
-const TeamSection = () => {
-    const teamMembers = [
-        {
-            name: "Mr. Sandeep Jaiswal",
-            role: "Sales Contact",
-            phone: "+91-9335723032",
-            image: "/team/sandeep.jpg", // Replace with actual image path
-        },
-        {
-            name: "Mr. Suryansh Jaiswal",
-            role: "Sales Contact",
-            phone: "+91-7007596907",
-            image: "/team/suryansh.jpg",
-        },
-        {
-            name: "Ms. Varnika Jaiswal",
-            role: "Head Office Contact",
-            phone: "+91-9918022212",
-            image: "/team/varnika.jpg",
-        },
-    ];
-    return (
-        <section className="py-16 bg-white">
-            <div className="container mx-auto px-4">
-                <h2 className="text-3xl md:text-4xl font-bold text-[rgb(83,62,45)] mb-4 text-center">
-                    Meet Our Team
-                </h2>
-                <p className="text-center text-gray-600 mb-12 italic max-w-2xl mx-auto">
-                    “A family-led team combining deep domain expertise with modern
-                    R&D to deliver high-quality handmade carpets for global markets.”
-                </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                    {teamMembers.map((member, i) => (
-                        <div
-                            key={i}
-                            className="bg-gray-50 shadow-md rounded-xl p-6 text-center transform transition hover:-translate-y-2 hover:shadow-xl"
-                        >
-                            <img
-                                src={member.image}
-                                alt={member.name}
-                                className="w-32 h-32 object-cover rounded-full mx-auto mb-4 border-4 border-[rgb(83,62,45)]"
-                            />
-                            <h3 className="font-bold text-lg text-[rgb(83,62,45)]">
-                                {member.name}
-                            </h3>
-                            <p className="text-gray-600">{member.role}</p>
-                            <p className="text-sm text-gray-500 mt-1">{member.phone}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-};
 
 
 
@@ -198,7 +145,7 @@ const AboutUs = () => {
             <Certifications />
 
             {/* Team */}
-            <TeamSection />
+            <HomeTeam />
 
             {/* CTA */}
             <section className="py-12 bg-[rgb(83,62,45)] text-center text-white">

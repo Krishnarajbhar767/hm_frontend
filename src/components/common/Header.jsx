@@ -78,16 +78,17 @@ function Header() {
     const Links = [
         { title: "Home", path: "/" },
         {
-            title: "Product",
+            title: "Shop",
             path: "/product",
             subLinks: optimisedCategoriesList,
         },
-        {
-            title: "Collection",
-            path: "/collection",
-            subLinks: optimisedFabricsLinks,
-        },
+        // {
+        //     title: "Collection",
+        //     path: "/collection",
+        //     subLinks: optimisedFabricsLinks,
+        // },
         { title: "Gallery", path: "/gallery " },
+        { title: "About Us ", path: "/about" }
         // { title: "Contact", path: "/contact" },
     ];
 
@@ -203,7 +204,7 @@ function Header() {
                         <FaFacebookF className="w-5 h-5" />
                     </a>
                     <a
-                        href="https://instagram.com"
+                        href="https://www.instagram.com/himalaya.carpets/"
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Instagram"

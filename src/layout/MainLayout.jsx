@@ -6,12 +6,13 @@ import JoinNewsLetter from "../components/common/JoinNewsLetter";
 import { AnimatePresence } from "motion/react";
 import WhatsAppChatIcon from "../components/common/WhatsAppChatIcon";
 import TopBar from "../components/common/TopBar";
+import GoogleTranslate from "../components/common/GoogleTranslate";
 function MainLayout() {
     // When This Public Route Mount Then Render JoinNewsLetter Component
 
     return (
         <div className="flex flex-col min-h-screen overflow-hidden">
-
+            <GoogleTranslate />
             <Header />
 
             <main className="flex-1 overflow-x-hidden  place-content-center  overflow-y-auto ">

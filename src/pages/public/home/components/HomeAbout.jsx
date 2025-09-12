@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from '../../../../assets/images/Home/HomeAbout/HomeAbout.webp'
 import { Link } from 'react-router-dom';
+import CompanyHistoryShowcase from '../../../../components/common/CompanyHistoryShowcase';
 function HomeAbout() {
     return (
         <div className="container mx-auto px-4 pt-10 md:py-10 max-w-7xl">
@@ -37,6 +38,9 @@ function HomeAbout() {
                         Learn More
                     </Link>
                 </div>
+            </div>
+            <div>
+                <CompanyHistoryShowcase />
             </div>
         </div>
     );

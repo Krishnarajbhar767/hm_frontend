@@ -11,6 +11,7 @@ import ScrollToTopButton from "./components/common/ScrollToTopButton.jsx";
 import ScrollToTop from "./components/common/ScrollToTop.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PhoneCallIcon from "./components/common/PhoneCallIcon.jsx";
+
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
@@ -26,8 +27,9 @@ createRoot(document.getElementById("root")).render(
                 }}
             />
             <ScrollToTopButton />
-            <ScrollToTop /> 
+            <ScrollToTop />
             <PhoneCallIcon />
+
         </ReduxProvider>
     </BrowserRouter>
 );

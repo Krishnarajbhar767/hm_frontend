@@ -15,7 +15,7 @@ function EventsSection() {
     const events = [
         {
             image: 'https://picsum.photos/600/600',
-            text: "Humptex",
+            text: "Heimtextil",
             link: "/gallery",
         },
         {
@@ -25,7 +25,7 @@ function EventsSection() {
         },
         {
             image: 'https://picsum.photos/600/600',
-            text: "Domotex",
+            text: "domotex",
             link: "/gallery",
         },
     ];

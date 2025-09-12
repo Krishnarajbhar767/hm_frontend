@@ -12,6 +12,7 @@ import { BsInstagram } from "react-icons/bs";
 import {
     FaFacebookF,
     FaLinkedin,
+    FaInstagram,
     FaPinterest,
     FaChevronUp,
 } from "react-icons/fa";
@@ -56,7 +57,7 @@ const Footer = () => {
         },
         {
             icon: BsInstagram,
-            link: "#" // Placeholder link
+            link: "https://www.instagram.com/himalaya.carpets/" // Placeholder link
         }
     ];
 
