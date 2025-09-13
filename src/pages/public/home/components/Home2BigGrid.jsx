@@ -4,27 +4,27 @@ import { useNavigate } from "react-router-dom";
 import Heading from "./Heading";
 import SubHeading from "./SubHeading";
 
-// Example images (replace with your event banners)
-// import HumptexImg from "../../../../assets/images/events/humptex.jpg";
-// import CEPCImg from "../../../../assets/images/events/cepc.jpg";
-// import DomotexImg from "../../../../assets/images/events/domotex.jpg";
+
+import HumptexImg from "../../../../assets/images/events/heimtextil.webp";
+import CEPCImg from "../../../../assets/images/events/CEPC.jpg";
+import DomotexImg from "../../../../assets/images/events/domotex.jpg";
 
 function EventsSection() {
     const navigate = useNavigate();
 
     const events = [
         {
-            image: 'https://picsum.photos/600/600',
+            image: HumptexImg,
             text: "Heimtextil",
             link: "/gallery",
         },
         {
-            image: 'https://picsum.photos/600/600',
+            image: CEPCImg,
             text: "CEPC",
             link: "/gallery",
         },
         {
-            image: 'https://picsum.photos/600/600',
+            image: DomotexImg,
             text: "domotex",
             link: "/gallery",
         },
@@ -57,7 +57,7 @@ function EventsSection() {
                             src={event.image}
                             alt={event.text}
                             loading="lazy"
-                            className="w-full h-[50vh] object-cover object-center transition duration-300 ease-in-out group-hover:scale-105"
+                            className="w-full h-[50vh] object-cover object-center transition duration-300 ease-in-out group-hover:scale-105 "
                         />
                         {/* Overlay */}
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">

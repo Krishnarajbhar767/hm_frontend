@@ -30,8 +30,8 @@ const RefundPolicy = () => {
                     <h2 className="text-xl sm:text-2xl font-semibold text-foreground">Return & Exchange Process</h2>
                     <ul className="list-disc pl-6 space-y-2 leading-relaxed">
                         <li>Email your request to{" "}
-                            <a href="mailto:himalayacarpetsindia@gmail.com" className="text-foreground font-semibold">
-                                himalayacarpetsindia@gmail.com
+                            <a href="mailto:carpetshimalaya@gmail.com" className="text-foreground font-semibold">
+                                carpetshimalaya@gmail.com
                             </a>{" "}
                             within <span className="font-semibold">24 hours</span> of delivery with clear photos of the issue.
                         </li>
@@ -52,8 +52,8 @@ const RefundPolicy = () => {
                     {/* Footer Note */}
                     <p className="text-sm text-center text-gray-600 mt-8">
                         For any questions, please email us at{" "}
-                        <a href="mailto:himalayacarpetsindia@gmail.com" className="text-foreground font-semibold">
-                            himalayacarpetsindia@gmail.com
+                        <a href="mailto:carpetshimalaya@gmail.com" className="text-foreground font-semibold">
+                            carpetshimalaya@gmail.com
                         </a>.
                     </p>
                 </section>

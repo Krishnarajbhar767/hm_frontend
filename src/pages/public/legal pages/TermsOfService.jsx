@@ -54,10 +54,10 @@ const TermsOfService = () => {
                         not use misleading or unlawful descriptions for your account. You must immediately notify Himalaya Carpets
                         of any unauthorized uses or security breaches at{" "}
                         <a
-                            href="mailto:himalayacarpetsindia@gmail.com"
+                            href="mailto:carpetshimalaya@gmail.com"
                             className="text-foreground hover:text-primary"
                         >
-                            himalayacarpetsindia@gmail.com
+                            carpetshimalaya@gmail.com
                         </a>
                         . Himalaya Carpets is not liable for any acts or omissions by
                         you, including any damages resulting from such acts or
@@ -125,10 +125,10 @@ const TermsOfService = () => {
                     <p className="text-base sm:text-lg text-foreground">
                         For any support requests, please contact our team via{" "}
                         <a
-                            href="mailto:himalayacarpetsindia@gmail.com"
+                            href="mailto:carpetshimalaya@gmail.com"
                             className="text-foreground hover:text-primary"
                         >
-                            himalayacarpetsindia@gmail.com
+                            carpetshimalaya@gmail.com
                         </a>
                         . We will respond to your inquiry in a timely manner.
                     </p>
@@ -171,10 +171,10 @@ const TermsOfService = () => {
                         </a>{" "}
                         violates your copyright, please notify Himalaya Carpets at{" "}
                         <a
-                            href="mailto:himalayacarpetsindia@gmail.com"
+                            href="mailto:carpetshimalaya@gmail.com"
                             className="text-foreground hover:text-primary"
                         >
-                            himalayacarpetsindia@gmail.com
+                            carpetshimalaya@gmail.com
                         </a>
                         . Himalaya Carpets will respond by removing or disabling
                         access to infringing material and may terminate repeat
@@ -213,10 +213,10 @@ const TermsOfService = () => {
                         Himalaya Carpets may terminate your account or access to the Website for any material breach of this agreement. You may terminate your account by discontinuing use or
                         submitting a written request to{" "}
                         <a
-                            href="mailto:himalayacarpetsindia@gmail.com"
+                            href="mailto:carpetshimalaya@gmail.com"
                             className="text-foreground hover:text-primary"
                         >
-                            himalayacarpetsindia@gmail.com
+                            carpetshimalaya@gmail.com
                         </a>
                         .
                     </p>
@@ -300,10 +300,10 @@ const TermsOfService = () => {
                     For any questions about these Terms of Service, please
                     contact us at{" "}
                     <a
-                        href="mailto:himalayacarpetsindia@gmail.com"
+                        href="mailto:carpetshimalaya@gmail.com"
                         className="text-foreground hover:text-primary"
                     >
-                        himalayacarpetsindia@gmail.com
+                        carpetshimalaya@gmail.com
                     </a>
                     .
                 </p>

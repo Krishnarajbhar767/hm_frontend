@@ -322,7 +322,7 @@ function MakeYourOwnRugsPage() {
                     Have questions before submitting? Reach out to our design team for a personal consultation.
                 </p>
                 <p className="text-base text-gray-700 text-center">
-                    Email: <a href="mailto:himalayacarpetsindia@gmail.com" className="text-foreground hover:underline">himalayacarpetsindia@gmail.com</a> | Phone: <a href="tel:+919918022212" className="text-foreground hover:underline">+91 99180 22212</a>
+                    Email: <a href="mailto:carpetshimalaya@gmail.com" className="text-foreground hover:underline">carpetshimalaya@gmail.com</a> | Phone: <a href="tel:+919918022212" className="text-foreground hover:underline">+91 99180 22212</a>
                 </p>
             </div>
         </div>

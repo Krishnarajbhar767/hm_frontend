@@ -194,15 +194,7 @@ function Header() {
                 className="fixed top-0 left-0 right-0 z-50 bg-foreground text-white h-10 flex items-center justify-between px-4 sm:px-10"
             >
                 <div className="flex items-center gap-2">
-                    <a
-                        href="https://facebook.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Facebook"
-                        className="hover:text-primary transition-colors"
-                    >
-                        <FaFacebookF className="w-5 h-5" />
-                    </a>
+
                     <a
                         href="https://www.instagram.com/himalaya.carpets/"
                         target="_blank"
@@ -212,17 +204,9 @@ function Header() {
                     >
                         <FaInstagram className="w-5 h-5" />
                     </a>
+
                     <a
-                        href="https://twitter.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Twitter"
-                        className="hover:text-primary transition-colors"
-                    >
-                        <FaTwitter className="w-5 h-5" />
-                    </a>
-                    <a
-                        href="https://linkedin.com"
+                        href="http://linkedin.com/in/sandeep-jaiswal-9469a92a0/"
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="LinkedIn"

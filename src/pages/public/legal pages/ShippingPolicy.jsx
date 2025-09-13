@@ -73,10 +73,10 @@ const ShippingPolicy = () => {
                             If a delay occurs due to a product being out of stock or
                             production delays, we will contact you via email at{" "}
                             <a
-                                href="mailto:himalayacarpetsindia@gmail.com"
+                                href="mailto:carpetshimalaya@gmail.com"
                                 className="text-foreground hover:text-primary"
                             >
-                                himalayacarpetsindia@gmail.com
+                                carpetshimalaya@gmail.com
                             </a>
                             . You may choose to wait, select alternate products, or
                             opt for a store credit or refund.
@@ -113,10 +113,10 @@ const ShippingPolicy = () => {
                         <p>
                             Email:{" "}
                             <a
-                                href="mailto:himalayacarpetsindia@gmail.com"
+                                href="mailto:carpetshimalaya@gmail.com"
                                 className="text-foreground hover:text-primary"
                             >
-                                himalayacarpetsindia@gmail.com
+                                carpetshimalaya@gmail.com
                             </a>
                         </p>
                     </div>
@@ -127,10 +127,10 @@ const ShippingPolicy = () => {
                     For any questions about our Shipping Policy, please contact us
                     at{" "}
                     <a
-                        href="mailto:himalayacarpetsindia@gmail.com"
+                        href="mailto:carpetshimalaya@gmail.com"
                         className="text-foreground hover:text-primary"
                     >
-                        himalayacarpetsindia@gmail.com
+                        carpetshimalaya@gmail.com
                     </a>
                     .
                 </p>

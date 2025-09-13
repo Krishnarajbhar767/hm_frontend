@@ -52,7 +52,7 @@ const ContactUs = () => {
         {
             icon: Mail,
             title: "Email",
-            details: ["himalayacarpetsindia@gmail.com"],
+            details: ["carpetshimalaya@gmail.com"],
         },
         {
             icon: Clock,

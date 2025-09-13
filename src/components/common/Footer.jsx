@@ -43,18 +43,12 @@ const Footer = () => {
 
     // Array of social media links and their corresponding icons.
     const socials = [
-        {
-            icon: FaFacebookF,
-            link: "#", // Placeholder link
-        },
+
         {
             icon: FaLinkedin,
-            link: "#", // Placeholder link
+            link: "http://linkedin.com/in/sandeep-jaiswal-9469a92a0/", // Placeholder link
         },
-        {
-            icon: FaPinterest,
-            link: "#" // Placeholder link
-        },
+
         {
             icon: BsInstagram,
             link: "https://www.instagram.com/himalaya.carpets/" // Placeholder link
@@ -88,9 +82,10 @@ const Footer = () => {
                         >
                             Himalaya Carpets Pvt. Ltd.
                             <br />
-                            C-101, Industrial Area, Bhadohi, UP, India – 221401
+                            JAMUNIPUR COLONY, NEAR KATYANI DEVI TEMPLE, BIDA COLONY BHADOHI
+                            , UP, India – 221401
                         </p>
-                        <p className="text-sm mb-2"><b>Email : </b> himalayacarpetsindia@gmail.com</p>
+                        <p className="text-sm mb-2"><b>Email : </b> carpetshimalaya@gmail.com</p>
                         <p className="text-sm"> <b>Phone :</b>+91 99180 22212</p>
                         <div className="flex space-x-3 mt-7">
                             {socials.map((item, idx) => (

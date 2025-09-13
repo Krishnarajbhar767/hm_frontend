@@ -216,8 +216,8 @@ const PrivacyPolicy = () => {
 
                         <p className="mt-3">
                             Email:{" "}
-                            <a href="mailto:himalayacarpetsindia@gmail.com" className="text-foreground hover:text-primary">
-                                himalayacarpetsindia@gmail.com
+                            <a href="mailto:carpetshimalaya@gmail.com" className="text-foreground hover:text-primary">
+                                carpetshimalaya@gmail.com
                             </a>
                         </p>
                     </div>
@@ -227,8 +227,8 @@ const PrivacyPolicy = () => {
                 <p className="text-sm text-foreground mt-8 text-center">
                     For questions about our privacy practices, to request data
                     deletion, or to make a complaint, please contact us at{" "}
-                    <a href="mailto:himalayacarpetsindia@gmail.com" className="text-foreground hover:text-primary">
-                        himalayacarpetsindia@gmail.com
+                    <a href="mailto:carpetshimalaya@gmail.com" className="text-foreground hover:text-primary">
+                        carpetshimalaya@gmail.com
                     </a>
                     .
                 </p>
